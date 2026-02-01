@@ -32,7 +32,7 @@ This project utilizes Large Language Models (LLM) combined with Knowledge Graph 
 ## Usage
 
 ### 1. Environment Configeration
-Open `.env` and fill in your actual credentials. Rename it to `.env`.
+Open `.env.example` and fill in your actual credentials. Rename it to `.env`.
 
 ### 2. Data Preparation
 Place your bug report CSV files in the `reports/` directory (e.g., `reports/app21.csv`).

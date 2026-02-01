@@ -28,15 +28,11 @@
     ```bash
     pip install -r requirements.txt
     ```
-
-## 配置指南
-
-1.  打开 `.env.example` 文件，填入您的实际配置信息并重命名为.env。
  
 ## 使用方法
 
 ### 1. 配置环境
-打开 `.env.example` 文件，填入实际配置信息并重命名为.env。
+打开 `.env.example` 文件，填入实际配置信息并重命名为`.env`。
 
 ### 2. 数据准备
 将您的缺陷报告 CSV 文件放置在 `reports/` 目录下（例如 `reports/app21.csv`）。
