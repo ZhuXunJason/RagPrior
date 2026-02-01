@@ -1,0 +1,38 @@
+Report 2 [Stability/Application Crash or Forced Exit/Forced Exit to Desktop]:
+Report 5 [Functionality/User Profile and Navigation/Avatar Modification Failure]:
+Report 4 [UI and Content Display/Textual Errors and Typos/User Agreement Typo]:
+Report 1 [Prompts and Feedback/Incorrect or Misleading Prompts/Nickname Validation Prompt Error]:
+Report 15 [Stability/System Freeze or Unresponsiveness/Freeze during Image Upload]:
+Report 8 [Functionality/Content Publishing and Sharing/Image Upload Failure]:
+Report 19 [UI and Content Display/Visual and Layout Issues/Missing UI Components]:
+Report 17 [Prompts and Feedback/Missing Feedback/Missing Word Limit Prompt]:
+Report 9 [Stability/Application Crash or Forced Exit/Abnormal Exit in User Interface]:
+Report 30 [Functionality/Social Interaction Logic/Follow Interface Update Failure]:
+Report 23 [UI and Content Display/Data and Time Display/Time Display Inconsistency or Error]:
+Report 3 [Prompts and Feedback/Incorrect or Misleading Prompts/Album Status Prompt Error]:
+Report 26 [Stability/System Freeze or Unresponsiveness/General Unresponsiveness]:
+Report 25 [Functionality/User Profile and Navigation/Homepage Access Failure]:
+Report 12 [UI and Content Display/Textual Errors and Typos/User Agreement Typo]:
+Report 18 [Prompts and Feedback/Missing Feedback/Missing Duplicate Save Prompt]:
+Report 27 [Stability/Application Crash or Forced Exit/Forced Exit to Desktop]:
+Report 10 [Functionality/Content Publishing and Sharing/Information Publishing Failure]:
+Report 31 [UI and Content Display/Visual and Layout Issues/Image Quality Issue]:
+Report 6 [Prompts and Feedback/Incorrect or Misleading Prompts/Success/Failure Status Mismatch]:
+Report 11 [Stability/Application Crash or Forced Exit/Abnormal Exit in User Interface]:
+Report 32 [Functionality/Social Interaction Logic/Followed User Info Display Failure]:
+Report 36 [UI and Content Display/Data and Time Display/Like Count Inconsistency]:
+Report 13 [Prompts and Feedback/Incorrect or Misleading Prompts/Verification and Error Message Mismatch]:
+Report 33 [Stability/Application Crash or Forced Exit/Abnormal Exit in User Interface]:
+Report 28 [Functionality/User Profile and Navigation/Profile Editing and Navigation Issues]:
+Report 21 [UI and Content Display/Textual Errors and Typos/User Agreement Typo]:
+Report 14 [Prompts and Feedback/Incorrect or Misleading Prompts/Cache Clearing Logic Prompt]:
+Report 20 [Functionality/Content Publishing and Sharing/Sharing to QQ Space Failure]:
+Report 22 [UI and Content Display/Visual and Layout Issues/Dynamic Navigation Error]:
+Report 38 [Prompts and Feedback/Incorrect or Misleading Prompts/Deletion Confirmation Prompt Error]:
+Report 29 [UI and Content Display/Data and Time Display/Time Display Inconsistency or Error]:
+Report 7 [Prompts and Feedback/Incorrect or Misleading Prompts/Success/Failure Status Mismatch]:
+Report 24 [UI and Content Display/Visual and Layout Issues/Missing UI Components]:
+Report 16 [Prompts and Feedback/Incorrect or Misleading Prompts/Verification and Error Message Mismatch]:
+Report 34 [UI and Content Display/Data and Time Display/Time Display Inconsistency or Error]:
+Report 37 [Prompts and Feedback/Incorrect or Misleading Prompts/Success/Failure Status Mismatch]:
+Report 35 [UI and Content Display/Data and Time Display/Time Display Inconsistency or Error]:

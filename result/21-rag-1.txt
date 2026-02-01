@@ -1,0 +1,38 @@
+Report 1 [Functional Defects/Incorrect Feedback Prompts/Nickname Validation Error]:
+Report 4 [UI and Content Anomalies/Textual and Visual Errors/User Agreement Typo]:
+Report 9 [Stability and Performance/Application Crashes/User Interface Abnormal Exit]:
+Report 5 [Functional Defects/Feature Execution Failures/Profile Picture Modification Failure]:
+Report 23 [UI and Content Anomalies/Data Display and Consistency/Publication Time Display Error]:
+Report 15 [Stability and Performance/System Freezes/Upload Process Freeze]:
+Report 13 [Functional Defects/Incorrect Feedback Prompts/Phone Number Validation Error]:
+Report 19 [UI and Content Anomalies/Textual and Visual Errors/Missing Button Display]:
+Report 2 [Stability and Performance/Application Crashes/General Application Flashback]:
+Report 25 [Functional Defects/Feature Execution Failures/Homepage Access and Editing Failures]:
+Report 35 [UI and Content Anomalies/Data Display and Consistency/Publication Time Consistency Error]:
+Report 11 [Stability and Performance/Application Crashes/User Interface Abnormal Exit]:
+Report 16 [Functional Defects/Incorrect Feedback Prompts/Comment Length Validation Error]:
+Report 24 [UI and Content Anomalies/Textual and Visual Errors/Missing Search Icon]:
+Report 27 [Stability and Performance/Application Crashes/General Application Flashback]:
+Report 8 [Functional Defects/Feature Execution Failures/Image Upload Failure]:
+Report 32 [UI and Content Anomalies/Data Display and Consistency/User Information Display Error]:
+Report 33 [Stability and Performance/Application Crashes/User Interface Abnormal Exit]:
+Report 6 [Functional Defects/Incorrect Feedback Prompts/False Failure Prompt for Comments]:
+Report 31 [UI and Content Anomalies/Textual and Visual Errors/Image Clarity Issue]:
+Report 20 [Functional Defects/Feature Execution Failures/Social Sharing Failure]:
+Report 36 [UI and Content Anomalies/Data Display and Consistency/Like Count Mismatch]:
+Report 7 [Functional Defects/Incorrect Feedback Prompts/False Failure Prompt for Cache Clearing]:
+Report 12 [UI and Content Anomalies/Textual and Visual Errors/User Agreement Typo]:
+Report 22 [Functional Defects/Feature Execution Failures/Dynamic Navigation Issue]:
+Report 29 [UI and Content Anomalies/Data Display and Consistency/Publication Time Display Error]:
+Report 10 [Functional Defects/Incorrect Feedback Prompts/False Failure Prompt for Information Posting]:
+Report 21 [UI and Content Anomalies/Textual and Visual Errors/User Agreement Typo]:
+Report 26 [Functional Defects/Feature Execution Failures/System Unresponsiveness]:
+Report 34 [UI and Content Anomalies/Data Display and Consistency/Publication Time Display Error]:
+Report 3 [Functional Defects/Incorrect Feedback Prompts/Incorrect Album Full Prompt]:
+Report 30 [Functional Defects/Feature Execution Failures/Interface Update Failure]:
+Report 38 [Functional Defects/Incorrect Feedback Prompts/Incorrect Delete Confirmation Prompt]:
+Report 28 [Functional Defects/Feature Execution Failures/Homepage Access and Editing Failures]:
+Report 17 [Functional Defects/Incorrect Feedback Prompts/Missing Character Limit Prompt]:
+Report 18 [Functional Defects/Incorrect Feedback Prompts/Missing Duplicate Save Prompt]:
+Report 37 [Functional Defects/Incorrect Feedback Prompts/False Failure Prompt for Comments]:
+Report 14 [Functional Defects/Incorrect Feedback Prompts/False Failure Prompt for Cache Clearing]:
