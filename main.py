@@ -17,7 +17,7 @@ from llm import ask_gpt
 from parse import parse, extract_report_num
 
 
-def run_query(app: int, repeat: int = 1, mode: str = "default", 
+def run_query(app: int, repeat: int = 1, mode: str = "default", model: str = "gemini-3-flash-preview",
               given_range: Optional[List[int]] = None, csv_file: Optional[str] = None) -> None:
     """Query LLM to categorize bug reports."""
     print(f"Mode: {mode}")
@@ -31,13 +31,13 @@ def run_query(app: int, repeat: int = 1, mode: str = "default",
     
     for i in repeats:
         print(f"iteration-{i}...")
-        response, token_usage_p, token_usage_r = ask_gpt(prompt)
-        response_file = os.path.join(RESPONSE_DIR, f"{app}-{mode}-{i}.txt")
+        response, token_usage_p, token_usage_r = ask_gpt(prompt, model=model)
+        response_file = os.path.join(RESPONSE_DIR, f"{app}-{mode}-{i}-{model}.txt")
         with open(response_file, encoding="utf-8", mode="w") as f:
             f.write(f"{response}\nInput Tokens: {token_usage_p}\nOutput Tokens: {token_usage_r}")
 
 
-def run_parse(app: int, mode: str = "default", repeat: int = 1, 
+def run_parse(app: int, mode: str = "default", repeat: int = 1, model: str = "gemini-3-flash-preview",
               given_range: Optional[List[int]] = None, use_severity: bool = False, 
               csv_file: Optional[str] = None) -> None:
     """Parse LLM response to generate prioritized sequence."""
@@ -47,31 +47,31 @@ def run_parse(app: int, mode: str = "default", repeat: int = 1,
         repeats = given_range
     
     for i in repeats:
-        response_file = os.path.join(RESPONSE_DIR, f"{app}-{mode}-{i}.txt")
-        result_file = os.path.join(RESULT_DIR, f"{app}-{mode}-{i}.txt")
+        response_file = os.path.join(RESPONSE_DIR, f"{app}-{mode}-{i}-{model}.txt")
+        result_file = os.path.join(RESULT_DIR, f"{app}-{mode}-{i}-{model}.txt")
         
         try:
             with open(response_file, encoding="utf-8", mode="r") as f1:
                 s = f1.read()
         except Exception as e:
-            print(f"Error in reading response {app}-{mode}-{i}: {e}. Please manually check.")
+            print(f"Error in reading response {app}-{mode}-{i}-{model}: {e}. Please manually check.")
             continue
         
         try:
             result = parse(s, mode=mode, app=app, use_severity=use_severity, csv_file=csv_file)
         except Exception as e:
-            print(f"Error in parsing response {app}-{mode}-{i}: {e}. Please manually check.")
+            print(f"Error in parsing response {app}-{mode}-{i}-{model}: {e}. Please manually check.")
             continue
         
         try:
             with open(result_file, encoding="utf-8", mode="w") as f2:
                 f2.write(result)
         except Exception as e:
-            print(f"Error in writing result {app}-{mode}-{i}: {e}. Please manually check.")
+            print(f"Error in writing result {app}-{mode}-{i}-{model}: {e}. Please manually check.")
             continue
 
 
-def run_evaluate(app: int, mode: str = "default", repeat: int = 1, 
+def run_evaluate(app: int, mode: str = "default", model: str = "gemini-3-flash-preview", repeat: int = 1, 
                  csv_file: Optional[str] = None) -> None:
     """Evaluate APFD based on bug_ID from CSV file.
     
@@ -100,7 +100,7 @@ def run_evaluate(app: int, mode: str = "default", repeat: int = 1,
     
     for i in range(1, repeat + 1):
         bug_type_set = set()
-        result_file = os.path.join(RESULT_DIR, f"{app}-{mode}-{i}.txt")
+        result_file = os.path.join(RESULT_DIR, f"{app}-{mode}-{i}-{model}.txt")
         
         try:
             with open(result_file, "r", encoding="utf-8") as f:
@@ -134,7 +134,7 @@ def run_evaluate(app: int, mode: str = "default", repeat: int = 1,
                 apfds.append(apfd)
                 
         except FileNotFoundError:
-            print(f"Result file for {app}-{mode}-{i} not found.")
+            print(f"Result file for {app}-{mode}-{i}-{model} not found.")
             continue
     
     if apfds:
@@ -146,6 +146,7 @@ def run_evaluate(app: int, mode: str = "default", repeat: int = 1,
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Bug Report Prioritization using LLM")
+    parser.add_argument("--model", type=str, default="gemini-3-flash-preview", help="Model name (default: gemini-3-flash-preview)")
     parser.add_argument("--app", type=int, default=21, help="App number (default: 21)")
     parser.add_argument("--repeat", type=int, default=1, help="Number of repetitions (default: 1)")
     parser.add_argument("--mode", type=str, default="rag", 
@@ -169,11 +170,11 @@ if __name__ == "__main__":
     os.makedirs(RESULT_DIR, exist_ok=True)
     
     if not args.skip_query:
-        run_query(app=args.app, repeat=args.repeat, mode=args.mode, 
+        run_query(app=args.app, repeat=args.repeat, mode=args.mode, model=args.model,
                   given_range=None, csv_file=csv_file)
     
     if not args.skip_parse:
         run_parse(app=args.app, repeat=args.repeat, mode=args.mode, 
                   given_range=None, use_severity=args.severity, csv_file=csv_file)
     
-    run_evaluate(app=args.app, repeat=args.repeat, mode=args.mode, csv_file=csv_file)
+    run_evaluate(app=args.app, repeat=args.repeat, mode=args.mode, model=args.model, csv_file=csv_file)

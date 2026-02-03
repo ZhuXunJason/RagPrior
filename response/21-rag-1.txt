@@ -1,39 +1,25 @@
+LEVEL 1 Application Stability
+LEVEL 2 Abnormal Exit and Crash -> Report: 2, 9, 11, 27, 33
+LEVEL 2 System Freeze and Unresponsiveness -> Report: 15, 26
 LEVEL 1 Functional Defects
-LEVEL 2 Incorrect Feedback Prompts
-LEVEL 3 Nickname Validation Error -> Report: 1
-LEVEL 3 Phone Number Validation Error -> Report: 13
-LEVEL 3 Comment Length Validation Error -> Report: 16
-LEVEL 3 False Failure Prompt for Comments -> Report: 6, 37
-LEVEL 3 False Failure Prompt for Cache Clearing -> Report: 7, 14
-LEVEL 3 False Failure Prompt for Information Posting -> Report: 10
-LEVEL 3 Incorrect Album Full Prompt -> Report: 3
-LEVEL 3 Incorrect Delete Confirmation Prompt -> Report: 38
-LEVEL 3 Missing Character Limit Prompt -> Report: 17
-LEVEL 3 Missing Duplicate Save Prompt -> Report: 18
-LEVEL 2 Feature Execution Failures
-LEVEL 3 Profile Picture Modification Failure -> Report: 5
-LEVEL 3 Homepage Access and Editing Failures -> Report: 25, 28
-LEVEL 3 Image Upload Failure -> Report: 8
-LEVEL 3 Social Sharing Failure -> Report: 20
-LEVEL 3 Dynamic Navigation Issue -> Report: 22
-LEVEL 3 System Unresponsiveness -> Report: 26
-LEVEL 3 Interface Update Failure -> Report: 30
-LEVEL 1 UI and Content Anomalies
-LEVEL 2 Textual and Visual Errors
-LEVEL 3 User Agreement Typo -> Report: 4, 12, 21
-LEVEL 3 Missing Button Display -> Report: 19
-LEVEL 3 Missing Search Icon -> Report: 24
-LEVEL 3 Image Clarity Issue -> Report: 31
-LEVEL 2 Data Display and Consistency
-LEVEL 3 Publication Time Display Error -> Report: 23, 29, 34
-LEVEL 3 Publication Time Consistency Error -> Report: 35
-LEVEL 3 User Information Display Error -> Report: 32
-LEVEL 3 Like Count Mismatch -> Report: 36
-LEVEL 1 Stability and Performance
-LEVEL 2 Application Crashes
-LEVEL 3 User Interface Abnormal Exit -> Report: 9, 11, 33
-LEVEL 3 General Application Flashback -> Report: 2, 27
-LEVEL 2 System Freezes
-LEVEL 3 Upload Process Freeze -> Report: 15
-Input Tokens: 11466
-Output Tokens: 490
+LEVEL 2 Upload and Publish Failures -> Report: 8, 10
+LEVEL 2 Account and Profile Modification Failures -> Report: 5
+LEVEL 2 Page Access and Navigation Failures -> Report: 25
+LEVEL 2 Feature Limitations -> Report: 20
+LEVEL 1 Text and Prompt Errors
+LEVEL 2 Typo and Content Errors -> Report: 4, 12, 21
+LEVEL 2 Incorrect Error Message Context -> Report: 1, 13, 16, 38
+LEVEL 2 False Negative Prompts (Success reported as Failure) -> Report: 6, 7, 37
+LEVEL 2 State Logic Prompt Errors -> Report: 3, 14
+LEVEL 1 Data and Display Consistency
+LEVEL 2 Time Display Logic Errors -> Report: 23, 29, 34
+LEVEL 2 Data Value Inconsistency -> Report: 35, 36
+LEVEL 2 Missing Data Content -> Report: 32
+LEVEL 1 UI and Interaction Anomalies
+LEVEL 2 Missing UI Elements -> Report: 19, 24
+LEVEL 2 Missing User Feedback -> Report: 17, 18
+LEVEL 2 Navigation and Redirection Errors -> Report: 22, 28
+LEVEL 2 Interface Refresh and Update Failures -> Report: 30
+LEVEL 2 Content Quality Issues -> Report: 31
+Input Tokens: 5462
+Output Tokens: 370

@@ -1,38 +1,38 @@
-Report 2 [Stability/Application Crash or Forced Exit/Forced Exit to Desktop]:
-Report 5 [Functionality/User Profile and Navigation/Avatar Modification Failure]:
-Report 4 [UI and Content Display/Textual Errors and Typos/User Agreement Typo]:
-Report 1 [Prompts and Feedback/Incorrect or Misleading Prompts/Nickname Validation Prompt Error]:
-Report 15 [Stability/System Freeze or Unresponsiveness/Freeze during Image Upload]:
-Report 8 [Functionality/Content Publishing and Sharing/Image Upload Failure]:
-Report 19 [UI and Content Display/Visual and Layout Issues/Missing UI Components]:
-Report 17 [Prompts and Feedback/Missing Feedback/Missing Word Limit Prompt]:
-Report 9 [Stability/Application Crash or Forced Exit/Abnormal Exit in User Interface]:
-Report 30 [Functionality/Social Interaction Logic/Follow Interface Update Failure]:
-Report 23 [UI and Content Display/Data and Time Display/Time Display Inconsistency or Error]:
-Report 3 [Prompts and Feedback/Incorrect or Misleading Prompts/Album Status Prompt Error]:
-Report 26 [Stability/System Freeze or Unresponsiveness/General Unresponsiveness]:
-Report 25 [Functionality/User Profile and Navigation/Homepage Access Failure]:
-Report 12 [UI and Content Display/Textual Errors and Typos/User Agreement Typo]:
-Report 18 [Prompts and Feedback/Missing Feedback/Missing Duplicate Save Prompt]:
-Report 27 [Stability/Application Crash or Forced Exit/Forced Exit to Desktop]:
-Report 10 [Functionality/Content Publishing and Sharing/Information Publishing Failure]:
-Report 31 [UI and Content Display/Visual and Layout Issues/Image Quality Issue]:
-Report 6 [Prompts and Feedback/Incorrect or Misleading Prompts/Success/Failure Status Mismatch]:
-Report 11 [Stability/Application Crash or Forced Exit/Abnormal Exit in User Interface]:
-Report 32 [Functionality/Social Interaction Logic/Followed User Info Display Failure]:
-Report 36 [UI and Content Display/Data and Time Display/Like Count Inconsistency]:
-Report 13 [Prompts and Feedback/Incorrect or Misleading Prompts/Verification and Error Message Mismatch]:
-Report 33 [Stability/Application Crash or Forced Exit/Abnormal Exit in User Interface]:
-Report 28 [Functionality/User Profile and Navigation/Profile Editing and Navigation Issues]:
-Report 21 [UI and Content Display/Textual Errors and Typos/User Agreement Typo]:
-Report 14 [Prompts and Feedback/Incorrect or Misleading Prompts/Cache Clearing Logic Prompt]:
-Report 20 [Functionality/Content Publishing and Sharing/Sharing to QQ Space Failure]:
-Report 22 [UI and Content Display/Visual and Layout Issues/Dynamic Navigation Error]:
-Report 38 [Prompts and Feedback/Incorrect or Misleading Prompts/Deletion Confirmation Prompt Error]:
-Report 29 [UI and Content Display/Data and Time Display/Time Display Inconsistency or Error]:
-Report 7 [Prompts and Feedback/Incorrect or Misleading Prompts/Success/Failure Status Mismatch]:
-Report 24 [UI and Content Display/Visual and Layout Issues/Missing UI Components]:
-Report 16 [Prompts and Feedback/Incorrect or Misleading Prompts/Verification and Error Message Mismatch]:
-Report 34 [UI and Content Display/Data and Time Display/Time Display Inconsistency or Error]:
-Report 37 [Prompts and Feedback/Incorrect or Misleading Prompts/Success/Failure Status Mismatch]:
-Report 35 [UI and Content Display/Data and Time Display/Time Display Inconsistency or Error]:
+Report 2 [Stability Issues/Application Crash/Crash to Desktop]:
+Report 8 [Functional Issues/Feature Failures/Upload and Publishing Failure]:
+Report 4 [User Interface and Display/Text and Typos/Settings Text Errors]:
+Report 6 [System Feedback and Notifications/False Error Reporting/Action Succeeded but Reported Failed]:
+Report 26 [Stability Issues/Application Freeze/System Unresponsive]:
+Report 22 [Functional Issues/Navigation and Workflow/Page Transition and Access Errors]:
+Report 19 [User Interface and Display/Visual Elements/Missing Icons or Buttons]:
+Report 1 [System Feedback and Notifications/Incorrect Message Logic/Wrong Validation or Context Message]:
+Report 9 [Stability Issues/Application Crash/Crash on User Interface]:
+Report 5 [Functional Issues/Feature Failures/Profile Modification Failure]:
+Report 23 [User Interface and Display/Data Presentation/Timestamp Inconsistencies]:
+Report 17 [System Feedback and Notifications/Missing Feedback/Missing Status or Limit Prompts]:
+Report 15 [Stability Issues/Application Freeze/Freeze during Upload]:
+Report 25 [Functional Issues/Navigation and Workflow/Page Transition and Access Errors]:
+Report 12 [User Interface and Display/Text and Typos/Settings Text Errors]:
+Report 7 [System Feedback and Notifications/False Error Reporting/Action Succeeded but Reported Failed]:
+Report 27 [Stability Issues/Application Crash/Crash to Desktop]:
+Report 20 [Functional Issues/Feature Failures/Sharing Integration Limitation]:
+Report 31 [User Interface and Display/Visual Elements/Content Quality Issues]:
+Report 3 [System Feedback and Notifications/Incorrect Message Logic/Wrong Validation or Context Message]:
+Report 11 [Stability Issues/Application Crash/Crash on User Interface]:
+Report 28 [Functional Issues/Navigation and Workflow/Page Transition and Access Errors]:
+Report 32 [User Interface and Display/Data Presentation/Information and Stats Discrepancy]:
+Report 18 [System Feedback and Notifications/Missing Feedback/Missing Status or Limit Prompts]:
+Report 33 [Stability Issues/Application Crash/Crash on User Interface]:
+Report 10 [Functional Issues/Feature Failures/Upload and Publishing Failure]:
+Report 21 [User Interface and Display/Text and Typos/Settings Text Errors]:
+Report 14 [System Feedback and Notifications/False Error Reporting/Action Succeeded but Reported Failed]:
+Report 24 [User Interface and Display/Visual Elements/Missing Icons or Buttons]:
+Report 13 [System Feedback and Notifications/Incorrect Message Logic/Wrong Validation or Context Message]:
+Report 30 [User Interface and Display/Data Presentation/Content Refresh Failure]:
+Report 37 [System Feedback and Notifications/False Error Reporting/Action Succeeded but Reported Failed]:
+Report 29 [User Interface and Display/Data Presentation/Timestamp Inconsistencies]:
+Report 16 [System Feedback and Notifications/Incorrect Message Logic/Wrong Validation or Context Message]:
+Report 36 [User Interface and Display/Data Presentation/Information and Stats Discrepancy]:
+Report 38 [System Feedback and Notifications/Incorrect Message Logic/Wrong Validation or Context Message]:
+Report 34 [User Interface and Display/Data Presentation/Timestamp Inconsistencies]:
+Report 35 [User Interface and Display/Data Presentation/Timestamp Inconsistencies]:

@@ -230,14 +230,32 @@ def parse_v1(s: str, app: int = None, use_severity: bool = False, csv_file: str 
 
 
 def parse_v2(s: str) -> str:
-    s = s.replace("Report", "")
-    s = s.replace(".", "")
-    line = s.split("\n")[0]
+    # Remove "Input Tokens" and "Output Tokens" lines if present
+    lines = s.split("\n")
+    cleaned_lines = []
+    for line in lines:
+        if "Input Tokens" in line or "Output Tokens" in line:
+            continue
+        cleaned_lines.append(line)
+    
+    s = "\n".join(cleaned_lines)
+    
+    # Try parsing as a comma-separated list first
+    s_clean = s.replace("Report", "").replace(".", "").replace("\n", ",")
+    
     seq = []
-    for n in line.split(","):
-        n = int(n.strip())
-        if n not in seq:
-            seq.append(n)
+    raw_nums = s_clean.split(",")
+    for n_str in raw_nums:
+        n_str = n_str.strip()
+        if not n_str:
+            continue
+        try:
+            n = int(n_str)
+            if n not in seq:
+                seq.append(n)
+        except ValueError:
+            continue
+            
     res = ""
     for n in seq:
         res += f"Report {n}:\n"
@@ -246,23 +264,23 @@ def parse_v2(s: str) -> str:
 
 def parse_v3(s: str) -> str:
     lines = [line.strip() for line in s.split("\n")]
-    start_line = -1
-    end_line = len(lines)
-    for i, line in enumerate(lines):
-        if line.startswith("1. Report"):
-            start_line = i
-            continue
-        if start_line != -1:
-            if line.find("Report") == -1:
-                end_line = i
-    if start_line == -1:
-        raise Exception("Invalid format.")
-    lines = lines[start_line:end_line]
     seq = []
+    
+    # Regex to match lines starting with "Report X" or "1. Report X"
+    pattern = re.compile(r"^\s*(?:\d+\.\s*)?Report\s+\d+")
+    
     for line in lines:
-        n = extract_report_num(line)
-        if n not in seq:
-            seq.append(n)
+        if pattern.match(line):
+            try:
+                n = extract_report_num(line)
+                if n not in seq:
+                    seq.append(n)
+            except:
+                continue
+    
+    if not seq:
+        raise Exception("Invalid format: No valid report lines found.")
+
     res = ""
     for n in seq:
         res += f"Report {n}:\n"

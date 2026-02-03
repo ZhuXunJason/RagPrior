@@ -12,7 +12,7 @@ from config import GOOGLE_API_KEY
 client = genai.Client(api_key=GOOGLE_API_KEY)
 
 
-def ask_gpt(prompt: str, max_token: int = 16384) -> Tuple[str, int, int]:
+def ask_gpt(prompt: str, model: str, max_token: int = 65536) -> Tuple[str, int, int]:
     """
     Send prompt to Gemini API and get response.
     
