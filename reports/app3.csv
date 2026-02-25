@@ -1,0 +1,29 @@
+994,点击艺术家 在歌手或者专辑图片没有的情况下没有显示默认图标而是直接空白影响用户体验,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1533972817841/1533972817841_Screenshot_20180811-153201.png,1
+1008,点击艺术家 有些专辑图标显示空白，没有显示默认图标； 列表和网格模式切换，同一张专辑，图标显示不一（空白和默认图标）,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1533976270037/1533976270037_%E8%89%BA%E6%9C%AF%E5%AE%B6%E6%A0%8F%E7%9B%AE%E4%B8%8B%E4%B8%93%E8%BE%91%E5%9B%BE%E6%A0%87%E7%A9%BA%E7%99%BD%E6%98%BE%E7%A4%BA1.png,1
+992,点击歌曲 歌曲列表中无法显示已有歌曲，或者有的歌曲可以显示有的不行,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1533972491293/1533972491293_Screenshot_20180811-151341.png,1
+995,进入库页面 点击歌曲 显示No media found，但测试手机里面有已经下载好的歌曲了，而专辑栏却可以显示到歌曲，所以，歌曲栏目下有bug,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1533972949030/1533972949030_Screenshot_20180811-153418.png,1
+1010,点击“歌曲” 歌曲栏目下显示“No media found”。只有点击选择排序后，本地的歌曲才会显示在歌曲栏目下,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1533976790776/1533976790776_%E6%AF%8F%E6%AC%A1%E7%82%B9%E5%87%BB%E2%80%9C%E5%BA%93%E2%80%9D%E6%88%96%E8%80%85%E9%87%8D%E6%96%B0%E6%89%93app%E5%90%8E%E6%AD%8C%E6%9B%B2%E6%A0%8F%E7%9B%AE%E4%B8%8B%E6%98%BE%E7%A4%BA%E2%80%9CNo%20media%20found%E2%80%9D.png,1
+1018,点击歌曲 歌词显示不出来,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1533979345621/1533979345621_%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20180811172034.jpg,3
+1022,点击歌曲 专辑与艺术家模块均有显示，只有歌曲页面为空白,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1536223105263/1536223105263_QQ%E5%9B%BE%E7%89%8720180906163621.png,1
+1024,点击歌曲 点开之后并没有出现内容,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1536732029473/1536732029473_0H%7DJW1C%7D6SC6%40POXI9B%5BK2Q.png,1
+1028,第一次进入Timber 进入“歌曲” 明明已经下载了歌曲而且已经在播了，“库”中的“歌曲”栏却说找不到，需要进行一次排序才能显示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1563095854994/1563095854994_%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20190714171305.png,1
+1003,点击艺术家  四种排序方式均无效,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1533975285973/1533975285973_448057260283682172.jpg,2
+1011,点击排序选择 用户没办法看到当前自己选择的是哪种排序方式，影响用户体验,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1533976848687/1533976848687_Screenshot_2018-08-11-16-40-02.png,2
+1012,点击“排序” 其中所有选项点了都没反应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1533976853112/1533976853112_Screenshot_20180811-163954.png,2
+1014,点击专辑 目录初始时时按照A-Z排序展示的列表，更换排序方式后列表中的曲目均未发生变化（即按条件排序） 2.点击艺术家 目录初始时时按照Z-A排序展示的列表，更换列表中的曲目均未发生变化（即按条件排序）,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1533977946507/1533977946507_%E6%88%AA%E5%B1%8F_20180811_165654.jpg,2
+1029,选择“A-Z”  有时可以排序，有时不能，“艺术家”目录中的“排序”也是这种情况,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1563096477692/1563096477692_%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20190714172559.png,2
+993,点击Support development 网络状况良好，但是设置中“Support development”选项点开后一直加载不出来,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1533972642392/1533972642392_911279125153824006.jpg,4
+1006,点击support development 点击restore purchase 刷新不出任何东西，一直处于刷新状态,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1533976128036/1533976128036_Screenshot_2018-08-11-16-26-44.png,4
+1013,点击Support development 加载不出来东西,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1533977121069/1533977121069_1.jpg,4
+1004,点击小小 总是显示找不到歌词,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1533975586032/1533975586032_99183533269826459.png,3
+1005,点击show lyrics show lyrics是显示歌词的意思，但很多的歌都没有歌词，还有些显示错误的歌词,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1533975951147/1533975951147_Screenshot_20180811-162221.png,3
+1019,点击正在播放 选择白羊（女生独唱版） 并没有歌词显示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1533979724055/1533979724055_22.jpg,3
+1009,搜索想要听的歌 点击“添加到队列” 可以无限添加，如果用户没看到提示就会不停地添加同一首歌，一首歌听多了也会厌烦,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1533976295289/1533976295289_Screenshot_20180811-162928.png,5
+997,点击播放列表 显示有最近播放歌曲但是列表为空白,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1533973388649/1533973388649_Screenshot_20180811-154012.png,6
+1031,点击最近播放 最近播放点进去却为空,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1563097651212/1563097651212_%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20190714174233.png,6
+1000,进入最新添加 移除正在播放的歌曲后会跳转播放其他歌曲，但列表中的歌曲仍未移除，需要再次移除,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1533974597465/1533974597465_214939860432156744.jpg,5
+1001,进入播放界面 点击 show lyrics 软件崩溃,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1533975233516/1533975233516_Screenshot_1533975178.png,3
+1002,点击 show lyrics 只有英文歌曲有歌词显示，中文歌和日语歌的歌曲没有歌词显示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1533975144703/1533975144703_Screenshot_20180811-160723.png,3
+1015,点击文件夹 只有一个默认的选项，而且点击无效，无法添加新的歌曲文件夹和删除现有文件夹,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1533977985491/1533977985491_Screenshot_2018-08-11-16-52-25.png,5
+1025,点击“下一首播放”按钮 下一首的歌曲不能立刻听，需等待上一首歌的结束,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1536888358694/1536888358694_%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20180914092530.png,6
+1026,进入库页面 打开右上角更多 点击排序 点击歌曲数 无法显示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1562677042063/1562677042063_Screenshot_2019-07-09-20-57-13.png,3

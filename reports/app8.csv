@@ -1,0 +1,41 @@
+167,分别用手机，微博，qq 用户登入今日头条 随机打开一条新闻 点击分享 点击微信朋友圈 期望结果：可以打开对应 APP 实现分享，实际结果点击 微信朋友圈按钮无效果,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490422184000_2.png,1
+170,选择分享 点击朋友圈 无法微信分享视频链接,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490421915000_Screenshot_2017-03-25-14-06-32.png,1
+171,点击微信朋友圈 微信无法分享,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490422345000_%E5%BE%AE%E4%BF%A1%E5%88%86%E4%BA%AB.jpg,1
+173,进入任何频道 打开文章 点击分享到微信 分享到微信功能不可用,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490422362000_%E6%88%AA%E5%B1%8F_20170325_141101.jpg,1
+176,点击分享到微信分享 不可以分享,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490423502000_3.png,1
+177,点击微信朋友圈 按钮无效果,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490423553000_2.png,1
+180,"分别用手机，微博，qq 用户登入今日头条 随机打开一条新闻 点击分享  点击微信朋友圈 期望结果：可以打开对应 APP实现分享,实际结果:按钮无效果",http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490424139000_2.jpg,1
+181,点击微信朋友圈 微信不能分享,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490423831000_3.png,1
+182,随机打开一条新闻 点击分享 点击微信朋友圈 按钮无效果，无法分享,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490424002000_634796011497554138.jpg,1
+184,点击微信朋友圈 按钮无效果,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490424100000_744672659354834226.jpg,1
+185,点击新闻 进行分享 选择微信分享 无法分享,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490424243000_%E5%BE%AE%E4%BF%A1%E5%88%86%E4%BA%AB.jpg,1
+186,点击微信朋友圈 按钮无效果,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490424346000_2.png,1
+188,点击微信朋友圈 按钮无效果,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490424641000_2.jpg,1
+194,分别用手机，微博，qq 用户登入今日头条 随机打开一条新闻 点击分享 分享到微信朋友圈 期望结果：可以打开对应APP实现分享，实际结果：点击微信朋友圈按钮无效果,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490424604000_744672659354834226.jpg,1
+196,点击分享至微信朋友圈 功能无法操作,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490425498000_1031742561%40chatroom_1490424810261_62.jpg,1
+197,1、点任意一条新闻 2、在文章尾点击微信分享 无法跳转至分享界面，刷新后返回,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490424534000_Screenshot_20170325-145131.png,1
+200,点击分享到微信朋友圈 分享失败,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490425594000_S70325-132238.jpg,1
+201,点击分享到微信好友 分享失败,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490425629000_S70325-132238.jpg,1
+203,点击微信朋友圈 分享无反应,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490426494000_%E5%BE%AE%E4%BF%A1%E6%97%A0%E6%B3%95%E6%B3%A8%E5%86%8C.png,1
+210,进入”今日头条“app 点击感兴趣的新闻进行浏览 选择分享到微信朋友圈 ”微信朋友圈“和”微信好友“无法实现”分享“功能，点击后页面会一闪而过，然后退回新闻页面，而”微信朋友圈“和”微信好友“并没有被分享新闻。,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490432721000_Screenshot_20170325-170747.png,1
+164,进入“今日头条”app 点击右上方“搜索”图标 进入“猜你喜欢”页面 选择感兴趣内容 点击“关心” 无法设置关心，无论操作多少次，都始终会出现“操作失败，请稍后在试”的提示。,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490430043000_Screenshot_20170325-144336.png,2
+175,点击关注 无法关注关心的人，点击关注时提示操作失败。,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490423202000_Screenshot_2017-03-25-14-26-24.png,2
+190,点击关注 提示操作失败,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490424824000_QQ%E6%88%AA%E5%9B%BE20170325143810.png,2
+206,1.正常登入 2.点击搜索按钮 ，出现新闻内容 3.点击关心 点击按钮出现操作失败，请稍后再试,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490428153000_S70325-154941%5B1%5D.jpg,2
+169,随机打开一篇文章 点击作者名称 点击关注 期望结果：可以关注，实际结果：点击按钮无反应,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490422225000_4.png,3
+174,点击进入一条新闻 点击右上角功能设置“...”按钮 选择左下角查看头条号 进入新华网页面 点击关注 没有任何反应,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490422663000_Screenshot_20170325-141635.png,3
+179,点任意一条新闻 点击关注 无法关注；,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490423557000_594640140664568775.jpg,3
+183,点击文章作者头像 无法关注该作者,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490424186000_4.jpg,3
+187,点击关注 按钮无反应,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490424414000_4.png,3
+191,点击关注 点击按钮无反应,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490424593000_4.png,3
+192,点击关注 点击按钮没反应,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490424698000_4.jpg,3
+193,点击作者名称 无法对文章作者关注,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490424510000_731191520670385267.jpg,3
+198,1、点任意一条新闻 2、点击新源来源主题 3、点击“关注” 无法进行关注,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490424572000_Screenshot_20170325-145155.png,3
+199,点任意一条新闻 点击关注 无法进行关注,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490425541000_116715682737025665.jpg,3
+202,选择文章的作者 点击关注 无法关注文章作者。按钮无反应。,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490425878000_Screenshot_2017-03-25-15-10-50.png,3
+204,进入入驻商 点击关注 没反应,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490426619000_A6DBA5239E0B36984176FB63AA7F4262.png,3
+208,点击关注公众号 无法关注公众号,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490430206000_S70325-162413.jpg,3
+212,进入”今日头条“app 点击感兴趣的新闻进行浏览 点击进入新闻发布者账号页面 选择”关注“ 点击后无任何反应，无法实现关注。,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490433528000_Screenshot_20170325-171257.png,3
+168,点击微信好友 出现重新刷新页面的现象,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490421121000_Screenshot_2017-03-25-13-54-10.png,4
+172,点任意一条新闻 点击微信分享 无法分享，刷新后返回,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490422215000_814735472323860260.jpg,4
+195,点击任意一条新闻 点击朋友圈分享 只刷新返回，并未进行分享,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1490424852000_814735472323860260.jpg,4

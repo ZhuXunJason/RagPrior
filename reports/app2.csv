@@ -1,0 +1,134 @@
+1247,点击右上方的加号 点击定时备份 页面会连跳两页，跳到保存文件页面。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1541906553014/1541906553014_%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1.png,7
+1252,点击管理账簿 选择某一账簿 点击删除 只有一个账簿时不能点击“删除”按钮,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542076892081/1542076892081_Screenshot_2018-11-13-10-32-51.png,2
+1253,点击管理账簿 选择新建的账簿 点击删除 无法删除,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542079239929/1542079239929_%E6%96%B0%E5%BB%BA.PNG,2
+1254,点击帮助 下一个页面不能正常显示，一直在加载,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542083453480/1542083453480_3.png,8
+1301,点击帮助 页面加载不出任何信息。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542202003326/1542202003326_8.png,8
+1302,打开帮助 只会出现一个 正在加载 的页面，无其他选项，不能进行寻求帮助和进行反馈。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542202112487/1542202112487_4.PNG,8
+1258,点击管理账簿 选择账簿3 点击删除 当前所在的账簿无法删除,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542088117594/1542088117594_Screenshot_2018-11-13-13-48-28.png,2
+1309,点击管理账簿 选择任意账簿 点击删除 当具有多个账目时，当前所在账目无法点击删除按钮 ,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542243587813/1542243587813_QQ%E6%88%AA%E5%9B%BE20181115085940.png,2
+1403,点击管理账簿 在当前的账簿点击更多的下拉框 点击删除 但是无法进行删除操作,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1536675714881/1536675714881_%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20180911221939.png,2
+1251,点击科目 点击所有 不能立马更新新收藏，切换页面后才能看到新收藏的科目。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542031501346/1542031501346_Screenshot_2018-11-12-21-58-51-323_org.gnucash.an.png,1
+1259,点击科目 点击所有 无法取消已收藏文件,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542094268779/1542094268779_%E6%94%B6%E8%97%8F.png,1
+1262,点亮已有科目的星标 选择科目 点击收藏 该科目无法正常显示在“收藏”子目录中,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542098020818/1542098020818_Screenshot_2018-11-13-16-29-50.png,1
+1263,在“收藏”子目录下取消已收藏的科目 点击“所有”  星标依然为点亮状态,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542098962832/1542098962832_Screenshot_2018-11-13-16-49-07.png,1
+1265,点击科目 点击收藏 切换此界面的收藏并不会显示刚刚所收藏的内容,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542099546378/1542099546378_11.png,1
+1270,点击科目 点击“所有” 点击项目右边的星星 点击收藏 标星的项目不会及时显示在“收藏”列表中,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542109601448/1542109601448_%E6%94%B6%E8%97%8F.png,1
+1286,点亮科目下任意科目的星标 点击收藏 会发现没有该科目 ,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542182206776/1542182206776_Screenshot_2018-11-14-15-56-15.png,1
+1290,1.点击已经添加科目右侧的“星号”进行收藏 2.点击“收藏” 3.已经添加收藏的科目不能显示，要重启软件之后收藏科目才能显示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542184290037/1542184290037_%E6%94%B6%E8%97%8F%E6%97%A0.png,1
+1295,在“所有”页面下点击星标收藏“收藏者权益”  点击收藏 在收藏页面仍显示为被收藏。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542190731261/1542190731261_Screenshot_2018-11-14-18-16-28.png,1
+1298,点击所有 点击五角星收藏 查看收藏 收藏界面无法及时更新，需要点击左上角菜单栏再次进入收藏才能看到。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542195553102/1542195553102_41.png,1
+1299,点击所有 点击五角星收藏 查看收藏 收藏界面无法及时更新，需要点击左上角菜单栏再次进入收藏才能看到。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542195705391/1542195705391_41.png,1
+1306,点击所有 收藏某一科目 点击收藏 不能立马更新新收藏，切换页面后才能看到新收藏的科目。 并且取消收藏也时，虽然马上在收藏界面中消失，但是在所有中收藏按钮依然显示为收藏，没有及时更新，需要进行界面的切换,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542241621645/1542241621645_%E6%94%B6%E8%97%8F1.png,1
+1310,在收藏界面取消收藏 点击所有 界面中的该科目 收藏按钮依然显示为收藏，需要切换一次界面，才会更新,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542243868427/1542243868427_%E6%94%B6%E8%97%8F2.png,1
+1311,进入科目页面 点击所有 收藏任意科目 点击收藏 这时候切换到搜藏栏目，看不到刚才添加的那个收藏藏科目，退出重进后可以看到,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542245342113/1542245342113_MuMu20181115092350.png,1
+1321,点击“科目” 点击“所有” 点击收藏任意科目 点击“收藏” 页面不显示已收藏科目,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542358887712/1542358887712_Screenshot_2018-11-16-16-59-47.png,1
+1322,点击科目 点击所有目录 对已有科目进行收藏或取消收藏 点击收藏 收藏目录未及时更新，只有点过“最近的”目录后再点击收藏，才会更新此时的收藏目录。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542362005191/1542362005191_5-2.PNG,1
+1349,进入所有页面 添加任意科目为收藏 点击收藏 在收藏页面无法显示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532759806060/1532759806060_MuMu20180728143430.png,1
+1360,点击‘所有’  点击右上角添加星标 点击收藏 在收藏中不会立即刷新出星标项目，而要在进行其他操作后才会进行刷新。同样，在‘收藏’中取消星标也不会在‘所有’中立即刷新,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532760823255/1532760823255_%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20180728144852.jpg,1
+1362,点击星星 点击收藏 收藏界面不会显示标星的科目，得先去点开别的页面才能看到,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532760838745/1532760838745_Screenshot_2018-07-28-14-51-47-059_org.gnucash.an.png,1
+1366,点击收藏  收藏页面无显示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532761868823/1532761868823_01.PNG,1
+1386,点击科目右上角星形标志进行科目收藏 点击收藏 列表中没有立刻出现所收藏的科目，有一定的延迟，影响了用户体验。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532764620900/1532764620900_Screenshot_20180728-154442.jpg,1
+1387,取消所收藏该科目 点击所有 科目列表中所取消收藏科目的右上角的星形标志并未变为空心,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532765121504/1532765121504_Screenshot_20180728-160409.jpg,1
+1390,添加任意科目为收藏 点击收藏 收藏页面不显示，要退出软件重新进入后才会出现,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532766117412/1532766117412_1.jpg,1
+1406,点击收藏 在收藏列表中没出现内容,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1536733310494/1536733310494_X3124F%5BI0QX%7DMXK~%7DA2OV2D.png,1
+1277,在定时任务中点进任意一条交易记录 点击修改交易 进行编辑 点击保存 GnuCash停止运行。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542116579359/1542116579359_19.png,4
+1327,点击定时任务 为已有的交易添加描述 点击保存 应用无响应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542375737479/1542375737479_QQ%E6%88%AA%E5%9B%BE20181116214212.png,4
+1249,点击管理账簿 不输入文字也可以成功命名账簿 ,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542010300550/1542010300550_QQ%E5%9B%BE%E7%89%8720181112160847.png,2
+1250,点击管理账簿 命名为空时也可以成功,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542015534716/1542015534716_QQ%E5%9B%BE%E7%89%8720181112160847.png,2
+1260,点击管理账簿 两个账簿的命名可以相同,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542095863995/1542095863995_QQ%E5%9B%BE%E7%89%8720181113155635.png,2
+1264,点击管理账簿 账簿的名字可以为空,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542099320272/1542099320272_Screenshot_2018-11-13-16-53-36-952_org.gnucash.an.png,2
+1268,点击管理账簿 对账簿重命名时，新修改的账簿名称可以与其他账簿重复，且无任何反馈信息,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542101017320/1542101017320_Screenshot_2018-11-13-17-15-41.png,2
+1324,点击管理账簿 点击账簿右下角的更多按钮 对账簿进行重命名 再次点击管理账簿 重命名可以为空或者与其他账簿名称相同，用户体验不好。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542371684433/1542371684433_22.png,2
+1325,对账簿进行重命名 点击管理账簿 重命名的账簿名称为空或者与其他账簿名字相同时，没有提示语，而账簿重名会造成账簿管理混乱，用户体验不好。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542372177115/1542372177115_22.png,2
+1348,点击管理账簿 账簿名称可以为空,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532759652700/1532759652700_%E8%B4%A6%E7%B0%BF.png,2
+1353,"点击管理账簿 名称和已有账簿名称相同,也能命名成功",http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532760047420/1532760047420_%E8%B4%A6%E7%B0%BF%E9%87%8D%E5%91%BD%E5%90%8D%E7%9B%B8%E5%90%8C.png,2
+1368,"1.点击设置 2.点击账簿管理 3.点击重命名 4删除账簿名字,点击重命名 5.返回管理账簿 可以看到没有名字的账簿",http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532762376201/1532762376201_522574448946138274.jpg,2
+1389, 点击管理账簿 账簿名无限制，可以重名可以无限长，可以无名,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532765885672/1532765885672_13.jpg,2
+1266,点击科目 点击所有 账簿名称为空也可以保存，且未给用户反馈信息,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542100120111/1542100120111_Screenshot_2018-11-13-17-00-26.png,1
+1297,点击创建科目 输入科目名称123 点击保存  再次点击创建科目 输入科目名称123 点击保存 点击所有 在创建相同名称的科目时，应该要提示科目已存在，或者科目名称重复等警告,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542194717643/1542194717643_Screenshot_2018-11-14-19-24-32.png,1
+1278,点击联系我们 无法反馈信息，并一直加载，模拟器显示连接出错,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542165343264/1542165343264_Screenshot_2018-11-14-11-07-18.png,8
+1289,断开网络  点击帮助  模拟器继续正常显示该页面内容，手机显示“连接到UserVoice”。 ,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542183680364/1542183680364_1.png,8
+1307,点击帮助 下一个页面不能正常显示，一直在加载在手机上,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542242070804/1542242070804_%E5%B8%AE%E5%8A%A9%E5%8F%8A%E5%8F%8D%E9%A6%88.png,8
+1276,点击赞产负债表  点击右上角的显示菜单 点击显示图例 勾选或取消勾选失败。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542115780259/1542115780259_18.png,3
+1288,点击汇总表 进入资产负债表 点击选项按钮 选择显示图例 选择不成功，其他选项也不成功,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542183568697/1542183568697_1.png,3
+1323,点击右上角下拉选项 点击显示图例 未选选项无法选取,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542368563228/1542368563228_V%7DD_HQ7%7D7U_9%7DG36Y4HSQ00.png,3
+1354,点击右上角三个点 点击显示图例 其中是否勾选子功能没区别，功能无效,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532760070226/1532760070226_350338770497340607.jpg,3
+1355,进入汇总表页面 点击右上角的扩展按钮 点击显示图例 无法进行相关操作，点击按钮无效,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532760122533/1532760122533_%E6%B1%87%E6%80%BB%E8%A1%A8.png,3
+1367,点击报表 点击汇总图  点击右上角的三个点  点击显示图例 无法点击选项,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532762375042/1532762375042_%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20180728151738.png,3
+1370,点击右上角的图标 点击显示图例 里面的选项不能勾选,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532762862772/1532762862772_Screenshot_2018-07-28-15-24-31-949_org.gnucash.an.png,3
+1373,在’汇总表‘中点击右上角 点击显示图例 勾选显示设置条件无法勾选或取消勾选,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532763006467/1532763006467_%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20180728152951.png,3
+1396,点击显示图例 不能进行勾选或者取消勾选,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532767405862/1532767405862_Screenshot_2018-07-28-16-43-20.png,3
+1400,点击显示图例 无法选择右上角的对勾，功能未实现,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532768040840/1532768040840_17.jpg,3
+1292,进入定时任务页面 右上角的“+”控件小概率消失，模拟器上暂无出现,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542185215805/1542185215805_2.png,7
+1312,点击修改交易计划 点击定时备份 右上角“+”号消失,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542247755574/1542247755574_Screenshot_2018-11-15-10-08-59.png,7
+1271,点击”在Play Store上推荐”  提示很抱歉，”GnuCash”已停止运行 ,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542113025092/1542113025092_1.jpg,9
+1285,进入设置通用 点击”在Play Store上推荐“ 不正常停止软件,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542181853396/1542181853396_Screenshot_2018-11-14-15-33-10.png,9
+1315,进入管理账簿的侧边栏 点击在Play Store上推荐 程序停止运行，点击确认后会返回到科目界面，不是整个程序停止运行,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542262548852/1542262548852_QQ%E5%9B%BE%E7%89%8720181115141539.png,9
+1402,点击设置 选择在Play Store上推荐 出现停止运行,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1536582464409/1536582464409_%E8%AE%BE%E7%BD%AE-%E6%8E%A8%E8%8D%90%E5%81%9C%E6%AD%A2%E8%BF%90%E8%A1%8C.png,9
+1267,进入科目页面 所有栏里点击“+”号创建科目 输入科目名称 点击保存 出现停止运行的提示。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542100348635/1542100348635_2.png,4
+1320,进入创建科目页面  在科目名称输入空格 点击保存 会出现不正常退出,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542282635126/1542282635126_Screenshot_2018-11-15-19-47-30.png,4
+1303,点击定时任务 点击交易计划 修改金额 点击保存 软件停止运行,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542205998053/1542205998053_Screenshot_2018-11-14-22-31-33.png,4
+1304,点击定时任务 点击交易计划 修改任意信息 点击保存 软件停止运行,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542206320005/1542206320005_Screenshot_2018-11-14-22-31-33.png,4
+1305,点击定时任务 点击定时备份 点击交易计划 修改信息 点击保存 软件停止运行,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542206638380/1542206638380_Screenshot_2018-11-14-22-42-18.png,4
+1328,点击修改交易 添加备注 点击保存 应用停止响应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542376104534/1542376104534_QQ%E6%88%AA%E5%9B%BE20181116214755.png,4
+1308,点击通用 界面中右侧会出现通用下常规界面的一部分,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542243296376/1542243296376_%E9%80%9A%E7%94%A8%E7%95%8C%E9%9D%A2%E5%B8%83%E5%B1%80.png,5
+1314,点击通用  点击常规 页面顶部显示通用而不是常规,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542250955955/1542250955955_Screenshot_2018-11-15-11-02-13.png,5
+1279,点击报表 选择净值 净值后缺少字符：,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542165782726/1542165782726_%E6%8D%95%E8%8E%B74.PNG,6
+1287,点击修改交易 设定金额为-1 点击保存 并没有提示交易金额不能为负数,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542182883285/1542182883285_%E4%BA%A4%E6%98%93%E9%87%91%E9%A2%9D1.PNG,4
+1346,点击所有 修改相应的科目 点击最近的 最近页面不会出现相关的科目，一直显示“最近科目为空”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532759392434/1532759392434_%E6%9C%80%E8%BF%91%E7%9A%84.png,1
+1350,添加新科目 点击最近的 无论怎么新创建科目，在最近中都没有科目,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532759781548/1532759781548_%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20180728143543.png,1
+1380,点击新建科目  点击最近的 最近的科目页面显示最近的科目为空,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532764127458/1532764127458_91043988299054407.jpg,1
+1369,点击新建最近的科目 点击最近的 “最近的”界面右下角加号新建功能无效,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532762484858/1532762484858_37412499575165516.png,1
+1371,点击“通用”  页面右侧有滚动条残留 ,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532762825816/1532762825816_%E8%AE%BE%E7%BD%AE%E9%A1%B5%E9%9D%A2%E7%BC%BA%E9%99%B7.jpg,5
+1372,点击设置 进入通用 页面右侧有滚动条的残留 ,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532762915003/1532762915003_487990270833563529.jpg,5
+1374,点击通用 页面布局缺陷,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532763025961/1532763025961_TIM%E5%9B%BE%E7%89%8720180728153010.jpg,5
+1375,点击通用 界面最右侧布局与左侧衔接不上（最右侧为“常规”界面的最左侧部分），页面不够美观,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532763175589/1532763175589_691685460320512294.png,5
+1376,点击通用界面 最右侧会出现常规里的部分内容,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532763245906/1532763245906_Screenshot_2018-07-28-15-31-16-462_org.gnucash.an.png,5
+1388,点击通用 对于宽屏用户，右侧页面有多余,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532765747556/1532765747556_Screenshot_2018-07-28-16-14-58.png,5
+1392,点击通用 界面右侧有布局上的问题影响美观,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532766273752/1532766273752_3.jpg,5
+1393,点击通用 界面设置不美观,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532766509435/1532766509435_14.jpg,5
+1377,点击通用 界面右侧显示出第一项’常规‘子界面内容,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532763425508/1532763425508_%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20180728153652.jpg,5
+1379,点击报表 明明有支出，可是报表界面支出情况显示“没有数据可显示”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532763877450/1532763877450_228459684400121687.jpg,6
+1384,点击报表 在有费用变化产生时饼图无变化记录,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532764528902/1532764528902_%E9%A5%BC%E5%9B%BE.png,6
+1395,点击饼图 未实现饼图显示，功能未实现,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532767283183/1532767283183_16.jpg,6
+1398,点击报表 支出数据有，但报表中没有数据显示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532767590147/1532767590147_Screenshot_2018-07-28-16-46-19.png,6
+1363,点击定时任务 点击交易 界面一直显示“没有可以显示的计划交易”，没有添加交易的功能,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532761016356/1532761016356_72263587330024568.png,7
+1382,添加了定时计划 点击定时计划 点击交易 定时任务中交易无显示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532764314671/1532764314671_8.jpg,7
+1391,点击定时任务 点击定时备份 显示的是“没有可以显示的交易”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532766172827/1532766172827_Screenshot_2018-07-28-16-22-48.png,7
+1347,点击所有 搜索不到任何东西,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532759602668/1532759602668_85271308947545455.png,1
+1385,保存一个新的子科目 点击最近的 不能够搜索到之前保存的子科目名称,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532764557393/1532764557393_Screenshot_20180728-155526.png,1
+1381,点击新建交易 输入过大的金额导致app停止运行,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532764256021/1532764256021_%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20180728155035.jpg,4
+1246,点击显示平均线 应用必定停止响应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1541741457157/1541741457157_QQ%E6%88%AA%E5%9B%BE20181109133036.png,3
+1248,进入下载页面 点击右上角的带加号按钮 输入文件夹名 点击保存 提示无法创建文件夹,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1541942567549/1541942567549_%E6%96%87%E4%BB%B6%E5%A4%B91.png,4
+1257,点击管理账簿 点击账簿2 若点击已在的账簿没有提示用户“已在当前账簿”也没有回到账簿界面，只是停在管理帐簿界面没有响应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542085862363/1542085862363_Screenshot_2018-11-13-13-07-47.png,2
+1261,点击“联系我们”  在网速正常的情况下，一直加载不出来,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542097208735/1542097208735_%E6%8D%95%E8%8E%B7.PNG,8
+1269,1.点击进入“帮助与反馈”页面  2.点击“联系我们”  查看输入框与下划线的距离，距离显示过大,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542106792984/1542106792984_1.jpg,8
+1272,点击现金流 点击右上角更多选项按钮 点击显示图例 应用提示没有数据显示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542113263455/1542113263455_F895FDAA2A188AB2B9ACC2CD425DFB88.jpg,3
+1273,点击科目 点击所有 在搜索栏输入单个特殊符号 %或_ 后显示所有科目,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542113809197/1542113809197_2.jpg,1
+1274,点击所有 搜索栏输入特殊符号后提示很抱歉，”GnuCash”已停止运行,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542114102495/1542114102495_4.jpg,1
+1280,点击管理账簿 可以出现两个账簿同名,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542166471508/1542166471508_%E8%B4%A6%E7%B0%BF%E9%87%8D%E5%91%BD%E5%90%8D.PNG,2
+1281,进入报表界面 选择“净值” 净值的字符与“总资产：”和“总负债：”的字符不一致！,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542171279609/1542171279609_%E6%8A%A5%E8%A1%A8%E7%95%8C%E9%9D%A2.PNG,6
+1283,点击定时任务 点击交易 页面里没有显示定时任务的名称,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542179842875/1542179842875_TIM%E6%88%AA%E5%9B%BE20181114151740.png,7
+1284,点击导出交易 填写相关信息 点击保存 容易出现不正常退出,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542181123542/1542181123542_Screenshot_2018-11-14-15-31-57.png,4
+1291,进入创建科目页面 点击“占位科目” 选项字体没被选中时是黑色，而其他的是勾选后才会变成黑色,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542184683927/1542184683927_Screenshot_2018-11-14-16-34-48.png,4
+1293,点击支出里的保险 添加了“人寿保险”和“健康保险”的金额 点击保存 进入报表 点击饼图 软件停止运行,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542187922102/1542187922102_Screenshot_2018-11-14-17-28-33.png,6
+1294,点击显示平均线 应用必定停止响应，前提是没有显示出来数据的情况,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542190326129/1542190326129_canvas.png,3
+1300,点击最近的选项 点击右下角的加号 创建一个科目 再次点击最近的 选项中不显示，只在所有选项中显示。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542201190794/1542201190794_1.PNG,1
+1313,点击现金流 现金流折线图下的数据错位至折线图上,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542250906046/1542250906046_7af7c87033b7d73221db0b3e3782cdd.png,6
+1316,点击所有 点击新建 填写相关信息新建科目 再次点击所有 新建的项目并未出现在所有当中,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542265527304/1542265527304_Screenshot_2018-11-15-15-05-14.png,1
+1317,点击柱状图 显示“很抱歉，GNUcash已停止运行”并返回主界面,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542272656793/1542272656793_Screenshot_2018-11-15-17-03-49.png,6
+1318,点击收藏 打开功能不完善，点击出现异常,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542282365314/1542282365314_Screenshot_2018-11-15-19-44-56.png,1
+1319,点击新建交易 输入金额 点击保存 应用会停止运行,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542282493401/1542282493401_3%E4%BA%A4%E6%98%93bug.PNG,4
+1326,点击定时任务 点击交易 界面没有新建按钮,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542375573949/1542375573949_QQ%E6%88%AA%E5%9B%BE20181116213928.png,7
+1345,点击导出交易 填写相关信息 点击保存 无法保存，无法导出交易内容。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532758807061/1532758807061_1-1.png,4
+1351,点击帮助 网络较好却加载较慢,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532759844232/1532759844232_700641796489324094.png,8
+1356,点击定时任务 点击定时备份 导出后仍显示“没有备份任务”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532760250432/1532760250432_850636439998392559.png,7
+1357,再其利息收入中创建一个科目 收藏该科目 进入收藏模块 在收藏中会出现两个收藏,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532760356406/1532760356406_1.png,1
+1359,打开帮助  无论是在弱网的情况下，还是4G以及较强的Wifi下，都要进行一定的时间帮助页面才会正常显示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532760707405/1532760707405_%E5%B8%AE%E5%8A%A9.png,8
+1364,点击修改交易 创建“什么快递开始” 选择正确的费用、时间 点击保存  不能成功保存,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532761589055/1532761589055_000.png,4
+1365,"选择列表模式 点击负债信用卡 点击交易 日期格式存在严重问题，例如日期选择2018-8-1,在列表中显示周三18月.",http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532761597056/1532761597056_%E4%BA%A4%E6%98%93%E7%9A%84%E6%97%A5%E6%9C%9F%E6%A0%BC%E5%BC%8F.jpg,1
+1383,点击饼图 明明有支出，可是饼图支出为“没有数据可显示”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532764474737/1532764474737_656312276636774390.jpg,6
+1394,点击新建交易 点击Afi 界面的金额单位布局不好，每一个字母应该在同一水平上，比如Afl.,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1532766643278/1532766643278_dd84538f87bfe617acbedb729c4f2c2.png,4
+1401,点击导出交易 填写相关信息 点击导出 功能失效,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1536110486977/1536110486977_%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20180905092120.png,4
+1404,点击导出交易 选择文件格式 点击导出 无法进行保存、导出,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1536676764324/1536676764324_%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20180911223900.png,4
+1405,点击管理账簿 点击在playstore上推荐 会出现程序秒退,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1536732947871/1536732947871_CQB%248H89~%7B%5B8EU91PJ4%600L6.png,9

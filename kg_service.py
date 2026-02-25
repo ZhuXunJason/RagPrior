@@ -9,15 +9,27 @@ import os
 from neo4j import GraphDatabase
 from langchain_community.vectorstores import Neo4jVector
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain_community.embeddings import OpenAIEmbeddings
 
-from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_AUTH, GOOGLE_API_KEY
+from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_AUTH, GOOGLE_API_KEY, OPENAI_API_KEY
 
-os.environ["GOOGLE_API_KEY"] = GOOGLE_API_KEY
+if GOOGLE_API_KEY:
+    os.environ["GOOGLE_API_KEY"] = GOOGLE_API_KEY
+if OPENAI_API_KEY:
+    os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 
 class KGService:
-    def __init__(self):
+    def __init__(self, model_name: str = "gemini"):
+        if not NEO4J_URI:
+            raise ValueError("NEO4J_URI is not configured.")
         self.driver = GraphDatabase.driver(NEO4J_URI, auth=NEO4J_AUTH)
-        self.embeddings = GoogleGenerativeAIEmbeddings(model="gemini-embedding-001")
+        
+        if model_name and "gemini" not in model_name:
+             print(f"Initializing KGService with OpenAI Embeddings (text-embedding-3-large) for model {model_name}")
+             self.embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
+        else:
+             print("Initializing KGService with Gemini Embeddings (gemini-embedding-001)")
+             self.embeddings = GoogleGenerativeAIEmbeddings(model="gemini-embedding-001")
         
         # Initialize Vector Store connected to the existing graph index
         self.vector_store = Neo4jVector.from_existing_graph(
@@ -42,6 +54,23 @@ class KGService:
             "分页器", "滑块", "菜单", "列表", "卡片", "下拉框", "标签页", "开关", 
             "进度条", "时间选择器", "日期选择器", "提示框"
         ]
+
+    @staticmethod
+    def _merge_candidate(candidates: Dict[str, Dict], node, score: float, reason: Optional[str] = None) -> None:
+        """Merge a matched bug node into candidate map with score/reason updates."""
+        eid = node.element_id
+
+        if eid not in candidates:
+            candidates[eid] = {"node": node, "score": score, "reasons": []}
+        elif candidates[eid]["score"] < score:
+            candidates[eid]["score"] = score
+
+        if reason:
+            candidates[eid]["reasons"].append(reason)
+
+    @staticmethod
+    def _join_or_unknown(items: Optional[List[str]]) -> str:
+        return ", ".join(items) if items else "Unknown"
 
     def close(self):
         if self.driver:
@@ -118,12 +147,7 @@ class KGService:
                 
                 for record in vector_res:
                     node = record["node"]
-                    eid = node.element_id
-                    candidates[eid] = {
-                        "node": node,
-                        "score": record["score"],
-                        "reasons": ["Semantic"]
-                    }
+                    self._merge_candidate(candidates, node=node, score=record["score"], reason="Semantic")
 
                 # B. Structural Search: Operation -> Bug (using expanded ops)
                 if exp_ops:
@@ -135,7 +159,6 @@ class KGService:
                     """, ops=list(exp_ops))
                     for record in op_res:
                         node = record["bug"]
-                        eid = node.element_id
                         match_op = record["match_op"]
                         
                         # Calculate a simple score boost
@@ -145,12 +168,7 @@ class KGService:
                         else: # Expanded/Similar match
                             score = 0.9
                             
-                        if eid not in candidates:
-                            candidates[eid] = {"node": node, "score": score, "reasons": []}
-                        elif candidates[eid]["score"] < score:
-                            candidates[eid]["score"] = score # Upgrade score if structural match is strong
-                            
-                        candidates[eid]["reasons"].append(f"Op:{match_op}")
+                        self._merge_candidate(candidates, node=node, score=score, reason=f"Op:{match_op}")
 
                 # C. Structural Search: Element <- Operation -> Bug (using expanded elems)
                 if exp_elems:
@@ -162,7 +180,6 @@ class KGService:
                     """, elems=list(exp_elems))
                     for record in elem_res:
                         node = record["bug"]
-                        eid = node.element_id
                         match_elem = record["match_elem"]
                         
                         score = 0.7
@@ -171,10 +188,7 @@ class KGService:
                         else:
                             score = 0.8
                             
-                        if eid not in candidates:
-                            candidates[eid] = {"node": node, "score": score, "reasons": []}
-                        
-                        candidates[eid]["reasons"].append(f"Elem:{match_elem}")
+                        self._merge_candidate(candidates, node=node, score=score, reason=f"Elem:{match_elem}")
 
                 # Sort candidates
                 sorted_candidates = sorted(candidates.values(), key=lambda x: x["score"], reverse=True)[:k+2]
@@ -209,12 +223,20 @@ class KGService:
                     
                     ctx_res = session.run(rich_ctx_query, id=node.element_id)
                     info = ctx_res.single()
+                    if not info:
+                        info = {
+                            "category": None,
+                            "elements": [],
+                            "pages": [],
+                            "modules": [],
+                            "operations": [],
+                        }
                     
                     category = info["category"] if info["category"] else "Unknown"
-                    elements_str = ", ".join(info["elements"]) if info["elements"] else "Unknown"
-                    pages_str = ", ".join(info["pages"]) if info["pages"] else "Unknown"
-                    modules_str = ", ".join(info["modules"]) if info["modules"] else "Unknown"
-                    ops_str = ", ".join(info["operations"]) if info["operations"] else "Unknown"
+                    elements_str = self._join_or_unknown(info["elements"])
+                    pages_str = self._join_or_unknown(info["pages"])
+                    modules_str = self._join_or_unknown(info["modules"])
+                    ops_str = self._join_or_unknown(info["operations"])
                     
                     # Construct the informative block
                     ctx_str = f"SimBug {i+1}: {desc}"
@@ -241,12 +263,12 @@ class KGService:
 # Singleton instance for easy import
 kg_service: Optional[KGService] = None
 
-def get_kg_service() -> Optional[KGService]:
+def get_kg_service(model_name: str = "gemini") -> Optional[KGService]:
     """Get or create the KGService singleton."""
     global kg_service
     if kg_service is None:
         try:
-            kg_service = KGService()
+            kg_service = KGService(model_name=model_name)
         except Exception as e:
             print(f"Warning: Could not initialize KGService: {e}")
             kg_service = None

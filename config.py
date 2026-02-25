@@ -20,6 +20,11 @@ GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 if not GOOGLE_API_KEY:
     print("Warning: GOOGLE_API_KEY not found in .env file or environment variables.")
 
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+if not OPENAI_API_KEY:
+    print("Warning: OPENAI_API_KEY not found in .env file or environment variables.")
+
 # Project Paths
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 RESPONSE_DIR = os.path.join(PROJECT_ROOT, "response")

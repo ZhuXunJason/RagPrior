@@ -97,8 +97,8 @@ def find_node_by_value(node: TreeNode, value: int) -> Optional[TreeNode]:
     return None
 
 
-def parse(s: str, mode: str, app: int = None, use_severity: bool = False, csv_file: str = None):
-    if mode == "default" or mode == "rag":
+def parse(s: str, mode: str, app: int = None, use_severity: bool = False, csv_file: Optional[str] = None):
+    if mode == "llmprior":
         return parse_v1(s, app, use_severity=use_severity, csv_file=csv_file)
     elif mode == "simple":
         try:
@@ -107,9 +107,21 @@ def parse(s: str, mode: str, app: int = None, use_severity: bool = False, csv_fi
             return parse_v3(s)
     elif mode == "direct":
         return parse_v3(s)
+    raise Exception(f"Invalid mode: {mode}")
 
 
-def parse_v1(s: str, app: int = None, use_severity: bool = False, csv_file: str = None) -> str:
+def format_sequence_result(sequence: List[int], categories: Optional[Dict[int, str]] = None) -> str:
+    """Format report sequence into output lines expected by downstream evaluation."""
+    lines: List[str] = []
+    for report_num in sequence:
+        if categories and report_num in categories:
+            lines.append(f"Report {report_num} [{categories[report_num]}]:")
+        else:
+            lines.append(f"Report {report_num}:")
+    return "\n".join(lines)
+
+
+def parse_v1(s: str, app: int = None, use_severity: bool = False, csv_file: Optional[str] = None) -> str:
     # Load reports
     reports_data = []
     if csv_file is not None:
@@ -211,7 +223,7 @@ def parse_v1(s: str, app: int = None, use_severity: bool = False, csv_file: str 
                 pass
     
     seq = generate_sequence(root, use_severity=use_severity)
-    res = ""
+    categories: Dict[int, str] = {}
     for n in seq:
         llm_category = "Unknown"
         target_node = find_node_by_value(root, n)
@@ -224,9 +236,10 @@ def parse_v1(s: str, app: int = None, use_severity: bool = False, csv_file: str 
                 curr = curr.parent
             if cats:
                 llm_category = "/".join(reversed(cats))
-        
-        res += f"Report {n} [{llm_category}]:\n"
-    return res.strip()
+
+        categories[n] = llm_category
+
+    return format_sequence_result(seq, categories=categories)
 
 
 def parse_v2(s: str) -> str:
@@ -256,10 +269,7 @@ def parse_v2(s: str) -> str:
         except ValueError:
             continue
             
-    res = ""
-    for n in seq:
-        res += f"Report {n}:\n"
-    return res.strip()
+    return format_sequence_result(seq)
 
 
 def parse_v3(s: str) -> str:
@@ -281,10 +291,7 @@ def parse_v3(s: str) -> str:
     if not seq:
         raise Exception("Invalid format: No valid report lines found.")
 
-    res = ""
-    for n in seq:
-        res += f"Report {n}:\n"
-    return res.strip()
+    return format_sequence_result(seq)
 
 
 def extract_report_num(line: str) -> int:

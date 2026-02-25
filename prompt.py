@@ -2,7 +2,7 @@
 Prompt templates and report loading utilities for Bug Report Prioritization.
 """
 
-from typing import List, Any, Dict
+from typing import List, Any, Dict, Optional
 
 from config import REPORTS_DIR
 
@@ -92,7 +92,7 @@ def load_reports_from_file(csv_path: str) -> List[Dict[str, Any]]:
     """Load reports from a specific CSV file path.
     
     CSV format: index,description,image_url,bug_id
-    The last column is treated as bug_id for APFD calculation.
+    The last column is treated as bug_id for evaluation metrics.
     """
     reports = []
     try:
@@ -127,7 +127,7 @@ def load_reports(app: int) -> List[Dict[str, Any]]:
     return load_reports_from_file(csv_path)
 
 
-def load_reports_str(app: int = None, use_rag: bool = False, csv_file: str = None) -> str:
+def load_reports_str(app: Optional[int] = None, use_rag: bool = False, csv_file: Optional[str] = None, model: str = "gemini") -> str:
     """Load reports as a string for LLM prompt.
     
     In RAG mode, each report is augmented with knowledge context from the KG.
@@ -135,12 +135,14 @@ def load_reports_str(app: int = None, use_rag: bool = False, csv_file: str = Non
     if csv_file:
         reports = load_reports_from_file(csv_file)
     else:
+        if app is None:
+            raise ValueError("app must be provided when csv_file is not set")
         reports = load_reports(app=app)
     
     # Get KG service if RAG mode is enabled
     kg_service = None
     if use_rag and get_kg_service:
-        kg_service = get_kg_service()
+        kg_service = get_kg_service(model_name=model)
     
     lines = []
     for index, report in enumerate(reports):
@@ -158,14 +160,14 @@ def load_reports_str(app: int = None, use_rag: bool = False, csv_file: str = Non
     return "\n".join(lines)
 
 
-def get_prompt(app: int = None, mode: str = "default", csv_file: str = None) -> str:
+def get_prompt(app: Optional[int] = None, mode: str = "llmprior", csv_file: Optional[str] = None, model: str = "gemini") -> str:
     """Generate the full prompt for LLM based on mode."""
     use_rag = False
     prompt_template = PROMPT_LLMPRIOR
     
-    if mode == "default":
+    if mode == "llmprior":
         prompt_template = PROMPT_LLMPRIOR
-    elif mode == "rag":
+    elif mode == "graphprior":
         prompt_template = PROMPT_LLMPRIOR
         use_rag = True
     elif mode == "direct":
@@ -175,4 +177,4 @@ def get_prompt(app: int = None, mode: str = "default", csv_file: str = None) -> 
     else:
         raise Exception(f"Invalid mode: {mode}")
         
-    return prompt_template.replace("#####", load_reports_str(app, use_rag=use_rag, csv_file=csv_file))
+    return prompt_template.replace("#####", load_reports_str(app, use_rag=use_rag, csv_file=csv_file, model=model))

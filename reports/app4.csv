@@ -1,0 +1,9 @@
+266,"1：在""待我处理""页面选择一条待审核的上传记录 2：点击""审核通过""，进入""审核通过""页面 3：选择问题等级，处理部门，填写审核意见 4：点击""通过审核"" 4：App弹出提示信息""网络连接错误！""，但网络连接正常",http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1508570264832/%E5%AE%A1%E6%A0%B8-Bug.jpg,1
+268,进入待我处理事项 点击通过审核 突然提示网络连接错误,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1508574619319/QQ%E5%9B%BE%E7%89%8720171021160552.jpg,1
+265,点击“上传记录” 文字可自己删改,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1508569995066/QQ%E5%9B%BE%E7%89%8720171021151323.jpg,2
+267,"1：进入App""截屏相册""页面 2：点击选择一张截屏进入查看页面 3：点击""保存到手机"" 提示""保存失败""",http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1508573861537/%E6%88%AA%E5%B1%8F%E7%9B%B8%E5%86%8C-Bug.jpg,3
+269,1、联网状态下用户名输入abc，密码输入123 2、进行登录  3、登录失败，app提示网络异常,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1508576304320/Screenshot_2017-10-21-14-25-36.jpg,4
+270,点击我的文件 未显示相应页面,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1508576969109/Screenshot_2017-10-21-17-07-35.png,5
+271,点击待办事项 点击我发起的 点击“上传新文档” 结果无法上传,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1508577472621/QQ%E5%9B%BE%E7%89%8720171021160607.jpg,6
+272,点击我处理的 处理过的文件，在“我处理的”没有显示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1508578661450/Screenshot_2017-10-21-17-37-11.png,7
+273,点击“我上传的” 按钮没有反应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1508579750363/S71021-175536.jpg,8
