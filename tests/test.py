@@ -1,81 +1,145 @@
 import pytest
 
-# test_nodes
+# =========================
+# KG_desc (updated) fixtures
+# =========================
 
-# 1. 验证缺陷类 (Bug) - 数据来源 
-# 我们抽取几个典型的 Bug 名称进行验证
-EXPECTED_BUGS = [
-    "页面被遮挡", "按钮无法点击", "异常闪烁", "无法跳转", 
-    "数据缺失", "计算错误", "上传失败"
+EXPECTED_BUG_TYPES = [
+    "功能缺陷", "崩溃问题", "布局问题", "显示问题", "网络错误",
+    "空白屏幕", "性能问题", "错误提示", "乱码错误", "页面跳转问题",
 ]
 
-@pytest.mark.parametrize("bug_name", EXPECTED_BUGS)
-def test_bug_exists(session, bug_name):
-    """验证核心缺陷实体是否存在"""
-    query = "MATCH (b:Bug {name: $name}) RETURN b"
-    result = session.run(query, name=bug_name).single()
-    
-    assert result is not None, f"数据库中缺少缺陷实体: {bug_name}"
+EXPECTED_BUG_SYMPTOMS = [
+    "未调用", "不生效", "不支持", "重叠", "缺失", "模糊", "不显示", "卡顿", "缓慢", "耗时过长",
+    "加载失败", "崩溃", "退出", "无响应", "停止运行", "错位", "遮挡", "位置错误", "提示", "弹出",
+    "报错", "SQL ERROR", "404", "502", "无法连接", "跳转异常", "返回异常", "进入错误页面", "白屏",
+    "黑屏", "空白", "乱码", "无法识别",
+]
 
-# 2. 验证操作类 (Operation) - 数据来源 
 EXPECTED_OPERATIONS = [
-    "点击", "输入", "搜索", "登录", "拖拽", "切换网络"
+    "点击", "选择", "提交", "保存", "确认", "启用", "开启", "调用", "配置", "输入",
+    "打开", "进入", "查看", "滚动", "切换", "刷新", "缩放", "加载", "查询", "搜索",
+    "请求", "操作", "连续点击", "调整", "旋转", "删除", "修改", "访问", "登录", "下载",
+    "重定向", "启动", "导入", "导出",
 ]
 
-@pytest.mark.parametrize("op_name", EXPECTED_OPERATIONS)
-def test_operation_exists(session, op_name):
-    """验证操作实体是否存在"""
-    query = "MATCH (o:Operation {name: $name}) RETURN o"
-    result = session.run(query, name=op_name).single()
-    assert result is not None, f"数据库中缺少操作实体: {op_name}"
-
-# 3. 验证风险等级 (Risk) - 数据来源 
-def test_risk_levels(session):
-    """验证风险等级是否只有'严重'和'偶尔'两类"""
-    query = "MATCH (r:Risk) RETURN collect(r.name) as risks"
-    result = session.run(query).single()["risks"]
-    
-    expected_risks = {"严重", "偶尔"}
-    assert set(result) == expected_risks, f"风险等级不匹配，期望 {expected_risks}，实际 {result}"
-
-# test_relations
-
-# 数据来源 
-# 格式: (操作, 关系类型, 组件)
-RELATION_CASES = [
-    ("点击", "verb_object", "按钮"),      # (搜索也点击按钮，或通用点击)
-    ("点击", "verb_object", "输入框"),    # 
-    ("进入", "verb_object", "弹窗"),      # 
-    ("拖拽", "verb_object", "图片"),      # 
-    ("导出", "verb_object", "表格"),      # 
+EXPECTED_ELEMENTS = [
+    "按钮", "输入框", "文本域", "复选框", "单选框", "开关", "下拉框", "菜单项", "文本", "标签",
+    "图片", "图标", "卡片", "列表", "表格", "分页器", "标签页", "页面容器", "根布局", "滚动容器",
+    "弹窗", "对话框", "提示框", "进度条", "加载提示器", "占位符",
 ]
 
-@pytest.mark.parametrize("start_node, rel_type, end_node", RELATION_CASES)
-def test_relationship_exists(session, start_node, rel_type, end_node):
-    """验证三元组关系是否存在：(Operation)-[:REL]->(Element)"""
-    
-    query = f"""
-    MATCH (a:Operation {{name: $start}})
-    MATCH (b:Element {{name: $end}})
-    MATCH (a)-[r:{rel_type}]->(b)
-    RETURN r
+EXPECTED_SEVERITIES = ["低", "中", "高", "致命"]
+
+# -------------------------
+# Entity existence checks
+# -------------------------
+
+@pytest.mark.parametrize("name", EXPECTED_BUG_TYPES)
+def test_bug_type_exists(session, name):
+    query = "MATCH (n:BugType {name: $name}) RETURN n"
+    result = session.run(query, name=name).single()
+    assert result is not None, f"数据库中缺少 BugType 实体: {name}"
+
+
+@pytest.mark.parametrize("name", EXPECTED_BUG_SYMPTOMS)
+def test_bug_symptom_exists(session, name):
+    query = "MATCH (n:BugSymptom {name: $name}) RETURN n"
+    result = session.run(query, name=name).single()
+    assert result is not None, f"数据库中缺少 BugSymptom 实体: {name}"
+
+
+@pytest.mark.parametrize("name", EXPECTED_OPERATIONS)
+def test_operation_exists(session, name):
+    query = "MATCH (n:Operation {name: $name}) RETURN n"
+    result = session.run(query, name=name).single()
+    assert result is not None, f"数据库中缺少 Operation 实体: {name}"
+
+
+@pytest.mark.parametrize("name", EXPECTED_ELEMENTS)
+def test_element_exists(session, name):
+    query = "MATCH (n:Element {name: $name}) RETURN n"
+    result = session.run(query, name=name).single()
+    assert result is not None, f"数据库中缺少 Element 实体: {name}"
+
+
+@pytest.mark.parametrize("name", EXPECTED_SEVERITIES)
+def test_severity_exists(session, name):
+    query = "MATCH (n:Severity {name: $name}) RETURN n"
+    result = session.run(query, name=name).single()
+    assert result is not None, f"数据库中缺少 Severity 实体: {name}"
+
+
+# -------------------------
+# Relation sanity checks
+# -------------------------
+
+ASSOCIATED_WITH_CASES = [
+    ("功能缺陷", "不生效"),
+    ("显示问题", "模糊"),
+    ("性能问题", "加载失败"),
+    ("崩溃问题", "无响应"),
+    ("网络错误", "无法连接"),
+    ("空白屏幕", "白屏"),
+]
+
+
+@pytest.mark.parametrize("bug_type, symptom", ASSOCIATED_WITH_CASES)
+def test_associated_with_exists(session, bug_type, symptom):
+    query = """
+    MATCH (a:BugType {name: $bug_type})
+    MATCH (b:BugSymptom {name: $symptom})
+    MATCH (a)-[:associatedWith]->(b)
+    RETURN b
     """
-    result = session.run(query, start=start_node, end=end_node).single()
-    
-    assert result is not None, \
-        f"关系断裂: ({start_node}) 应当 [{rel_type}] -> ({end_node})，但在图中未找到。"
+    result = session.run(query, bug_type=bug_type, symptom=symptom).single()
+    assert result is not None, f"关系缺失: ({bug_type})-[:associatedWith]->({symptom})"
 
-# 验证孤立节点 (Sanity Check)
+
+TRIGGERED_BY_CASES = [
+    ("功能缺陷", "点击"),
+    ("显示问题", "刷新"),
+    ("性能问题", "查询"),
+    ("网络错误", "请求"),
+    ("空白屏幕", "启动"),
+    ("乱码错误", "导入"),
+]
+
+
+@pytest.mark.parametrize("bug_type, operation", TRIGGERED_BY_CASES)
+def test_triggered_by_exists(session, bug_type, operation):
+    query = """
+    MATCH (a:BugType {name: $bug_type})
+    MATCH (b:Operation {name: $operation})
+    MATCH (a)-[:TriggeredBy]->(b)
+    RETURN b
+    """
+    result = session.run(query, bug_type=bug_type, operation=operation).single()
+    assert result is not None, f"关系缺失: ({bug_type})-[:TriggeredBy]->({operation})"
+
+
+# -------------------------
+# Coverage checks
+# -------------------------
+
+def test_triggered_by_operation_coverage(session):
+    query = """
+    MATCH (:BugType)-[:TriggeredBy]->(o:Operation)
+    RETURN collect(DISTINCT o.name) AS ops
+    """
+    result = session.run(query).single()
+    ops_in_relation = set(result["ops"] or [])
+
+    missing_ops = sorted(set(EXPECTED_OPERATIONS) - ops_in_relation)
+    assert not missing_ops, f"TriggeredBy 关系未覆盖以下 Operation: {missing_ops}"
+
+
 def test_no_orphan_operations(session):
-    """检查是否有'操作'没有连接任何对象（可选的质量检查）"""
-    # 比如 '切换账号' 如果没连任何元素，可能是数据漏了
     query = """
     MATCH (o:Operation)
     WHERE NOT (o)--()
     RETURN o.name as name
     """
     results = [record["name"] for record in session.run(query)]
-    
-    # 这是一个警告性的测试，如果列表不为空，打印出来提醒开发者
     if results:
-        pytest.fail(f"发现孤立的操作节点（未连接任何元素）: {results}")
+        pytest.fail(f"发现孤立 Operation 节点（未连接任何关系）: {results}")

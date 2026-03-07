@@ -1,8 +1,9 @@
-openai==1.1.2
-numpy==1.26.1
+openai
+numpy
 neo4j
 langchain
 langchain-community
 langchain-google-genai
 python-dotenv
 scikit-learn
+networkx

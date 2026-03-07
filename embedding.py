@@ -9,6 +9,7 @@ from typing import List, Dict, Any, Tuple, Optional
 import numpy as np
 
 from google import genai
+from openai import OpenAI
 
 from config import GOOGLE_API_KEY, OPENAI_API_KEY
 from report_utils import compute_apsd_from_sequence
@@ -18,24 +19,53 @@ google_client = genai.Client(api_key=GOOGLE_API_KEY)
 batch = 100
 
 
-def get_embeddings(texts: List[str], model: str = "gemini") -> np.ndarray:
+def get_embeddings(
+    texts: List[str],
+    model: str = "gemini",
+    embedding_model: Optional[str] = None,
+    base_url: Optional[str] = None,
+    api_key: Optional[str] = None,
+) -> np.ndarray:
     """
     Compute embeddings for a list of texts.
     
     Args:
         texts: List of text strings to embed.
-        model: Model family name. If contains 'gemini', use Google; otherwise OpenAI.
+        model: LLM model family/name used to select provider route.
+        embedding_model: Embedding model name.
+        base_url: Optional OpenAI-compatible base URL.
+        api_key: Optional API key.
     
     Returns:
         np.ndarray of shape (len(texts), embedding_dim)
     """
-    if "gemini" in model:
-        return _get_gemini_embeddings(texts)
-    else:
-        return _get_openai_embeddings(texts)
+    model_lower = model.lower()
+    if "gemini" in model_lower:
+        selected_embedding_model = embedding_model or "gemini-embedding-001"
+        return _get_gemini_embeddings(texts, embedding_model=selected_embedding_model)
+
+    if "gpt" in model_lower:
+        selected_embedding_model = embedding_model or "text-embedding-3-large"
+        return _get_openai_embeddings(
+            texts,
+            embedding_model=selected_embedding_model,
+            base_url=base_url,
+            api_key=api_key,
+        )
+
+    # Custom model: call embedding model on OpenAI-compatible endpoint.
+    if not base_url:
+        print("Warning: custom model detected but base_url is not set; falling back to default OpenAI endpoint.")
+    selected_embedding_model = embedding_model or model
+    return _get_openai_embeddings(
+        texts,
+        embedding_model=selected_embedding_model,
+        base_url=base_url,
+        api_key=api_key,
+    )
 
 
-def _get_gemini_embeddings(texts: List[str]) -> np.ndarray:
+def _get_gemini_embeddings(texts: List[str], embedding_model: str) -> np.ndarray:
     """Get embeddings using Google Gemini embedding model."""
     if not texts:
         return np.array([])
@@ -44,7 +74,7 @@ def _get_gemini_embeddings(texts: List[str]) -> np.ndarray:
     for i in range(0, len(texts), batch):
         chunk = texts[i : i + batch]
         result = google_client.models.embed_content(
-            model="gemini-embedding-001",
+            model=embedding_model,
             contents=chunk,  # type: ignore
         )
         embeddings = result.embeddings or []  # type: ignore
@@ -53,17 +83,39 @@ def _get_gemini_embeddings(texts: List[str]) -> np.ndarray:
     return np.array(all_vectors)
 
 
-def _get_openai_embeddings(texts: List[str]) -> np.ndarray:
+def _get_openai_embeddings(
+    texts: List[str],
+    embedding_model: str,
+    base_url: Optional[str] = None,
+    api_key: Optional[str] = None,
+) -> np.ndarray:
     """Get embeddings using OpenAI embedding model."""
-    from openai import OpenAI
-    client = OpenAI(api_key=OPENAI_API_KEY)
-    response = client.embeddings.create(
-        model="text-embedding-3-large",
-        input=texts,
-    )
-    # Sort by index to ensure correct ordering
-    data = sorted(response.data, key=lambda x: x.index)
-    return np.array([d.embedding for d in data])
+    if not texts:
+        return np.array([])
+
+    effective_api_key = api_key or OPENAI_API_KEY
+    if not effective_api_key:
+        raise ValueError("OPENAI_API_KEY is not set.")
+
+    kwargs = {"api_key": effective_api_key}
+    if base_url:
+        kwargs["base_url"] = base_url
+    client = OpenAI(**kwargs)
+
+    # Some OpenAI-compatible providers (e.g. DashScope) enforce small max batch size.
+    max_batch_size = 10 if base_url and "dashscope.aliyuncs.com" in base_url else len(texts)
+
+    all_embeddings: List[List[float]] = []
+    for i in range(0, len(texts), max_batch_size):
+        chunk = texts[i : i + max_batch_size]
+        response = client.embeddings.create(
+            model=embedding_model,
+            input=chunk,
+        )
+        data = sorted(response.data, key=lambda x: x.index)
+        all_embeddings.extend([d.embedding for d in data])
+
+    return np.array(all_embeddings)
 
 
 def cosine_similarity_matrix(embeddings: np.ndarray) -> np.ndarray:
@@ -137,6 +189,9 @@ def run_embedding_mode(
     reports: List[Dict[str, Any]],
     thresholds: List[float],
     model: str = "gemini",
+    embedding_model: Optional[str] = None,
+    base_url: Optional[str] = None,
+    api_key: Optional[str] = None,
 ) -> Tuple[np.ndarray, Dict[float, List[int]]]:
     """
     Run embedding-based deduplication for multiple thresholds.
@@ -144,7 +199,10 @@ def run_embedding_mode(
     Args:
         reports: List of report dicts with 'description' key.
         thresholds: List of similarity thresholds to evaluate.
-        model: Model family for embedding computation.
+        model: LLM model family/name used to select provider route.
+        embedding_model: Embedding model name.
+        base_url: Optional OpenAI-compatible base URL.
+        api_key: Optional API key.
     
     Returns:
         (sim_matrix, results_dict)
@@ -154,7 +212,13 @@ def run_embedding_mode(
     descriptions = [r["description"] for r in reports]
     
     print(f"Computing embeddings for {len(descriptions)} reports...")
-    embeddings = get_embeddings(descriptions, model=model)
+    embeddings = get_embeddings(
+        descriptions,
+        model=model,
+        embedding_model=embedding_model,
+        base_url=base_url,
+        api_key=api_key,
+    )
     print(f"Embedding shape: {embeddings.shape}")
     
     sim_matrix = cosine_similarity_matrix(embeddings)

@@ -3,7 +3,7 @@ LLM Service for Bug Report Prioritization.
 Provides interface to Google Gemini API for text generation.
 """
 
-from typing import Tuple
+from typing import Optional, Tuple
 from google import genai
 from google.genai import types
 from openai import OpenAI
@@ -11,19 +11,41 @@ from openai import OpenAI
 from config import GOOGLE_API_KEY, OPENAI_API_KEY
 
 google_client = genai.Client(api_key=GOOGLE_API_KEY)
-openai_client = OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
 
-def ask_gpt(prompt: str, model: str, max_token: int = 65536) -> Tuple[str, int, int]:
+def _build_openai_client(api_key: Optional[str] = None, base_url: Optional[str] = None) -> Optional[OpenAI]:
+    effective_api_key = api_key or OPENAI_API_KEY
+    if not effective_api_key:
+        return None
+    kwargs = {"api_key": effective_api_key}
+    if base_url:
+        kwargs["base_url"] = base_url
+    return OpenAI(**kwargs)
+
+
+def ask_gpt(
+    prompt: str,
+    model: str,
+    max_token: int = 65536,
+    base_url: Optional[str] = None,
+    api_key: Optional[str] = None,
+) -> Tuple[str, int, int]:
     """
     Send prompt to LLM API (Google or OpenAI) and get response.
     
     Returns: (content, prompt_tokens, candidate_tokens)
     """
-    if "gemini" in model:
+    model_lower = model.lower()
+
+    if "gemini" in model_lower:
         return ask_gemini(prompt, model, max_token)
-    else:
-        return ask_openai(prompt, model, max_token)
+    if "gpt" in model_lower:
+        return ask_openai(prompt, model, max_token, base_url=base_url, api_key=api_key)
+
+    # Custom model: call with OpenAI-compatible API under the given base_url.
+    if not base_url:
+        print("Warning: custom model detected but base_url is not set; falling back to default OpenAI endpoint.")
+    return ask_openai(prompt, model, max_token, base_url=base_url, api_key=api_key)
 
 
 def ask_gemini(prompt: str, model: str, max_token: int) -> Tuple[str, int, int]:
@@ -62,7 +84,14 @@ def ask_gemini(prompt: str, model: str, max_token: int) -> Tuple[str, int, int]:
         return "", 0, 0
 
 
-def ask_openai(prompt: str, model: str, max_token: int) -> Tuple[str, int, int]:
+def ask_openai(
+    prompt: str,
+    model: str,
+    max_token: int,
+    base_url: Optional[str] = None,
+    api_key: Optional[str] = None,
+) -> Tuple[str, int, int]:
+    openai_client = _build_openai_client(api_key=api_key, base_url=base_url)
     if not openai_client:
         print("Error: OPENAI_API_KEY not set.")
         return "", 0, 0

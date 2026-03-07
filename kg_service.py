@@ -3,13 +3,12 @@ Knowledge Graph RAG Service for Bug Report Prioritization.
 Provides vector similarity search and severity querying from Neo4j knowledge graph.
 '''
 
-from typing import Optional, List, Tuple, Dict, Set
+from typing import Optional, List, Tuple, Dict, Set, cast, LiteralString
 import os
 
 from neo4j import GraphDatabase
-from langchain_community.vectorstores import Neo4jVector
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
-from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_community.embeddings import OpenAIEmbeddings, DashScopeEmbeddings
 
 from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_AUTH, GOOGLE_API_KEY, OPENAI_API_KEY
 
@@ -19,29 +18,55 @@ if OPENAI_API_KEY:
     os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 
 class KGService:
-    def __init__(self, model_name: str = "gemini"):
+    def __init__(
+        self,
+        model_name: str = "gemini",
+        embedding_model: Optional[str] = None,
+        base_url: Optional[str] = None,
+        api_key: Optional[str] = None,
+    ):
         if not NEO4J_URI:
             raise ValueError("NEO4J_URI is not configured.")
         self.driver = GraphDatabase.driver(NEO4J_URI, auth=NEO4J_AUTH)
-        
-        if model_name and "gemini" not in model_name:
-             print(f"Initializing KGService with OpenAI Embeddings (text-embedding-3-large) for model {model_name}")
-             self.embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
+        self.embedding_dim: Optional[int] = None
+        self.vector_index_name = "bug_text_index"
+
+        model_lower = (model_name or "").lower()
+        if "qwen" in model_lower:
+            selected_embedding_model = embedding_model or "text-embedding-v4"
+            print(f"Initializing KGService with DashScope Embeddings ({selected_embedding_model}) for model {model_name}")
+            effective_dashscope_key = api_key or os.getenv("DASHSCOPE_API_KEY") or OPENAI_API_KEY
+            if effective_dashscope_key:
+                os.environ["DASHSCOPE_API_KEY"] = effective_dashscope_key
+            self.embeddings = DashScopeEmbeddings(
+                model=selected_embedding_model,
+                dashscope_api_key=effective_dashscope_key,
+            )
+        elif model_name and "gemini" not in model_lower:
+            selected_embedding_model = embedding_model or "text-embedding-3-large"
+            print(f"Initializing KGService with OpenAI-compatible Embeddings ({selected_embedding_model}) for model {model_name}")
+            self.embeddings = OpenAIEmbeddings(
+                model=selected_embedding_model,
+                api_key=api_key or OPENAI_API_KEY,
+                base_url=base_url,
+            )
         else:
-             print("Initializing KGService with Gemini Embeddings (gemini-embedding-001)")
-             self.embeddings = GoogleGenerativeAIEmbeddings(model="gemini-embedding-001")
-        
-        # Initialize Vector Store connected to the existing graph index
-        self.vector_store = Neo4jVector.from_existing_graph(
-            embedding=self.embeddings,
-            url=NEO4J_URI,
-            username=NEO4J_USERNAME,
-            password=NEO4J_PASSWORD,
-            index_name="bug_text_index",
-            node_label="Bug",
-            text_node_properties=["name", "description"],
-            embedding_node_property="embedding"
-        )
+            selected_embedding_model = embedding_model or "gemini-embedding-001"
+            print(f"Initializing KGService with Gemini Embeddings ({selected_embedding_model})")
+            self.embeddings = GoogleGenerativeAIEmbeddings(model=selected_embedding_model)
+
+        # Determine embedding dimension and map to a dimension-specific index name.
+        try:
+            probe_vec = self.embeddings.embed_query("dimension_probe")
+            if probe_vec:
+                self.embedding_dim = len(probe_vec)
+                self.vector_index_name = f"bug_text_index_{self.embedding_dim}"
+        except Exception as e:
+            print(f"Warning: Could not probe embedding dimension, fallback to bug_text_index: {e}")
+
+        # Note: vector index is queried directly in Cypher; avoid eager Neo4jVector binding here,
+        # which can fail at startup when historical index dimensions differ.
+        self.vector_store = None
         
         # Defined entities from the knowledge graph framework (Updated per KG_desc.md)
         self.operations = [
@@ -139,15 +164,30 @@ class KGService:
                 candidates = {} # Map element_id -> {node, score, reasons}
 
                 # A. Vector Search (Semantic Similarity)
-                vector_res = session.run("""
-                    CALL db.index.vector.queryNodes('bug_text_index', $k, $embedding)
-                    YIELD node, score
-                    RETURN node, score
-                """, k=k, embedding=embedding)
-                
-                for record in vector_res:
-                    node = record["node"]
-                    self._merge_candidate(candidates, node=node, score=record["score"], reason="Semantic")
+                index_candidates = [self.vector_index_name]
+                if self.vector_index_name != "bug_text_index":
+                    index_candidates.append("bug_text_index")
+
+                vector_loaded = False
+                for idx_name in index_candidates:
+                    try:
+                        vector_query = f"""
+                            CALL db.index.vector.queryNodes('{idx_name}', $k, $embedding)
+                            YIELD node, score
+                            RETURN node, score
+                        """
+                        vector_res = session.run(cast(LiteralString, vector_query), k=k, embedding=embedding)
+
+                        for record in vector_res:
+                            node = record["node"]
+                            self._merge_candidate(candidates, node=node, score=record["score"], reason=f"Semantic:{idx_name}")
+                        vector_loaded = True
+                        break
+                    except Exception:
+                        continue
+
+                if not vector_loaded:
+                    print("Warning: No compatible vector index found for current embedding dimension. Continue with structural retrieval only.")
 
                 # B. Structural Search: Operation -> Bug (using expanded ops)
                 if exp_ops:
@@ -262,14 +302,31 @@ class KGService:
 
 # Singleton instance for easy import
 kg_service: Optional[KGService] = None
+kg_service_config: Optional[Tuple[Optional[str], Optional[str], Optional[str], Optional[str]]] = None
 
-def get_kg_service(model_name: str = "gemini") -> Optional[KGService]:
+def get_kg_service(
+    model_name: str = "gemini",
+    embedding_model: Optional[str] = None,
+    base_url: Optional[str] = None,
+    api_key: Optional[str] = None,
+) -> Optional[KGService]:
     """Get or create the KGService singleton."""
-    global kg_service
-    if kg_service is None:
+    global kg_service, kg_service_config
+    current_config = (model_name, embedding_model, base_url, api_key)
+
+    if kg_service is None or kg_service_config != current_config:
+        if kg_service is not None:
+            kg_service.close()
         try:
-            kg_service = KGService(model_name=model_name)
+            kg_service = KGService(
+                model_name=model_name,
+                embedding_model=embedding_model,
+                base_url=base_url,
+                api_key=api_key,
+            )
+            kg_service_config = current_config
         except Exception as e:
             print(f"Warning: Could not initialize KGService: {e}")
             kg_service = None
+            kg_service_config = None
     return kg_service
