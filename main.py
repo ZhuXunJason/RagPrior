@@ -55,7 +55,7 @@ def run_query(app: int, repeat: int = 1, mode: str = "llmprior", model: str = "g
 
 
 def run_parse(app: int, mode: str = "llmprior", repeat: int = 1, model: str = "gemini-3-pro-preview",
-              given_range: Optional[List[int]] = None, use_severity: bool = False, 
+              given_range: Optional[List[int]] = None, use_severity: bool = True, 
               csv_file: Optional[str] = None) -> None:
     """Parse LLM response to generate prioritized sequence."""
     for i in resolve_repeats(repeat=repeat, given_range=given_range):
@@ -197,7 +197,7 @@ def run_graphprior(app: int, repeat: int = 1, model: str = "gemini-3-pro-preview
 
         response_file = get_response_path(app=app, mode="graphprior", iteration=i, model=model)
         with open(response_file, "w", encoding="utf-8") as f:
-            f.write("GraphPrior executed with 4 phases: extraction/fusion, topology scoring, hybrid dedup, diversity ranking.\n")
+            f.write("GraphPrior executed with 3 phases: extraction/alignment & clustering, component-based severity scoring, diversity ranking.\n")
             f.write(f"Sequence length: {len(sequence)}\n")
 
         print(f"GraphPrior result saved to {result_file}")
@@ -278,8 +278,6 @@ if __name__ == "__main__":
                         help="Number of worker threads for GraphPrior chunk processing (default: 4)")
     parser.add_argument("--file", type=str, default=None, 
                         help="CSV file path (default: reports/app{APP}.csv)")
-    parser.add_argument("--severity", action="store_true", 
-                        help="Enable severity-aware sorting")
     parser.add_argument("--skip-query", action="store_true", 
                         help="Skip LLM query step")
     parser.add_argument("--skip-parse", action="store_true", 
@@ -299,7 +297,7 @@ if __name__ == "__main__":
                       thresholds=args.thresholds, embedding_model=args.embedding_model,
                       base_url=args.base_url, api_key=args.api_key)
     elif args.mode == "graphprior":
-        # GraphPrior mode: standalone 4-phase pipeline
+        # GraphPrior mode: standalone 3-phase pipeline
         run_graphprior(app=args.app, repeat=args.repeat, model=args.model, csv_file=csv_file,
                        batch_size=args.batch_size, workers=args.workers, embedding_model=args.embedding_model,
                        base_url=args.base_url, api_key=args.api_key)
@@ -312,6 +310,6 @@ if __name__ == "__main__":
         
         if not args.skip_parse:
             run_parse(app=args.app, repeat=args.repeat, mode=args.mode, 
-                      given_range=None, model=args.model, use_severity=args.severity, csv_file=csv_file)
+                      given_range=None, model=args.model, use_severity=True, csv_file=csv_file)
         
         run_evaluate(app=args.app, repeat=args.repeat, mode=args.mode, model=args.model, csv_file=csv_file)

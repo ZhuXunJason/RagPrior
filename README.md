@@ -1,54 +1,55 @@
 # LLM-Based Bug Report Prioritization with GraphPrior
 
-This project utilizes Large Language Models (LLM) with GraphPrior to prioritize crowdsourced test reports. GraphPrior includes four stages: extraction & instance fusion, topology-based severity scoring, hybrid graph/vector de-duplication, and diversity-first ranking.
+This project utilizes Large Language Models (LLM) with GraphPrior to prioritize crowdsourced test reports. The newly integrated GraphPrior features a highly efficient three-stage pipeline: extraction, alignment & clustering, followed by affected-components-based severity scoring, and finally diversity-first ranking.
 
 [中文文档](README_CN.md)
 
 ## Features
 
-*   **GraphPrior 4-Phase Pipeline**: extraction/fusion, topology scoring, hybrid de-duplication, and diversity ranking.
-*   **Hierarchical Clustering**: Categorizes bugs into fine-grained types using a tree structure.
-*   **Diversity-Based Prioritization**: Sorts reports to maximize the variety of bugs reviewed in top positions.
+*   **GraphPrior 3-Phase Integrated Pipeline**: Streamed extraction/alignment, exact component-based severity scoring, and diversity ranking.
+*   **Multi-Dimensional Dynamic Clustering**: Extracts Operation, Page, Element, and Bug dimensions to detect duplicate candidates via vector cosine similarity, forming precise bug signatures.
+*   **Objectively Unbiased Scoring**: Calculates severity by exact affected component counts and occurrence frequency, dropping unstable LLM absolute graph densities, to guarantee scoring stability across models.
 *   **Automated Evaluation**: Calculates APSD and NDCG to measure prioritization effectiveness.
 
-## Detailed GraphPrior 4-Phase Workflow
+## Detailed GraphPrior 3-Phase Workflow
 
-GraphPrior separates end-to-end prioritization into four composable phases: report understanding, severity estimation, duplicate suppression, and final ranking.
+The refactored GraphPrior streamlines extraction, clustering, scoring, and sorting into three highly cohesive stages.
 
-### Phase 1: Extraction & Instance Fusion
+### Phase 1: Extraction, Alignment & Clustering
 
-*   **Input**: Raw bug report text (title, description, reproduction steps, device/version context).
-*   **Process**: Use LLMs to extract bug-related instances (module, abnormal behavior, trigger conditions, impact scope), then align and fuse them with existing knowledge graph entities.
-*   **Output**: A normalized instance set and report-to-instance mappings.
-*   **Why it matters**: Converts unstructured reports into graph-usable semantic structures for downstream scoring and deduplication.
+**Core Files**: `graph_prior.py` (`phase1_extract_and_fuse` function), relying on `llm.py` (LLM invocations) and `embedding.py` (vector embeddings).
 
-### Phase 2: Topology-based Severity Scoring
+*   **Input**: Raw bug report text (title, description, reproduction steps, etc.).
+*   **Process**:
+    1. Through the LLM, the system structurally extracts four semantic features/dimensions: `Operation`, `Page`, `Element`, and `Bug`. It also assesses the global collision level (`Element`, `Page`, or `Program`).
+    2. These details are converted into semantic vectors and **independently** soft-matched (Cosine Similarity) over locally mapped knowledge graph nodes. If the similarity passes the threshold, it hooks up to the existing EID; otherwise, it dynamically generates a new EID in the graph.
+    3. The 4 retrieved EIDs combine instantly to compose the bug report's unique "4-Dimension Signature".
+    4. Cluster Maintenance: It matches this signature. If exact identical, the report merges seamlessly as a duplicate of the matched branch; else, a brand new logical report cluster is born.
+*   **Output**: The definitive list of bug report representative clusters aggregated uniquely via multi-dimensions, along with their constructed sub-network structure.
+*   **Why it matters**: Zero-leak deduplication happens immediately at Phase 1, entirely avoiding heavy secondary mapping comparisons or duplicate extraction effort downstream.
 
-*   **Input**: Instance subgraphs and entity relations from Phase 1.
-*   **Process**: Estimate potential severity using graph topology signals (e.g., relation density, key-node connectivity, impact propagation patterns).
-*   **Output**: Initial severity scores for each report.
-*   **Why it matters**: Provides a structure-aware severity prior instead of relying only on textual wording.
+### Phase 2: Severity Scoring based on Affected Components
 
-### Phase 3: Hybrid Graph/Vector De-duplication
+**Core Files**: `graph_prior.py` (`phase2_topology_scoring` function).
 
-*   **Input**: Text embeddings and graph-structure representations of reports.
-*   **Process**: Combine semantic similarity (vector space) and structural similarity (graph space) to detect duplicate candidates and cluster them.
-*   **Output**: De-duplicated report clusters and representative reports.
-*   **Why it matters**: Reduces ranking distortion caused by repeated reports.
+*   **Input**: The clustered instance list from Phase 1 combined with component connectivity on the graph (`LOCATED_ON` dependency edges).
+*   **Process**: Discarding legacy graph node/edge counting blind spots, the absolute Severity Score is now reliably tallied utilizing the exact affected component layer ($I$) and the frequency of occurrence base ($T$).
+    The system counts length $T$ for the duplicate cluster, then deduces damaged components count $I$:
+    1. If typed as `element` scope locally, only a single node is considered harmed; hence $I = 1$.
+    2. If typed as `page` scope branch, the system grabs all valid unique instantiated element components registered under this `page_eid`, returning that specific list count as $I$.
+    3. If typed as a global crash/halt (`program` scope limit), $I$ equates to the absolute total volume of pooled interactive components submitted up to this tick.
+    **Formula applied**: $Score = I \times \log(T + 1)$
+*   **Output**: Accurate integer/float severity proxy score for every independent clustered set.
+*   **Why it matters**: Grounded strongly in component radius tracking combined precisely with historical volume overlap computations, generating a purely deterministic, unshakeable grading baseline against fickle LLM whims.
 
-### Phase 4: Diversity-first Ranking
+### Phase 3: Diversity-first Ranking
 
-*   **Input**: Severity scores from Phase 2 and deduplication clusters from Phase 3.
-*   **Process**: Rank reports by balancing severity priority with category coverage/information gain so top positions contain both critical and diverse issues.
-*   **Output**: Final prioritized report list.
-*   **Why it matters**: Improves early-review efficiency under limited triage budget.
+**Core Files**: `graph_prior.py` (`run` method for orchestrating selection), coordinated by `main.py`.
 
-### End-to-end Summary
-
-1. Structure raw reports into graph-aligned instances (Phase 1).
-2. Estimate severity with topology-aware signals (Phase 2).
-3. Merge/suppress duplicates with hybrid similarity (Phase 3).
-4. Produce a severity-and-diversity balanced ranking (Phase 4).
+*   **Input**: The summarized duplicate clusters alongside their objectively assigned scores.
+*   **Process**: Evaluates the computed descending Danger-Score sorting all clustered representations. The sorted main representatives lead the output sequence. Attached directly/nested behind each representative are their corresponding identical duplicates for pure reference.
+*   **Output**: The straightforward 1D sequence mapping to end-users combining exploring novelty priority with duplicate logs.
+*   **Why it matters**: Assures that top review queues display high-risk, non-duplicate clusters prominently maximizing budget reach, securely tucking repetitive complaints further down the pipe efficiently.
 
 ## Current Issues and Known Limitations
 

@@ -36,15 +36,14 @@ Text: {text}
 请抽取并输出如下字段：
 {{
   "Report_ID": "{report_id}",
-  "Instance_Page": "具体页面实例描述，来自原文；若缺失填'未知页面'",
-  "Instance_Element": "具体组件实例描述，来自原文；若缺失填'未知组件'",
-    "Instance_Bug": "具体缺陷现象，来自原文；若缺失填'未知缺陷'",
-    "Concept_BugType": "必须是以下10个之一：功能缺陷, 崩溃问题, 布局问题, 显示问题, 网络错误, 空白屏幕, 性能问题, 错误提示, 乱码错误, 页面跳转问题",
-    "Concept_BugSymptom": "必须是以下33个之一：未调用, 不生效, 不支持, 重叠, 缺失, 模糊, 不显示, 卡顿, 缓慢, 耗时过长, 加载失败, 崩溃, 退出, 无响应, 停止运行, 错位, 遮挡, 位置错误, 提示, 弹出, 报错, SQL ERROR, 404, 502, 无法连接, 跳转异常, 返回异常, 进入错误页面, 白屏, 黑屏, 空白, 乱码, 无法识别",
-    "Concept_Element": "必须是以下26个之一：按钮, 输入框, 文本域, 复选框, 单选框, 开关, 下拉框, 菜单项, 文本, 标签, 图片, 图标, 卡片, 列表, 表格, 分页器, 标签页, 页面容器, 根布局, 滚动容器, 弹窗, 对话框, 提示框, 进度条, 加载提示器, 占位符",
-    "Concept_Operation": "必须是以下34个之一：点击, 选择, 提交, 保存, 确认, 启用, 开启, 调用, 配置, 输入, 打开, 进入, 查看, 滚动, 切换, 刷新, 缩放, 加载, 查询, 搜索, 请求, 操作, 连续点击, 调整, 旋转, 删除, 修改, 访问, 登录, 下载, 重定向, 启动, 导入, 导出",
-    "Concept_Severity": "必须是以下4个之一：低, 中, 高, 致命"
+  "Operation": "触发缺陷的操作描述，来自原文；若缺失填'未知操作'",
+  "Page": "发生缺陷的具体页面实例描述，来自原文；若缺失填'未知页面'",
+  "Element": "发生缺陷的具体组件实例描述，来自原文；若缺失填'未知组件'",
+  "Bug": "具体缺陷现象描述，来自原文；若缺失填'未知缺陷'",
+  "Severity_Scope": "必须是以下3个之一：element (局限于单一组件), page (影响整个页面), program (导致整个程序崩溃或阻断核心流程)。请根据缺陷的影响范围做出判断。"
 }}
+
+注意：Page 和 Element 不能同时为'未知页面'和'未知组件'，至少要尽可能提取其中一个有意义的信息。如果确实都无法提取，请提取与业务相关的实体作为 Element。
 """.strip()
 
 
@@ -58,16 +57,15 @@ EXTRACTION_BATCH_PROMPT = """
 [
     {{
         "Report_ID": "R_001",
-        "Instance_Page": "具体页面实例描述，来自原文；若缺失填'未知页面'",
-        "Instance_Element": "具体组件实例描述，来自原文；若缺失填'未知组件'",
-        "Instance_Bug": "具体缺陷现象，来自原文；若缺失填'未知缺陷'",
-        "Concept_BugType": "必须是以下10个之一：功能缺陷, 崩溃问题, 布局问题, 显示问题, 网络错误, 空白屏幕, 性能问题, 错误提示, 乱码错误, 页面跳转问题",
-        "Concept_BugSymptom": "必须是以下33个之一：未调用, 不生效, 不支持, 重叠, 缺失, 模糊, 不显示, 卡顿, 缓慢, 耗时过长, 加载失败, 崩溃, 退出, 无响应, 停止运行, 错位, 遮挡, 位置错误, 提示, 弹出, 报错, SQL ERROR, 404, 502, 无法连接, 跳转异常, 返回异常, 进入错误页面, 白屏, 黑屏, 空白, 乱码, 无法识别",
-        "Concept_Element": "必须是以下26个之一：按钮, 输入框, 文本域, 复选框, 单选框, 开关, 下拉框, 菜单项, 文本, 标签, 图片, 图标, 卡片, 列表, 表格, 分页器, 标签页, 页面容器, 根布局, 滚动容器, 弹窗, 对话框, 提示框, 进度条, 加载提示器, 占位符",
-        "Concept_Operation": "必须是以下34个之一：点击, 选择, 提交, 保存, 确认, 启用, 开启, 调用, 配置, 输入, 打开, 进入, 查看, 滚动, 切换, 刷新, 缩放, 加载, 查询, 搜索, 请求, 操作, 连续点击, 调整, 旋转, 删除, 修改, 访问, 登录, 下载, 重定向, 启动, 导入, 导出",
-        "Concept_Severity": "必须是以下4个之一：低, 中, 高, 致命"
+        "Operation": "触发缺陷的操作描述，来自原文；若缺失填'未知操作'",
+        "Page": "发生缺陷的具体页面实例描述，来自原文；若缺失填'未知页面'",
+        "Element": "发生缺陷的具体组件实例描述，来自原文；若缺失填'未知组件'",
+        "Bug": "具体缺陷现象描述，来自原文；若缺失填'未知缺陷'",
+        "Severity_Scope": "必须是以下3个之一：element (局限于单一组件), page (影响整个页面), program (导致整个程序崩溃或阻断核心流程)。请根据缺陷的影响范围做出判断。"
     }}
 ]
+
+注意：Page 和 Element 不能同时为'未知页面'和'未知组件'，至少要尽可能提取其中一个有意义的信息。如果确实都无法提取，请提取与业务相关的实体作为 Element。
 """.strip()
 
 
@@ -94,37 +92,16 @@ class GraphPriorPipeline:
             api_key=api_key,
         )
         self.graph = nx.MultiDiGraph()
+        self.clusters: List[Dict[str, Any]] = []
         self._instance_store: Dict[str, List[Dict[str, Any]]] = {
-            "Instance_Page": [],
-            "Instance_Element": [],
-            "Instance_Bug": [],
+            "Operation": [],
+            "Page": [],
+            "Element": [],
+            "Bug": [],
         }
         self._instance_counter = 0
 
-        self.concept_elements = [
-            "按钮", "输入框", "文本域", "复选框", "单选框", "开关", "下拉框", "菜单项", "文本", "标签",
-            "图片", "图标", "卡片", "列表", "表格", "分页器", "标签页", "页面容器", "根布局", "滚动容器",
-            "弹窗", "对话框", "提示框", "进度条", "加载提示器", "占位符",
-        ]
-        self.concept_operations = [
-            "点击", "选择", "提交", "保存", "确认", "启用", "开启", "调用", "配置", "输入",
-            "打开", "进入", "查看", "滚动", "切换", "刷新", "缩放", "加载", "查询", "搜索",
-            "请求", "操作", "连续点击", "调整", "旋转", "删除", "修改", "访问", "登录", "下载",
-            "重定向", "启动", "导入", "导出",
-        ]
-        self.concept_bug_types = [
-            "功能缺陷", "崩溃问题", "布局问题", "显示问题", "网络错误",
-            "空白屏幕", "性能问题", "错误提示", "乱码错误", "页面跳转问题",
-        ]
-        self.concept_bug_symptoms = [
-            "未调用", "不生效", "不支持", "重叠", "缺失", "模糊", "不显示", "卡顿", "缓慢", "耗时过长",
-            "加载失败", "崩溃", "退出", "无响应", "停止运行", "错位", "遮挡", "位置错误", "提示", "弹出",
-            "报错", "SQL ERROR", "404", "502", "无法连接", "跳转异常", "返回异常", "进入错误页面", "白屏",
-            "黑屏", "空白", "乱码", "无法识别",
-        ]
-        self.concept_severity = ["低", "中", "高", "致命"]
-
-        self._init_in_memory_graph()
+        self.severity_scopes = ["element", "page", "program"]
 
     @staticmethod
     def _parse_report_num(report_id: str) -> int:
@@ -195,14 +172,6 @@ class GraphPriorPipeline:
             return 0.0
         return dot / (n1 * n2)
 
-    def _normalize_concept(self, value: str, allowed: List[str], fallback_text: str) -> str:
-        if value in allowed:
-            return value
-        for option in allowed:
-            if option in fallback_text:
-                return option
-        return allowed[0]
-
     def _extract_structured(self, report_id: str, description: str) -> Dict[str, str]:
         prompt = EXTRACTION_PROMPT.format(report_id=report_id, text=description)
         content, _, _ = ask_gpt(
@@ -213,46 +182,25 @@ class GraphPriorPipeline:
         )
         parsed = self._try_json_load(content)
 
-        instance_page = str(parsed.get("Instance_Page") or "未知页面").strip()
-        instance_element = str(parsed.get("Instance_Element") or "未知组件").strip()
-        instance_bug = str(parsed.get("Instance_Bug") or description).strip()
-
-        concept_element = self._normalize_concept(
-            str(parsed.get("Concept_Element") or "").strip(),
-            self.concept_elements,
-            description + instance_element,
-        )
-        concept_operation = self._normalize_concept(
-            str(parsed.get("Concept_Operation") or "").strip(),
-            self.concept_operations,
-            description,
-        )
-        concept_bug_type = self._normalize_concept(
-            str(parsed.get("Concept_BugType") or "").strip(),
-            self.concept_bug_types,
-            description + instance_bug,
-        )
-        concept_bug_symptom = self._normalize_concept(
-            str(parsed.get("Concept_BugSymptom") or "").strip(),
-            self.concept_bug_symptoms,
-            description + instance_bug,
-        )
-        concept_severity = self._normalize_concept(
-            str(parsed.get("Concept_Severity") or "").strip(),
-            self.concept_severity,
-            description,
-        )
+        operation = str(parsed.get("Operation") or "未知操作").strip()
+        page = str(parsed.get("Page") or "未知页面").strip()
+        element = str(parsed.get("Element") or "未知组件").strip()
+        bug = str(parsed.get("Bug") or description).strip()
+        raw_severity = str(parsed.get("Severity_Scope") or "").strip().lower()
+        if "program" in raw_severity:
+            severity_scope = "program"
+        elif "page" in raw_severity:
+            severity_scope = "page"
+        else:
+            severity_scope = "element"
 
         return {
             "Report_ID": report_id,
-            "Instance_Page": instance_page,
-            "Instance_Element": instance_element,
-            "Instance_Bug": instance_bug,
-            "Concept_BugType": concept_bug_type,
-            "Concept_BugSymptom": concept_bug_symptom,
-            "Concept_Element": concept_element,
-            "Concept_Operation": concept_operation,
-            "Concept_Severity": concept_severity,
+            "Operation": operation,
+            "Page": page,
+            "Element": element,
+            "Bug": bug,
+            "Severity_Scope": severity_scope,
         }
 
     def _extract_structured_batch(self, reports_batch: List[Tuple[str, str]]) -> Dict[str, Dict[str, str]]:
@@ -278,46 +226,26 @@ class GraphPriorPipeline:
         for report_id, description in reports_batch:
             parsed = parsed_by_id.get(report_id, {})
 
-            instance_page = str(parsed.get("Instance_Page") or "未知页面").strip()
-            instance_element = str(parsed.get("Instance_Element") or "未知组件").strip()
-            instance_bug = str(parsed.get("Instance_Bug") or description).strip()
-
-            concept_element = self._normalize_concept(
-                str(parsed.get("Concept_Element") or "").strip(),
-                self.concept_elements,
-                description + instance_element,
-            )
-            concept_operation = self._normalize_concept(
-                str(parsed.get("Concept_Operation") or "").strip(),
-                self.concept_operations,
-                description,
-            )
-            concept_bug_type = self._normalize_concept(
-                str(parsed.get("Concept_BugType") or "").strip(),
-                self.concept_bug_types,
-                description + instance_bug,
-            )
-            concept_bug_symptom = self._normalize_concept(
-                str(parsed.get("Concept_BugSymptom") or "").strip(),
-                self.concept_bug_symptoms,
-                description + instance_bug,
-            )
-            concept_severity = self._normalize_concept(
-                str(parsed.get("Concept_Severity") or "").strip(),
-                self.concept_severity,
-                description,
-            )
+            operation = str(parsed.get("Operation") or "未知操作").strip()
+            page = str(parsed.get("Page") or "未知页面").strip()
+            element = str(parsed.get("Element") or "未知组件").strip()
+            bug = str(parsed.get("Bug") or description).strip()
+            
+            raw_severity = str(parsed.get("Severity_Scope") or "").strip().lower()
+            if "program" in raw_severity:
+                severity_scope = "program"
+            elif "page" in raw_severity:
+                severity_scope = "page"
+            else:
+                severity_scope = "element"
 
             normalized[report_id] = {
                 "Report_ID": report_id,
-                "Instance_Page": instance_page,
-                "Instance_Element": instance_element,
-                "Instance_Bug": instance_bug,
-                "Concept_BugType": concept_bug_type,
-                "Concept_BugSymptom": concept_bug_symptom,
-                "Concept_Element": concept_element,
-                "Concept_Operation": concept_operation,
-                "Concept_Severity": concept_severity,
+                "Operation": operation,
+                "Page": page,
+                "Element": element,
+                "Bug": bug,
+                "Severity_Scope": severity_scope,
             }
 
         return normalized
@@ -378,7 +306,7 @@ class GraphPriorPipeline:
         self._instance_counter += 1
         return f"{label}:{self._instance_counter}"
 
-    def _match_or_create_instance(self, label: str, name: str, embedding: List[float], threshold: float = 0.9) -> str:
+    def _match_or_create_instance_dimension(self, label: str, name: str, embedding: List[float], threshold: float = 0.9) -> str:
         candidates = self._instance_store.setdefault(label, [])
 
         for item in candidates:
@@ -413,10 +341,10 @@ class GraphPriorPipeline:
 
             records.append((idx, report_id, description, ext))
             embedding_texts.extend([
-                ext["Instance_Page"],
-                ext["Instance_Element"],
-                ext["Instance_Bug"],
-                description,
+                ext["Operation"],
+                ext["Page"],
+                ext["Element"],
+                ext["Bug"],
             ])
 
         vectors = get_embeddings(
@@ -439,10 +367,10 @@ class GraphPriorPipeline:
                     "report_id": report_id,
                     "description": description,
                     "ext": ext,
-                    "v_page": vectors[base].tolist(),
-                    "v_elem": vectors[base + 1].tolist(),
-                    "v_bug": vectors[base + 2].tolist(),
-                    "v_doc": vectors[base + 3].tolist(),
+                    "v_op": vectors[base].tolist(),
+                    "v_pg": vectors[base + 1].tolist(),
+                    "v_el": vectors[base + 2].tolist(),
+                    "v_bg": vectors[base + 3].tolist(),
                 }
             )
         return prepared
@@ -468,25 +396,31 @@ class GraphPriorPipeline:
 
         extracted_rows: List[Dict[str, Any]] = []
         prepared_all.sort(key=lambda x: int(x["report_num"]))
+
         for item in prepared_all:
             idx = int(item["report_num"])
             report_id = str(item["report_id"])
             description = str(item["description"])
             ext = item["ext"]
 
-            page_text = ext["Instance_Page"]
-            elem_text = ext["Instance_Element"]
-            bug_text = ext["Instance_Bug"]
+            op_text = ext["Operation"]
+            page_text = ext["Page"]
+            elem_text = ext["Element"]
+            bug_text = ext["Bug"]
+            severity_scope = ext["Severity_Scope"]
 
-            v_page = item["v_page"]
-            v_elem = item["v_elem"]
-            v_bug = item["v_bug"]
-            v_doc = item["v_doc"]
+            v_op = item["v_op"]
+            v_pg = item["v_pg"]
+            v_el = item["v_el"]
+            v_bg = item["v_bg"]
 
-            page_eid = self._match_or_create_instance("Instance_Page", page_text, v_page, threshold=0.9)
-            elem_eid = self._match_or_create_instance("Instance_Element", elem_text, v_elem, threshold=0.9)
-            bug_eid = self._match_or_create_instance("Instance_Bug", bug_text, v_bug, threshold=0.9)
+            op_eid = self._match_or_create_instance_dimension("Operation", op_text, v_op, threshold=0.9)
+            page_eid = self._match_or_create_instance_dimension("Page", page_text, v_pg, threshold=0.9)
+            elem_eid = self._match_or_create_instance_dimension("Element", elem_text, v_el, threshold=0.9)
+            bug_eid = self._match_or_create_instance_dimension("Bug", bug_text, v_bg, threshold=0.9)
 
+            signature = (op_eid, page_eid, elem_eid, bug_eid)
+            
             report_node = f"Report:{report_id}"
             self.graph.add_node(
                 report_node,
@@ -494,120 +428,104 @@ class GraphPriorPipeline:
                 id=report_id,
                 report_num=idx,
                 description=description,
-                embedding=v_doc,
-                concept_operation=ext["Concept_Operation"],
-                concept_element=ext["Concept_Element"],
-                concept_bug_type=ext["Concept_BugType"],
-                concept_bug_symptom=ext["Concept_BugSymptom"],
-                concept_severity=ext["Concept_Severity"],
+                severity_scope=severity_scope,
             )
-            concept_element_node = f"Element:{ext['Concept_Element']}"
-            concept_operation_node = f"Operation:{ext['Concept_Operation']}"
-            concept_bug_type_node = f"BugType:{ext['Concept_BugType']}"
-            concept_bug_symptom_node = f"BugSymptom:{ext['Concept_BugSymptom']}"
-            concept_severity_node = f"Severity:{ext['Concept_Severity']}"
-
-            self.graph.add_edge(elem_eid, page_eid, rel="LOCATED_ON")
-            self.graph.add_edge(report_node, elem_eid, rel="OCCURS_ON")
+            
+            self.graph.add_edge(report_node, op_eid, rel="TRIGGERED_BY")
+            self.graph.add_edge(report_node, page_eid, rel="OCCURS_ON_PAGE")
+            self.graph.add_edge(report_node, elem_eid, rel="OCCURS_ON_ELEMENT")
             self.graph.add_edge(report_node, bug_eid, rel="MANIFESTS_AS")
-            self.graph.add_edge(elem_eid, concept_element_node, rel="IS_A")
-            self.graph.add_edge(report_node, concept_operation_node, rel="TRIGGERED_BY")
-            self.graph.add_edge(report_node, concept_bug_type_node, rel="HAS_BUG_TYPE")
-            self.graph.add_edge(report_node, concept_bug_symptom_node, rel="HAS_BUG_SYMPTOM")
-            self.graph.add_edge(report_node, concept_severity_node, rel="HAS_SEVERITY")
+            self.graph.add_edge(elem_eid, page_eid, rel="LOCATED_ON")
 
-            extracted_rows.append(
-                {
-                    **ext,
-                    "report_num": idx,
-                    "page_eid": page_eid,
-                    "element_eid": elem_eid,
-                    "bug_eid": bug_eid,
-                    "doc_embedding": v_doc,
-                    "description": description,
-                }
-            )
+            row_data = {
+                **ext,
+                "report_num": idx,
+                "operation_eid": op_eid,
+                "page_eid": page_eid,
+                "element_eid": elem_eid,
+                "bug_eid": bug_eid,
+                "signature": signature,
+                "description": description,
+            }
+            extracted_rows.append(row_data)
+
+            cluster_found = False
+            for cluster in self.clusters:
+                if cluster["signature"] == signature:
+                    cluster["dups"].append(row_data)
+                    cluster_found = True
+                    break
+            
+            if not cluster_found:
+                self.clusters.append({
+                    "signature": signature,
+                    "rep": row_data,
+                    "dups": [],
+                    "severity_scope": severity_scope,
+                })
 
         return extracted_rows
 
-    def phase2_topology_scoring(self, extracted_rows: List[Dict[str, Any]]) -> Dict[int, float]:
+    def phase2_topology_scoring(self) -> Dict[int, float]:
         score_map: Dict[int, float] = {}
-        page_element_degree: Dict[str, set] = {}
 
-        for row in extracted_rows:
-            page_eid = str(row["page_eid"])
-            elem_eid = str(row["element_eid"])
-            page_element_degree.setdefault(page_eid, set()).add(elem_eid)
+        # 1. 统计所有的组件数 I (Program 级影响) 以及具体页面的组件映射
+        # 注意: _instance_store["Element"] 中保存了本次处理的所有元素，这里我们利用图边获取更准确的从属关系
+        total_elements = len(self._instance_store.get("Element", []))
+        
+        page_to_elements = {}
+        for u, v, data in self.graph.edges(data=True):
+            if data.get("rel") == "LOCATED_ON":
+                # u: element_eid, v: page_eid
+                page_to_elements.setdefault(v, set()).add(u)
 
-        for row in extracted_rows:
-            report_num = int(row["report_num"])
-            bug_text = str(row.get("Instance_Bug", ""))
-            page_eid = str(row["page_eid"])
+        # 2. 依次计算每个簇的分数
+        for cluster in self.clusters:
+            rep_row = cluster["rep"]
+            rep_num = int(rep_row["report_num"])
+            severity_scope = cluster.get("severity_scope", "element")
+            t = 1 + len(cluster.get("dups", []))  # T: 报告出现次数
 
-            is_page_scope = any(keyword in bug_text for keyword in PAGE_FAILURE_KEYWORDS)
-            score = 1.0
+            # 确定影响组件数 I
+            i_val = 1
+            if severity_scope == "program":
+                i_val = max(1, total_elements)
+            elif severity_scope == "page":
+                page_eid = rep_row.get("page_eid")
+                i_val = max(1, len(page_to_elements.get(page_eid, set())))
+            
+            # 计算得分 score = I * log(T + 1)
+            final_score = float(i_val * math.log(t + 1))
+            cluster["cluster_score"] = final_score
+            
+            # 记录簇代表与其所有重复报告的分数
+            score_map[rep_num] = final_score
+            for dup in cluster.get("dups", []):
+                score_map[int(dup["report_num"])] = final_score
 
-            if is_page_scope:
-                degree = len(page_element_degree.get(page_eid, set()))
-                score = float(max(degree, 1))
-
-            score_map[report_num] = score
-            report_node = f"Report:{row['Report_ID']}"
+            # 将分数写回图谱报告节点
+            report_node = f"Report:{rep_row['Report_ID']}"
             if self.graph.has_node(report_node):
-                self.graph.nodes[report_node]["severity_score"] = score
+                self.graph.nodes[report_node]["severity_score"] = final_score
 
         return score_map
 
-    def phase3_hybrid_dedup(self, extracted_rows: List[Dict[str, Any]], score_map: Dict[int, float]) -> Tuple[List[int], List[int]]:
-        candidates = sorted(extracted_rows, key=lambda r: score_map.get(int(r["report_num"]), 1.0), reverse=True)
-
-        clusters: List[Dict[str, Any]] = []
-        unassigned = candidates[:]
-
-        while unassigned:
-            head = unassigned.pop(0)
-            cluster = {"rep": head, "dups": []}
-
-            kept = []
-            for item in unassigned:
-                hard_match = (
-                    item["element_eid"] == head["element_eid"]
-                    and item["bug_eid"] == head["bug_eid"]
-                )
-
-                soft_match = False
-                if not hard_match:
-                    sim = self._cosine_similarity(head["doc_embedding"], item["doc_embedding"])
-                    same_op = item.get("Concept_Operation") == head.get("Concept_Operation")
-                    soft_match = sim > 0.88 and same_op
-
-                if hard_match or soft_match:
-                    cluster["dups"].append(item)
-                else:
-                    kept.append(item)
-
-            clusters.append(cluster)
-            unassigned = kept
-
-        representatives = sorted(
-            [c["rep"] for c in clusters],
-            key=lambda r: score_map.get(int(r["report_num"]), 1.0),
-            reverse=True,
-        )
-        redundant = sorted(
-            [x for c in clusters for x in c["dups"]],
-            key=lambda r: score_map.get(int(r["report_num"]), 1.0),
-            reverse=True,
-        )
-
-        round1 = [int(r["report_num"]) for r in representatives]
-        round2 = [int(r["report_num"]) for r in redundant]
-        return round1, round2
-
     def run(self, reports: List[Dict[str, Any]]) -> Tuple[List[int], Dict[int, float]]:
-        extracted = self.phase1_extract_and_fuse(reports)
-        score_map = self.phase2_topology_scoring(extracted)
-        round1, round2 = self.phase3_hybrid_dedup(extracted, score_map)
+        self.phase1_extract_and_fuse(reports)
+        score_map = self.phase2_topology_scoring()
+
+        # Sort clusters by score descending
+        sorted_clusters = sorted(self.clusters, key=lambda c: c.get("cluster_score", 1.0), reverse=True)
+        
+        round1 = []
+        round2 = []
+
+        for cluster in sorted_clusters:
+            round1.append(int(cluster["rep"]["report_num"]))
+            # Duplicates are also sorted locally (though they share the same score here logic-wise)
+            for dup in cluster.get("dups", []):
+                round2.append(int(dup["report_num"]))
+
         sequence = round1 + round2
         return sequence, score_map
 
