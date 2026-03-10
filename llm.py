@@ -8,7 +8,7 @@ from google import genai
 from google.genai import types
 from openai import OpenAI
 
-from config import GOOGLE_API_KEY, OPENAI_API_KEY
+from config import GOOGLE_API_KEY, OPENAI_API_KEY, BASE_URL
 
 google_client = genai.Client(api_key=GOOGLE_API_KEY)
 
@@ -18,8 +18,10 @@ def _build_openai_client(api_key: Optional[str] = None, base_url: Optional[str] 
     if not effective_api_key:
         return None
     kwargs = {"api_key": effective_api_key}
-    if base_url:
-        kwargs["base_url"] = base_url
+    
+    effective_base_url = base_url or BASE_URL
+    if effective_base_url:
+        kwargs["base_url"] = effective_base_url
     return OpenAI(**kwargs)
 
 
@@ -43,7 +45,7 @@ def ask_gpt(
         return ask_openai(prompt, model, max_token, base_url=base_url, api_key=api_key)
 
     # Custom model: call with OpenAI-compatible API under the given base_url.
-    if not base_url:
+    if not base_url and not BASE_URL:
         print("Warning: custom model detected but base_url is not set; falling back to default OpenAI endpoint.")
     return ask_openai(prompt, model, max_token, base_url=base_url, api_key=api_key)
 

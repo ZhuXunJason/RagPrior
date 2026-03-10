@@ -10,7 +10,7 @@ from neo4j import GraphDatabase
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_community.embeddings import OpenAIEmbeddings, DashScopeEmbeddings
 
-from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_AUTH, GOOGLE_API_KEY, OPENAI_API_KEY
+from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_AUTH, GOOGLE_API_KEY, OPENAI_API_KEY, BASE_URL
 
 if GOOGLE_API_KEY:
     os.environ["GOOGLE_API_KEY"] = GOOGLE_API_KEY
@@ -48,7 +48,7 @@ class KGService:
             self.embeddings = OpenAIEmbeddings(
                 model=selected_embedding_model,
                 api_key=api_key or OPENAI_API_KEY,
-                base_url=base_url,
+                base_url=base_url or BASE_URL,
             )
         else:
             selected_embedding_model = embedding_model or "gemini-embedding-001"
