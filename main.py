@@ -9,6 +9,7 @@ Usage:
 from typing import List, Optional
 import os
 import argparse
+import re
 import numpy as np
 
 from config import RESPONSE_DIR, RESULT_DIR
@@ -24,6 +25,7 @@ from report_utils import (
     resolve_reports,
     extract_sequence_from_lines,
     compute_apsd_from_sequence,
+    compute_apfd_from_sequence,
     compute_ndcg_from_sequence,
     ensure_report_scores,
 )
@@ -31,7 +33,7 @@ from report_utils import (
 
 def run_query(app: int, repeat: int = 1, mode: str = "llmprior", model: str = "gemini-3-pro-preview",
               given_range: Optional[List[int]] = None, csv_file: Optional[str] = None,
-              base_url: Optional[str] = None, api_key: Optional[str] = None) -> None:
+              embedding_model: Optional[str] = None, base_url: Optional[str] = None, api_key: Optional[str] = None) -> None:
     """Query LLM to categorize bug reports."""
 
     
@@ -39,7 +41,7 @@ def run_query(app: int, repeat: int = 1, mode: str = "llmprior", model: str = "g
     print(f"APP-{app}...")
     print(f"Model: {model}")
     
-    prompt = get_prompt(app=app, mode=mode, csv_file=csv_file, model=model)
+    prompt = get_prompt(app=app, mode=mode, csv_file=csv_file, model=model, embedding_model=embedding_model, base_url=base_url, api_key=api_key)
     
     for i in resolve_repeats(repeat=repeat, given_range=given_range):
         print(f"iteration-{i}...")
@@ -178,7 +180,7 @@ def run_graphprior(app: int, repeat: int = 1, model: str = "gemini-3-pro-preview
 
     for i in range(1, repeat + 1):
         print(f"GraphPrior iteration-{i}...")
-        sequence, score_map = run_graph_prior(
+        sequence, score_map, p_tokens, r_tokens = run_graph_prior(
             reports=reports,
             model=model,
             batch_size=batch_size,
@@ -199,16 +201,20 @@ def run_graphprior(app: int, repeat: int = 1, model: str = "gemini-3-pro-preview
         with open(response_file, "w", encoding="utf-8") as f:
             f.write("GraphPrior executed with 3 phases: extraction/alignment & clustering, component-based severity scoring, diversity ranking.\n")
             f.write(f"Sequence length: {len(sequence)}\n")
+            f.write(f"Input Tokens: {p_tokens}\nOutput Tokens: {r_tokens}\n")
 
         print(f"GraphPrior result saved to {result_file}")
 
 
 def run_evaluate(app: int, mode: str = "llmprior", model: str = "gemini-3-pro-preview", repeat: int = 1, 
                  csv_file: Optional[str] = None) -> None:
-    """Evaluate APSD and NDCG on ranked result files."""
+    """Evaluate APSD, APFD, NDCG, and token consumption on ranked result files."""
     apsd_values = []
+    apfd_values = []
     ndcg10_values = []
     ndcg20_values = []
+    input_tokens_values = []
+    output_tokens_values = []
     
     reports = resolve_reports(app=app, csv_file=csv_file)
     ensure_report_scores(reports)
@@ -218,6 +224,7 @@ def run_evaluate(app: int, mode: str = "llmprior", model: str = "gemini-3-pro-pr
     
     for i in range(1, repeat + 1):
         result_file = get_result_path(app=app, mode=mode, iteration=i, model=model)
+        response_file = get_response_path(app=app, mode=mode, iteration=i, model=model)
         
         try:
             with open(result_file, "r", encoding="utf-8") as f:
@@ -225,6 +232,7 @@ def run_evaluate(app: int, mode: str = "llmprior", model: str = "gemini-3-pro-pr
 
                 sequence = extract_sequence_from_lines(lines)
                 apsd = compute_apsd_from_sequence(sequence=sequence, reports=reports)
+                apfd = compute_apfd_from_sequence(sequence=sequence, reports=reports)
                 ndcg10 = compute_ndcg_from_sequence(sequence=sequence, reports=reports, top_k=10)
                 ndcg20 = compute_ndcg_from_sequence(sequence=sequence, reports=reports, top_k=20)
 
@@ -234,8 +242,11 @@ def run_evaluate(app: int, mode: str = "llmprior", model: str = "gemini-3-pro-pr
 
                 ndcg10_str = f"{ndcg10:.4f}" if ndcg10 is not None else "N/A"
                 ndcg20_str = f"{ndcg20:.4f}" if ndcg20 is not None else "N/A"
-                print(f"Iteration {i}: APSD = {apsd:.4f}, NDCG@10 = {ndcg10_str}, NDCG@20 = {ndcg20_str}")
+                apfd_str = f"{apfd:.4f}" if apfd is not None else "N/A"
+                print(f"Iteration {i}: APSD = {apsd:.4f}, APFD = {apfd_str}, NDCG@10 = {ndcg10_str}, NDCG@20 = {ndcg20_str}")
                 apsd_values.append(apsd)
+                if apfd is not None:
+                    apfd_values.append(apfd)
                 if ndcg10 is not None:
                     ndcg10_values.append(ndcg10)
                 if ndcg20 is not None:
@@ -244,13 +255,34 @@ def run_evaluate(app: int, mode: str = "llmprior", model: str = "gemini-3-pro-pr
         except FileNotFoundError:
             print(f"Result file for {app}-{mode}-{i}-{model} not found.")
             continue
+            
+        try:
+            with open(response_file, "r", encoding="utf-8") as f:
+                content = f.read()
+                i_tokens_match = re.search(r"Input Tokens:\s*(\d+)", content)
+                o_tokens_match = re.search(r"Output Tokens:\s*(\d+)", content)
+                if i_tokens_match:
+                    input_tokens_values.append(int(i_tokens_match.group(1)))
+                if o_tokens_match:
+                    output_tokens_values.append(int(o_tokens_match.group(1)))
+        except FileNotFoundError:
+            pass
     
     if apsd_values:
         print(f"Mean APSD Value: {np.round(np.mean(apsd_values), 4)}")
+        if apfd_values:
+            print(f"Mean APFD Value: {np.round(np.mean(apfd_values), 4)}")
         if ndcg10_values:
             print(f"Mean NDCG@10 Value: {np.round(np.mean(ndcg10_values), 4)}")
         if ndcg20_values:
             print(f"Mean NDCG@20 Value: {np.round(np.mean(ndcg20_values), 4)}")
+        if input_tokens_values:
+            print(f"Mean Input Tokens: {np.round(np.mean(input_tokens_values), 1)}")
+        if output_tokens_values:
+            print(f"Mean Output Tokens: {np.round(np.mean(output_tokens_values), 1)}")
+        if input_tokens_values and output_tokens_values:
+            total_tokens = np.array(input_tokens_values) + np.array(output_tokens_values)
+            print(f"Mean Total Tokens: {np.round(np.mean(total_tokens), 1)}")
     else:
         print("No valid results to evaluate.")
 
@@ -305,7 +337,7 @@ if __name__ == "__main__":
     else:
         if not args.skip_query:
             run_query(app=args.app, repeat=args.repeat, mode=args.mode, model=args.model,
-                      given_range=None, csv_file=csv_file,
+                      given_range=None, csv_file=csv_file, embedding_model=args.embedding_model,
                       base_url=args.base_url, api_key=args.api_key)
         
         if not args.skip_parse:

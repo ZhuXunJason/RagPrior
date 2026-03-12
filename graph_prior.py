@@ -1,10 +1,5 @@
 """
-GraphPrior pipeline implementation.
-
-Phase 1: LLM extraction + instance fusion with vector alignment
-Phase 2: topology-based severity scoring
-Phase 3: hybrid graph/vector deduplication
-Phase 4: diversity-first sequence generation
+GraphPrior pipeline
 """
 
 from __future__ import annotations
@@ -13,6 +8,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import json
 import math
 import re
+import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import networkx as nx
 
@@ -103,6 +99,11 @@ class GraphPriorPipeline:
 
         self.severity_scopes = ["element", "page", "program"]
 
+        # Token usage tracking
+        self.input_tokens = 0
+        self.output_tokens = 0
+        self.token_lock = threading.Lock()
+
     @staticmethod
     def _parse_report_num(report_id: str) -> int:
         match = re.search(r"(\d+)", report_id)
@@ -174,12 +175,15 @@ class GraphPriorPipeline:
 
     def _extract_structured(self, report_id: str, description: str) -> Dict[str, str]:
         prompt = EXTRACTION_PROMPT.format(report_id=report_id, text=description)
-        content, _, _ = ask_gpt(
+        content, p_tokens, r_tokens = ask_gpt(
             prompt,
             model=self.model,
             base_url=self.base_url,
             api_key=self.api_key,
         )
+        with self.token_lock:
+            self.input_tokens += p_tokens
+            self.output_tokens += r_tokens
         parsed = self._try_json_load(content)
 
         operation = str(parsed.get("Operation") or "未知操作").strip()
@@ -208,12 +212,15 @@ class GraphPriorPipeline:
             [f"Report_ID: {report_id}\nText: {text}" for report_id, text in reports_batch]
         )
         prompt = EXTRACTION_BATCH_PROMPT.format(reports_block=reports_block)
-        content, _, _ = ask_gpt(
+        content, p_tokens, r_tokens = ask_gpt(
             prompt,
             model=self.model,
             base_url=self.base_url,
             api_key=self.api_key,
         )
+        with self.token_lock:
+            self.input_tokens += p_tokens
+            self.output_tokens += r_tokens
         parsed_list = self._try_json_list_load(content)
 
         parsed_by_id: Dict[str, Dict[str, Any]] = {}
@@ -510,7 +517,7 @@ class GraphPriorPipeline:
 
         return score_map
 
-    def run(self, reports: List[Dict[str, Any]]) -> Tuple[List[int], Dict[int, float]]:
+    def run(self, reports: List[Dict[str, Any]]) -> Tuple[List[int], Dict[int, float], int, int]:
         self.phase1_extract_and_fuse(reports)
         score_map = self.phase2_topology_scoring()
 
@@ -527,7 +534,7 @@ class GraphPriorPipeline:
                 round2.append(int(dup["report_num"]))
 
         sequence = round1 + round2
-        return sequence, score_map
+        return sequence, score_map, self.input_tokens, self.output_tokens
 
 
 def run_graph_prior(
@@ -538,7 +545,7 @@ def run_graph_prior(
     embedding_model: Optional[str] = None,
     base_url: Optional[str] = None,
     api_key: Optional[str] = None,
-) -> Tuple[List[int], Dict[int, float]]:
+) -> Tuple[List[int], Dict[int, float], int, int]:
     pipeline = GraphPriorPipeline(
         model=model,
         batch_size=batch_size,

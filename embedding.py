@@ -11,7 +11,7 @@ import numpy as np
 from google import genai
 from openai import OpenAI
 
-from config import GOOGLE_API_KEY, OPENAI_API_KEY, BASE_URL
+from config import GOOGLE_API_KEY, OPENAI_API_KEY
 from report_utils import compute_apsd_from_sequence
 
 # Initialize Google client
@@ -54,7 +54,7 @@ def get_embeddings(
         )
 
     # Custom model: call embedding model on OpenAI-compatible endpoint.
-    if not base_url and not BASE_URL:
+    if not base_url:
         print("Warning: custom model detected but base_url is not set; falling back to default OpenAI endpoint.")
     selected_embedding_model = embedding_model or model
     return _get_openai_embeddings(
@@ -98,14 +98,12 @@ def _get_openai_embeddings(
         raise ValueError("OPENAI_API_KEY is not set.")
 
     kwargs = {"api_key": effective_api_key}
-    
-    effective_base_url = base_url or BASE_URL
-    if effective_base_url:
-        kwargs["base_url"] = effective_base_url
+    if base_url:
+        kwargs["base_url"] = base_url
     client = OpenAI(**kwargs)
 
     # Some OpenAI-compatible providers (e.g. DashScope) enforce small max batch size.
-    max_batch_size = 10 if effective_base_url and "dashscope.aliyuncs.com" in effective_base_url else len(texts)
+    max_batch_size = 10 if base_url and "dashscope.aliyuncs.com" in base_url else len(texts)
 
     all_embeddings: List[List[float]] = []
     for i in range(0, len(texts), max_batch_size):

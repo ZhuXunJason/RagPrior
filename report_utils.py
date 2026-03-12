@@ -76,11 +76,43 @@ def extract_sequence_from_lines(lines: List[str]) -> List[int]:
 
 def compute_apfd_from_sequence(sequence: List[int], reports: List[Dict[str, Any]]) -> Optional[float]:
     """
-    Backward-compatible alias for APSD calculation.
-
-    Kept for compatibility with old call sites.
+    Compute APFD (Average Percentage of Faults Detected).
+    APFD = 1 - (sum(TF_i)) / (n * m) + 1 / (2n)
+    
+    TF_i: first occurrence position of each unique bug type
+    n: total number of reports
+    m: number of unique bug types
     """
-    return compute_apsd_from_sequence(sequence=sequence, reports=reports)
+    total = len(reports)
+    if total == 0:
+        return None
+
+    bug_score = _build_bug_score_map(reports)
+    if not bug_score:
+        return None
+
+    seen_bug_types = set()
+    position_sum = 0
+    m = len(bug_score)
+
+    for position, report_num in enumerate(sequence, start=1):
+        report_index = report_num - 1
+        if report_index < 0 or report_index >= total:
+            continue
+        bug_id = get_bug_id(reports[report_index])
+        if bug_id is None or bug_id in seen_bug_types:
+            continue
+        seen_bug_types.add(bug_id)
+        position_sum += position
+        
+    if seen_bug_types != set(bug_score.keys()):
+        return None
+
+    denom = total * m
+    if denom == 0:
+        return None
+
+    return 1 - (position_sum / denom) + (1 / (2 * total))
 
 
 def ensure_report_scores(reports: List[Dict[str, Any]]) -> Dict[int, float]:
