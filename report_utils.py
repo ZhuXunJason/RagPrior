@@ -122,6 +122,10 @@ def ensure_report_scores(reports: List[Dict[str, Any]]) -> Dict[int, float]:
     Priority:
     1) Existing report["severity_score"] if provided.
     2) Bug-type frequency as a lightweight fallback score.
+
+    Note:
+    The fallback is frequency-weighted rather than a ground-truth severity label.
+    Metrics that consume this fallback should be interpreted accordingly.
     """
     bug_freq: Dict[Any, int] = {}
     for report in reports:
@@ -165,7 +169,8 @@ def compute_apsd_from_sequence(sequence: List[int], reports: List[Dict[str, Any]
     APSD = 1 - sum(TF_i * S_i) / (n * sum(S_i)) + 1/(2n)
 
     TF_i: first occurrence position of each unique bug type
-    S_i: severity score for that bug type
+    S_i: severity score for that bug type. When external severity labels are
+         unavailable, this project falls back to bug frequency as a proxy.
     n: total number of reports
     """
     total = len(reports)

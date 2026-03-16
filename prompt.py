@@ -166,7 +166,10 @@ def load_reports_str(app: Optional[int] = None, use_rag: bool = False, csv_file:
 
 
 def get_prompt(app: Optional[int] = None, mode: str = "llmprior", csv_file: Optional[str] = None, model: str = "gemini", embedding_model: Optional[str] = None, base_url: Optional[str] = None, api_key: Optional[str] = None) -> str:
-    """Generate the full prompt for LLM based on mode."""
+    """Generate the full prompt for non-GraphPrior LLM modes.
+
+    GraphPrior's extraction prompt lives in graph_prior.py and does not use this path.
+    """
     use_rag = False
     prompt_template = PROMPT_LLMPRIOR
     

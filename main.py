@@ -12,7 +12,7 @@ import argparse
 import re
 import numpy as np
 
-from config import RESPONSE_DIR, RESULT_DIR
+from config import RESPONSE_DIR, RESULT_DIR, BASE_URL
 from prompt import get_prompt
 from llm import ask_gpt
 from parse import parse
@@ -180,7 +180,7 @@ def run_graphprior(app: int, repeat: int = 1, model: str = "gemini-3-pro-preview
 
     for i in range(1, repeat + 1):
         print(f"GraphPrior iteration-{i}...")
-        sequence, score_map, p_tokens, r_tokens = run_graph_prior(
+        sequence, score_map, p_tokens, r_tokens, raw_responses = run_graph_prior(
             reports=reports,
             model=model,
             batch_size=batch_size,
@@ -202,6 +202,18 @@ def run_graphprior(app: int, repeat: int = 1, model: str = "gemini-3-pro-preview
             f.write("GraphPrior executed with 3 phases: extraction/alignment & clustering, component-based severity scoring, diversity ranking.\n")
             f.write(f"Sequence length: {len(sequence)}\n")
             f.write(f"Input Tokens: {p_tokens}\nOutput Tokens: {r_tokens}\n")
+            if raw_responses:
+                f.write("\n=== Raw Model Responses ===\n")
+                for item in raw_responses:
+                    report_ids = ", ".join(item.get("report_ids", [])) or "N/A"
+                    f.write("\n---\n")
+                    f.write(f"Batch Index: {item.get('batch_index', -1)}\n")
+                    f.write(f"Call Type: {item.get('call_type', 'unknown')}\n")
+                    f.write(f"Report IDs: {report_ids}\n")
+                    f.write(f"Batch Input Tokens: {item.get('prompt_tokens', 0)}\n")
+                    f.write(f"Batch Output Tokens: {item.get('output_tokens', 0)}\n")
+                    f.write("Raw Response:\n")
+                    f.write(f"{item.get('content', '')}\n")
 
         print(f"GraphPrior result saved to {result_file}")
 
@@ -304,10 +316,10 @@ if __name__ == "__main__":
                         help="Mode (default: graphprior). 'embedding' uses cosine similarity for deduplication.")
     parser.add_argument("--thresholds", type=float, nargs="+", default=None,
                         help="Similarity thresholds for embedding mode (default: 0.70 to 1.00 step 0.05)")
-    parser.add_argument("--batch-size", type=int, default=2,
-                        help="Batch size for GraphPrior extraction requests (default: 2)")
-    parser.add_argument("--workers", type=int, default=4,
-                        help="Number of worker threads for GraphPrior chunk processing (default: 4)")
+    parser.add_argument("--batch-size", type=int, default=8,
+                        help="Batch size for GraphPrior extraction requests")
+    parser.add_argument("--workers", type=int, default=2,
+                        help="Number of worker threads for GraphPrior chunk processing")
     parser.add_argument("--file", type=str, default=None, 
                         help="CSV file path (default: reports/app{APP}.csv)")
     parser.add_argument("--skip-query", action="store_true", 
@@ -318,6 +330,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     csv_file = args.file
+    base_url = args.base_url or BASE_URL
     
     # Ensure directories exist
     os.makedirs(RESPONSE_DIR, exist_ok=True)
@@ -327,18 +340,18 @@ if __name__ == "__main__":
         # Embedding mode: standalone pipeline, no LLM query/parse needed
         run_embedding(app=args.app, model=args.model, csv_file=csv_file,
                       thresholds=args.thresholds, embedding_model=args.embedding_model,
-                      base_url=args.base_url, api_key=args.api_key)
+                      base_url=base_url, api_key=args.api_key)
     elif args.mode == "graphprior":
         # GraphPrior mode: standalone 3-phase pipeline
         run_graphprior(app=args.app, repeat=args.repeat, model=args.model, csv_file=csv_file,
                        batch_size=args.batch_size, workers=args.workers, embedding_model=args.embedding_model,
-                       base_url=args.base_url, api_key=args.api_key)
+                       base_url=base_url, api_key=args.api_key)
         run_evaluate(app=args.app, repeat=args.repeat, mode="graphprior", model=args.model, csv_file=csv_file)
     else:
         if not args.skip_query:
             run_query(app=args.app, repeat=args.repeat, mode=args.mode, model=args.model,
                       given_range=None, csv_file=csv_file, embedding_model=args.embedding_model,
-                      base_url=args.base_url, api_key=args.api_key)
+                      base_url=base_url, api_key=args.api_key)
         
         if not args.skip_parse:
             run_parse(app=args.app, repeat=args.repeat, mode=args.mode, 

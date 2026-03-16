@@ -21,47 +21,42 @@ PAGE_FAILURE_KEYWORDS = [
     "白屏", "闪退", "卡死", "无法操作", "页面不可用", "整页", "全页面", "崩溃", "crash", "freeze",
 ]
 
+PROMPT_TEXT_LIMIT = 500
+SINGLE_EXTRACTION_MAX_TOKENS = 256
+BATCH_EXTRACTION_MAX_TOKENS = 2048
+RETRY_BATCH_EXTRACTION_MAX_TOKENS = 4096
+
 
 EXTRACTION_PROMPT = """
-你是一个缺陷报告结构化抽取器。请严格按 JSON 输出，不要输出任何解释。
-
-给定报告：
-Report_ID: {report_id}
-Text: {text}
-
-请抽取并输出如下字段：
-{{
-  "Report_ID": "{report_id}",
-  "Operation": "触发缺陷的操作描述，来自原文；若缺失填'未知操作'",
-  "Page": "发生缺陷的具体页面实例描述，来自原文；若缺失填'未知页面'",
-  "Element": "发生缺陷的具体组件实例描述，来自原文；若缺失填'未知组件'",
-  "Bug": "具体缺陷现象描述，来自原文；若缺失填'未知缺陷'",
-  "Severity_Scope": "必须是以下3个之一：element (局限于单一组件), page (影响整个页面), program (导致整个程序崩溃或阻断核心流程)。请根据缺陷的影响范围做出判断。"
-}}
-
-注意：Page 和 Element 不能同时为'未知页面'和'未知组件'，至少要尽可能提取其中一个有意义的信息。如果确实都无法提取，请提取与业务相关的实体作为 Element。
+你是缺陷报告抽取器，只输出单行 JSON，不要解释，不要 Markdown，不要代码块。
+字段必须是：
+{{"id":"{report_id}","op":"操作","pg":"页面","el":"组件","bug":"缺陷现象","scope":"element|page|program"}}
+规则：
+1. 信息缺失时分别填：op=未知操作, pg=未知页面, el=未知组件, bug=未知缺陷。
+2. pg 和 el 不要同时无意义；若页面无法确定，尽量提取业务组件到 el。
+3. scope 仅允许 element/page/program。
+输入：
+{report_id}\t{text}
 """.strip()
 
 
 EXTRACTION_BATCH_PROMPT = """
-你是一个缺陷报告结构化抽取器。请严格按 JSON 数组输出，不要输出任何解释。
+你是缺陷报告抽取器，只输出单行 JSON 数组，不要解释，不要 Markdown，不要代码块，不要 pretty print。
+每个对象字段必须是：
+[{{"id":"R_001","op":"操作","pg":"页面","el":"组件","bug":"缺陷现象","scope":"element|page|program"}}]
+规则：
+1. 信息缺失时分别填：op=未知操作, pg=未知页面, el=未知组件, bug=未知缺陷。
+2. pg 和 el 不要同时无意义；若页面无法确定，尽量提取业务组件到 el。
+3. scope 仅允许 element/page/program。
+4. 必须覆盖输入中的每条报告，各 id 只能出现一次。
 
-给定多条报告：
+示例输入：
+R_000\t点击登录按钮后应用闪退并返回桌面
+示例输出：
+[{{"id":"R_000","op":"点击","pg":"登录页","el":"登录按钮","bug":"应用闪退","scope":"program"}}]
+
+待处理报告：
 {reports_block}
-
-请为每条报告抽取并输出如下字段，最终输出必须是 JSON 数组：
-[
-    {{
-        "Report_ID": "R_001",
-        "Operation": "触发缺陷的操作描述，来自原文；若缺失填'未知操作'",
-        "Page": "发生缺陷的具体页面实例描述，来自原文；若缺失填'未知页面'",
-        "Element": "发生缺陷的具体组件实例描述，来自原文；若缺失填'未知组件'",
-        "Bug": "具体缺陷现象描述，来自原文；若缺失填'未知缺陷'",
-        "Severity_Scope": "必须是以下3个之一：element (局限于单一组件), page (影响整个页面), program (导致整个程序崩溃或阻断核心流程)。请根据缺陷的影响范围做出判断。"
-    }}
-]
-
-注意：Page 和 Element 不能同时为'未知页面'和'未知组件'，至少要尽可能提取其中一个有意义的信息。如果确实都无法提取，请提取与业务相关的实体作为 Element。
 """.strip()
 
 
@@ -103,6 +98,30 @@ class GraphPriorPipeline:
         self.input_tokens = 0
         self.output_tokens = 0
         self.token_lock = threading.Lock()
+        self.embedding_lock = threading.Lock()
+        self.raw_responses: List[Dict[str, Any]] = []
+        self._embedding_cache: Dict[str, List[float]] = {}
+
+    def _record_raw_response(
+        self,
+        call_type: str,
+        report_ids: List[str],
+        content: str,
+        prompt_tokens: int,
+        output_tokens: int,
+        batch_index: int,
+    ) -> None:
+        with self.token_lock:
+            self.raw_responses.append(
+                {
+                    "call_type": call_type,
+                    "report_ids": report_ids,
+                    "content": content,
+                    "prompt_tokens": prompt_tokens,
+                    "output_tokens": output_tokens,
+                    "batch_index": batch_index,
+                }
+            )
 
     @staticmethod
     def _parse_report_num(report_id: str) -> int:
@@ -173,30 +192,58 @@ class GraphPriorPipeline:
             return 0.0
         return dot / (n1 * n2)
 
-    def _extract_structured(self, report_id: str, description: str) -> Dict[str, str]:
-        prompt = EXTRACTION_PROMPT.format(report_id=report_id, text=description)
-        content, p_tokens, r_tokens = ask_gpt(
-            prompt,
-            model=self.model,
-            base_url=self.base_url,
-            api_key=self.api_key,
-        )
-        with self.token_lock:
-            self.input_tokens += p_tokens
-            self.output_tokens += r_tokens
-        parsed = self._try_json_load(content)
+    @staticmethod
+    def _normalize_prompt_text(text: str, limit: int = PROMPT_TEXT_LIMIT) -> str:
+        normalized = " ".join((text or "").split())
+        if len(normalized) <= limit:
+            return normalized
+        return normalized[:limit].rstrip() + "..."
 
-        operation = str(parsed.get("Operation") or "未知操作").strip()
-        page = str(parsed.get("Page") or "未知页面").strip()
-        element = str(parsed.get("Element") or "未知组件").strip()
-        bug = str(parsed.get("Bug") or description).strip()
-        raw_severity = str(parsed.get("Severity_Scope") or "").strip().lower()
-        if "program" in raw_severity:
-            severity_scope = "program"
-        elif "page" in raw_severity:
-            severity_scope = "page"
-        else:
-            severity_scope = "element"
+    @staticmethod
+    def _normalize_embedding_text(text: str) -> str:
+        normalized = " ".join((text or "").split()).strip()
+        return normalized or "未知"
+
+    @staticmethod
+    def _resolve_scope(raw_scope: str) -> str:
+        scope = (raw_scope or "").strip().lower()
+        if "program" in scope:
+            return "program"
+        if "page" in scope:
+            return "page"
+        return "element"
+
+    def _build_batch_reports_block(self, reports_batch: List[Tuple[str, str]]) -> str:
+        return "\n".join(
+            f"{report_id}\t{self._normalize_prompt_text(text)}"
+            for report_id, text in reports_batch
+        )
+
+    def _batch_max_tokens(self, report_count: int, retry: bool = False) -> int:
+        budget = min(BATCH_EXTRACTION_MAX_TOKENS, SINGLE_EXTRACTION_MAX_TOKENS * max(1, report_count))
+        if retry:
+            budget = min(RETRY_BATCH_EXTRACTION_MAX_TOKENS, budget * 2)
+        return budget
+
+    @staticmethod
+    def _get_field(data: Dict[str, Any], *keys: str) -> str:
+        for key in keys:
+            value = data.get(key)
+            if value is not None and str(value).strip():
+                return str(value).strip()
+        return ""
+
+    def _normalize_extraction_item(
+        self,
+        data: Dict[str, Any],
+        report_id: str,
+        description: str,
+    ) -> Dict[str, str]:
+        operation = self._get_field(data, "Operation", "op") or "未知操作"
+        page = self._get_field(data, "Page", "pg") or "未知页面"
+        element = self._get_field(data, "Element", "el") or "未知组件"
+        bug = self._get_field(data, "Bug", "bug") or description
+        severity_scope = self._resolve_scope(self._get_field(data, "Severity_Scope", "scope"))
 
         return {
             "Report_ID": report_id,
@@ -207,107 +254,103 @@ class GraphPriorPipeline:
             "Severity_Scope": severity_scope,
         }
 
-    def _extract_structured_batch(self, reports_batch: List[Tuple[str, str]]) -> Dict[str, Dict[str, str]]:
-        reports_block = "\n\n".join(
-            [f"Report_ID: {report_id}\nText: {text}" for report_id, text in reports_batch]
-        )
-        prompt = EXTRACTION_BATCH_PROMPT.format(reports_block=reports_block)
+    def _get_cached_embeddings(self, texts: List[str]) -> List[List[float]]:
+        normalized_texts = [self._normalize_embedding_text(text) for text in texts]
+        ordered_missing: List[str] = []
+        seen_missing = set()
+
+        with self.embedding_lock:
+            for text in normalized_texts:
+                if text not in self._embedding_cache and text not in seen_missing:
+                    ordered_missing.append(text)
+                    seen_missing.add(text)
+
+            if ordered_missing:
+                vectors = get_embeddings(
+                    ordered_missing,
+                    model=self.model,
+                    embedding_model=self.embedding_model,
+                    base_url=self.base_url,
+                    api_key=self.api_key,
+                )
+                if len(vectors) != len(ordered_missing):
+                    raise RuntimeError(
+                        f"Embedding generation failed. expected={len(ordered_missing)}, got={len(vectors)}"
+                    )
+                for idx, text in enumerate(ordered_missing):
+                    self._embedding_cache[text] = vectors[idx].tolist()
+
+            return [list(self._embedding_cache[text]) for text in normalized_texts]
+
+    def _extract_structured(self, report_id: str, description: str, batch_index: int = -1) -> Dict[str, str]:
+        normalized_description = self._normalize_prompt_text(description)
+        prompt = EXTRACTION_PROMPT.format(report_id=report_id, text=normalized_description)
         content, p_tokens, r_tokens = ask_gpt(
             prompt,
             model=self.model,
+            max_token=SINGLE_EXTRACTION_MAX_TOKENS,
             base_url=self.base_url,
             api_key=self.api_key,
         )
         with self.token_lock:
             self.input_tokens += p_tokens
             self.output_tokens += r_tokens
-        parsed_list = self._try_json_list_load(content)
+        self._record_raw_response(
+            call_type="single",
+            report_ids=[report_id],
+            content=content,
+            prompt_tokens=p_tokens,
+            output_tokens=r_tokens,
+            batch_index=batch_index,
+        )
+        parsed = self._try_json_load(content)
+        return self._normalize_extraction_item(parsed, report_id=report_id, description=description)
 
-        parsed_by_id: Dict[str, Dict[str, Any]] = {}
-        for item in parsed_list:
-            rid = str(item.get("Report_ID") or "").strip()
-            if rid:
-                parsed_by_id[rid] = item
+    def _extract_structured_batch(self, reports_batch: List[Tuple[str, str]], batch_index: int) -> Dict[str, Dict[str, str]]:
+        reports_block = self._build_batch_reports_block(reports_batch)
+        report_ids = [report_id for report_id, _ in reports_batch]
+        for retry in range(2):
+            prompt = EXTRACTION_BATCH_PROMPT.format(reports_block=reports_block)
+            content, p_tokens, r_tokens = ask_gpt(
+                prompt,
+                model=self.model,
+                max_token=self._batch_max_tokens(len(reports_batch), retry=bool(retry)),
+                base_url=self.base_url,
+                api_key=self.api_key,
+            )
+            with self.token_lock:
+                self.input_tokens += p_tokens
+                self.output_tokens += r_tokens
+            self._record_raw_response(
+                call_type="batch",
+                report_ids=report_ids,
+                content=content,
+                prompt_tokens=p_tokens,
+                output_tokens=r_tokens,
+                batch_index=batch_index,
+            )
 
-        normalized: Dict[str, Dict[str, str]] = {}
-        for report_id, description in reports_batch:
-            parsed = parsed_by_id.get(report_id, {})
+            parsed_list = self._try_json_list_load(content)
+            parsed_by_id: Dict[str, Dict[str, Any]] = {}
+            for item in parsed_list:
+                rid = self._get_field(item, "Report_ID", "id")
+                if rid and rid not in parsed_by_id:
+                    parsed_by_id[rid] = item
 
-            operation = str(parsed.get("Operation") or "未知操作").strip()
-            page = str(parsed.get("Page") or "未知页面").strip()
-            element = str(parsed.get("Element") or "未知组件").strip()
-            bug = str(parsed.get("Bug") or description).strip()
-            
-            raw_severity = str(parsed.get("Severity_Scope") or "").strip().lower()
-            if "program" in raw_severity:
-                severity_scope = "program"
-            elif "page" in raw_severity:
-                severity_scope = "page"
-            else:
-                severity_scope = "element"
-
-            normalized[report_id] = {
-                "Report_ID": report_id,
-                "Operation": operation,
-                "Page": page,
-                "Element": element,
-                "Bug": bug,
-                "Severity_Scope": severity_scope,
-            }
-
-        return normalized
-
-    def _init_in_memory_graph(self) -> None:
-        for name in self.concept_elements:
-            self.graph.add_node(f"Element:{name}", label="Element", name=name)
-        for name in self.concept_operations:
-            self.graph.add_node(f"Operation:{name}", label="Operation", name=name)
-        for name in self.concept_bug_types:
-            self.graph.add_node(f"BugType:{name}", label="BugType", name=name)
-        for name in self.concept_bug_symptoms:
-            self.graph.add_node(f"BugSymptom:{name}", label="BugSymptom", name=name)
-        for name in self.concept_severity:
-            self.graph.add_node(f"Severity:{name}", label="Severity", name=name)
-
-        self._load_skeleton_from_neo4j()
-
-    def _load_skeleton_from_neo4j(self) -> None:
-        if not self.kg_service:
-            return
-
-        try:
-            with self.kg_service.driver.session() as session:
-                node_query = """
-                MATCH (n)
-                WHERE any(l IN labels(n) WHERE l IN ['Operation','Element','BugType','BugSymptom','Severity'])
-                RETURN labels(n) as labels, n.name as name
-                """
-                for rec in session.run(node_query):
-                    labels = rec.get("labels") or []
-                    name = rec.get("name")
-                    if not labels or not name:
+            if parsed_by_id or retry == 1:
+                normalized: Dict[str, Dict[str, str]] = {}
+                for report_id, description in reports_batch:
+                    parsed = parsed_by_id.get(report_id)
+                    if not parsed:
                         continue
-                    label = labels[0]
-                    self.graph.add_node(f"{label}:{name}", label=label, name=name)
+                    normalized[report_id] = self._normalize_extraction_item(
+                        parsed,
+                        report_id=report_id,
+                        description=description,
+                    )
+                return normalized
 
-                rel_query = """
-                MATCH (a)-[r:similar_to]->(b)
-                RETURN labels(a) as al, a.name as an, labels(b) as bl, b.name as bn
-                """
-                for rec in session.run(rel_query):
-                    al = rec.get("al") or []
-                    bl = rec.get("bl") or []
-                    an = rec.get("an")
-                    bn = rec.get("bn")
-                    if not al or not bl or not an or not bn:
-                        continue
-                    src = f"{al[0]}:{an}"
-                    dst = f"{bl[0]}:{bn}"
-                    self.graph.add_node(src, label=al[0], name=an)
-                    self.graph.add_node(dst, label=bl[0], name=bn)
-                    self.graph.add_edge(src, dst, rel="similar_to")
-        except Exception as e:
-            print(f"Warning: failed to load skeleton from Neo4j, continue with local skeleton only: {e}")
+        return {}
 
     def _next_instance_id(self, label: str) -> str:
         self._instance_counter += 1
@@ -330,21 +373,25 @@ class GraphPriorPipeline:
         self.graph.add_node(new_id, label=label, name=name, embedding=embedding)
         return new_id
 
-    def _prepare_chunk(self, chunk: List[Tuple[int, Dict[str, Any]]]) -> List[Dict[str, Any]]:
+    def _prepare_chunk(self, batch_index: int, chunk: List[Tuple[int, Dict[str, Any]]]) -> List[Dict[str, Any]]:
         batch_input: List[Tuple[str, str]] = []
         for idx, report in chunk:
             report_id = f"R_{idx:03d}"
             description = report.get("description", "")
             batch_input.append((report_id, description))
 
-        extracted_batch = self._extract_structured_batch(batch_input)
+        extracted_batch = self._extract_structured_batch(batch_input, batch_index=batch_index)
 
         records: List[Tuple[int, str, str, Dict[str, str]]] = []
         embedding_texts: List[str] = []
         for idx, report in chunk:
             report_id = f"R_{idx:03d}"
             description = report.get("description", "")
-            ext = extracted_batch.get(report_id) or self._extract_structured(report_id=report_id, description=description)
+            ext = extracted_batch.get(report_id) or self._extract_structured(
+                report_id=report_id,
+                description=description,
+                batch_index=batch_index,
+            )
 
             records.append((idx, report_id, description, ext))
             embedding_texts.extend([
@@ -354,13 +401,7 @@ class GraphPriorPipeline:
                 ext["Bug"],
             ])
 
-        vectors = get_embeddings(
-            embedding_texts,
-            model=self.model,
-            embedding_model=self.embedding_model,
-            base_url=self.base_url,
-            api_key=self.api_key,
-        )
+        vectors = self._get_cached_embeddings(embedding_texts)
         expected = len(records) * 4
         if len(vectors) != expected:
             raise RuntimeError(f"Embedding generation failed for chunk. expected={expected}, got={len(vectors)}")
@@ -374,10 +415,10 @@ class GraphPriorPipeline:
                     "report_id": report_id,
                     "description": description,
                     "ext": ext,
-                    "v_op": vectors[base].tolist(),
-                    "v_pg": vectors[base + 1].tolist(),
-                    "v_el": vectors[base + 2].tolist(),
-                    "v_bg": vectors[base + 3].tolist(),
+                    "v_op": vectors[base],
+                    "v_pg": vectors[base + 1],
+                    "v_el": vectors[base + 2],
+                    "v_bg": vectors[base + 3],
                 }
             )
         return prepared
@@ -394,12 +435,15 @@ class GraphPriorPipeline:
         prepared_all: List[Dict[str, Any]] = []
         if self.workers > 1 and len(chunks) > 1:
             with ThreadPoolExecutor(max_workers=self.workers) as executor:
-                futures = [executor.submit(self._prepare_chunk, chunk) for chunk in chunks]
+                futures = [
+                    executor.submit(self._prepare_chunk, batch_index, chunk)
+                    for batch_index, chunk in enumerate(chunks, start=1)
+                ]
                 for future in as_completed(futures):
                     prepared_all.extend(future.result())
         else:
-            for chunk in chunks:
-                prepared_all.extend(self._prepare_chunk(chunk))
+            for batch_index, chunk in enumerate(chunks, start=1):
+                prepared_all.extend(self._prepare_chunk(batch_index, chunk))
 
         extracted_rows: List[Dict[str, Any]] = []
         prepared_all.sort(key=lambda x: int(x["report_num"]))
@@ -517,7 +561,7 @@ class GraphPriorPipeline:
 
         return score_map
 
-    def run(self, reports: List[Dict[str, Any]]) -> Tuple[List[int], Dict[int, float], int, int]:
+    def run(self, reports: List[Dict[str, Any]]) -> Tuple[List[int], Dict[int, float], int, int, List[Dict[str, Any]]]:
         self.phase1_extract_and_fuse(reports)
         score_map = self.phase2_topology_scoring()
 
@@ -534,7 +578,11 @@ class GraphPriorPipeline:
                 round2.append(int(dup["report_num"]))
 
         sequence = round1 + round2
-        return sequence, score_map, self.input_tokens, self.output_tokens
+        raw_responses = sorted(
+            self.raw_responses,
+            key=lambda item: (int(item.get("batch_index", -1)), 0 if item.get("call_type") == "batch" else 1),
+        )
+        return sequence, score_map, self.input_tokens, self.output_tokens, raw_responses
 
 
 def run_graph_prior(
@@ -545,7 +593,7 @@ def run_graph_prior(
     embedding_model: Optional[str] = None,
     base_url: Optional[str] = None,
     api_key: Optional[str] = None,
-) -> Tuple[List[int], Dict[int, float], int, int]:
+) -> Tuple[List[int], Dict[int, float], int, int, List[Dict[str, Any]]]:
     pipeline = GraphPriorPipeline(
         model=model,
         batch_size=batch_size,
