@@ -211,9 +211,10 @@ def test_embedding_cache_reuses_identical_texts(monkeypatch):
     pipeline = graph_prior.GraphPriorPipeline(model="fake-model", batch_size=2, workers=1)
     pipeline.run(_make_reports(3))
 
-    assert len(embedding_calls) == 2
+    assert len(embedding_calls) == 3
     assert embedding_calls[0] == ["报告 1 点击按钮后无响应", "报告 2 点击按钮后无响应", "报告 3 点击按钮后无响应"]
     assert embedding_calls[1] == ["操作-共享", "页面-共享", "组件-共享", "现象-共享"]
+    assert embedding_calls[2] == ["现象-共享 页面-共享 组件-共享"]
 
 
 def test_near_duplicate_reports_only_send_representatives_to_llm(monkeypatch):
@@ -254,3 +255,149 @@ def test_near_duplicate_reports_only_send_representatives_to_llm(monkeypatch):
     assert call_log == [["R_001", "R_003"]]
     assert len(sequence) == 4
     assert len(score_map) == 4
+
+
+class _FakeKGService:
+    def __init__(self, evidence_by_bug):
+        self.evidence_by_bug = evidence_by_bug
+
+    def extract_bug_symptoms(self, text: str):
+        if "崩溃" in text:
+            return ["崩溃"]
+        if "提示" in text:
+            return ["提示"]
+        return []
+
+    def retrieve_priority_evidence(self, query_text, op_text, page_text, elem_text, bug_text, top_k=20):
+        return list(self.evidence_by_bug.get(bug_text, []))
+
+
+def test_kg_priority_scoring_prefers_high_risk_history(monkeypatch):
+    def fake_ask_gpt(prompt, model, max_token, base_url=None, api_key=None):
+        report_ids = _extract_report_ids(prompt)
+        blocks = []
+        for report_id in report_ids:
+            bug = "历史高风险崩溃" if report_id == "R_001" else "普通提示"
+            blocks.append(
+                "\n".join(
+                    [
+                        f"ID: {report_id}",
+                        "OP: 点击",
+                        "PG: 设置页",
+                        "EL: 保存按钮",
+                        f"BUG: {bug}",
+                        "SCOPE: element",
+                        "###",
+                    ]
+                )
+            )
+        return "\n".join(blocks), 3, 4
+
+    evidence_by_bug = {
+        "历史高风险崩溃": [
+            {
+                "vector_score": 0.9,
+                "severity": "高",
+                "matched_ops": ["点击"],
+                "matched_elements": ["按钮"],
+                "matched_bug_symptoms": ["崩溃"],
+                "matched_pages": ["设置页"],
+            },
+            {
+                "vector_score": 0.7,
+                "severity": "致命",
+                "matched_ops": ["点击"],
+                "matched_elements": ["按钮"],
+                "matched_bug_symptoms": ["崩溃"],
+                "matched_pages": ["设置页"],
+            },
+        ],
+        "普通提示": [
+            {
+                "vector_score": 0.8,
+                "severity": "低",
+                "matched_ops": ["点击"],
+                "matched_elements": ["按钮"],
+                "matched_bug_symptoms": ["提示"],
+                "matched_pages": ["设置页"],
+            }
+        ],
+    }
+
+    monkeypatch.setattr(graph_prior, "ask_gpt", fake_ask_gpt)
+    monkeypatch.setattr(graph_prior, "get_embeddings", _fake_embeddings_unique)
+    monkeypatch.setattr(graph_prior, "get_kg_service", lambda **kwargs: _FakeKGService(evidence_by_bug))
+
+    pipeline = graph_prior.GraphPriorPipeline(model="fake-model", batch_size=2, workers=1)
+    sequence, score_map, _, _, _ = pipeline.run(_make_reports(2))
+
+    assert sequence[:2] == [1, 2]
+    assert score_map[1] > score_map[2]
+
+
+def test_diversity_reranking_penalizes_similar_representatives(monkeypatch):
+    def fake_ask_gpt(prompt, model, max_token, base_url=None, api_key=None):
+        report_ids = _extract_report_ids(prompt)
+        bug_map = {
+            "R_001": ("相似问题A", "页面A", "组件A"),
+            "R_002": ("相似问题B", "页面B", "组件B"),
+            "R_003": ("不同问题C", "页面C", "组件C"),
+        }
+        blocks = []
+        for report_id in report_ids:
+            bug, page, elem = bug_map[report_id]
+            blocks.append(
+                "\n".join(
+                    [
+                        f"ID: {report_id}",
+                        "OP: 点击",
+                        f"PG: {page}",
+                        f"EL: {elem}",
+                        f"BUG: {bug}",
+                        "SCOPE: element",
+                        "###",
+                    ]
+                )
+            )
+        return "\n".join(blocks), 3, 4
+
+    def fake_embeddings(texts, **_kwargs):
+        if texts == ["报告 1 点击按钮后无响应", "报告 2 点击按钮后无响应", "报告 3 点击按钮后无响应"]:
+            return np.eye(3, dtype=float)
+        if texts == [
+            "相似问题A 页面A 组件A",
+            "相似问题B 页面B 组件B",
+            "不同问题C 页面C 组件C",
+        ]:
+            return np.array(
+                [
+                    [1.0, 0.0],
+                    [0.95, 0.05],
+                    [0.0, 1.0],
+                ],
+                dtype=float,
+            )
+        return _fake_embeddings(texts)
+
+    shared_evidence = {
+        "vector_score": 0.8,
+        "severity": "高",
+        "matched_ops": ["点击"],
+        "matched_elements": ["按钮"],
+        "matched_bug_symptoms": [],
+        "matched_pages": [],
+    }
+    evidence_by_bug = {
+        "相似问题A": [shared_evidence],
+        "相似问题B": [shared_evidence],
+        "不同问题C": [shared_evidence],
+    }
+
+    monkeypatch.setattr(graph_prior, "ask_gpt", fake_ask_gpt)
+    monkeypatch.setattr(graph_prior, "get_embeddings", fake_embeddings)
+    monkeypatch.setattr(graph_prior, "get_kg_service", lambda **kwargs: _FakeKGService(evidence_by_bug))
+
+    pipeline = graph_prior.GraphPriorPipeline(model="fake-model", batch_size=3, workers=1)
+    sequence, _, _, _, _ = pipeline.run(_make_reports(3))
+
+    assert sequence[:3] == [1, 3, 2]

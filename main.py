@@ -316,7 +316,7 @@ if __name__ == "__main__":
                         help="Mode (default: graphprior). 'embedding' uses cosine similarity for deduplication.")
     parser.add_argument("--thresholds", type=float, nargs="+", default=None,
                         help="Similarity thresholds for embedding mode (default: 0.70 to 1.00 step 0.05)")
-    parser.add_argument("--batch-size", type=int, default=8,
+    parser.add_argument("--batch-size", type=int, default=16,
                         help="Batch size for GraphPrior extraction requests")
     parser.add_argument("--workers", type=int, default=2,
                         help="Number of worker threads for GraphPrior chunk processing")

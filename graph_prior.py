@@ -23,9 +23,11 @@ PAGE_FAILURE_KEYWORDS = [
 
 PROMPT_TEXT_LIMIT = 500
 SINGLE_EXTRACTION_MAX_TOKENS = 256
-BATCH_EXTRACTION_MAX_TOKENS = 2048
-REPRESENTATIVE_SIM_THRESHOLD = 0.92
+BATCH_EXTRACTION_MAX_TOKENS = 8192
+REPRESENTATIVE_SIM_THRESHOLD = 0.90
 MISSING_RETRY_BATCH_SIZE = 2
+KG_EVIDENCE_TOP_K = 20
+HIGH_RISK_SEVERITIES = {"高", "致命"}
 
 
 EXTRACTION_PROMPT = """
@@ -48,13 +50,14 @@ SCOPE: element|page|program
 
 
 EXTRACTION_BATCH_PROMPT = """
-你是缺陷报告抽取器。请为每条报告输出 1 个 block，不要解释，不要 Markdown，不要 JSON，不要代码块。
+你是缺陷报告抽取器。请为每条报告输出 1 个 block，不要解释。
 规则：
 1. 信息缺失时分别填：op=未知操作, pg=未知页面, el=未知组件, bug=未知缺陷。
 2. pg 和 el 不要同时无意义；若页面无法确定，尽量提取业务组件到 el。
-3. scope 仅允许 element/page/program。
-4. 必须覆盖输入中的每条报告，各 id 只能出现一次。
-5. 每个报告严格使用以下格式，块与块之间用 ### 结束：
+3. bug描述尽可能简洁
+4. scope 仅允许 element/page/program。
+5. 必须覆盖输入中的每条报告，各 id 只能出现一次。
+6. 每个报告严格使用以下格式，块与块之间用 ### 结束：
 ID: R_001
 OP: 操作
 PG: 页面
@@ -67,10 +70,10 @@ SCOPE: element|page|program
 R_000\t点击登录按钮后应用闪退并返回桌面
 示例输出：
 ID: R_000
-OP: 点击登录按钮
-PG: 登录页
+OP: 点击
+PG: 未知页面
 EL: 登录按钮
-BUG: 应用闪退并返回桌面
+BUG: 应用闪退
 SCOPE: program
 ###
 
@@ -394,6 +397,140 @@ class GraphPriorPipeline:
 
         return groups
 
+    def _build_priority_query_text(self, rep_row: Dict[str, Any]) -> str:
+        parts = []
+        for key in ("Operation", "Page", "Element", "Bug"):
+            value = self._normalize_prompt_text(str(rep_row.get(key, "")))
+            if value and not value.startswith("未知"):
+                parts.append(value)
+        return " ".join(parts)
+
+    def _get_representation_text(self, rep_row: Dict[str, Any]) -> str:
+        parts = [
+            self._normalize_prompt_text(str(rep_row.get("Bug", ""))),
+            self._normalize_prompt_text(str(rep_row.get("Page", ""))),
+            self._normalize_prompt_text(str(rep_row.get("Element", ""))),
+        ]
+        return " ".join(part for part in parts if part and not part.startswith("未知"))
+
+    def _get_available_priority_slots(self, rep_row: Dict[str, Any]) -> int:
+        available = 0
+        if str(rep_row.get("Operation", "")).strip() and not str(rep_row.get("Operation", "")).startswith("未知"):
+            available += 1
+        if str(rep_row.get("Element", "")).strip() and not str(rep_row.get("Element", "")).startswith("未知"):
+            available += 1
+        if str(rep_row.get("Page", "")).strip() and not str(rep_row.get("Page", "")).startswith("未知"):
+            available += 1
+        if self.kg_service and getattr(self.kg_service, "extract_bug_symptoms", None):
+            if self.kg_service.extract_bug_symptoms(str(rep_row.get("Bug", ""))):
+                available += 1
+        return max(1, available)
+
+    def _compute_priority_from_evidence(
+        self,
+        cluster: Dict[str, Any],
+        evidence: List[Dict[str, Any]],
+    ) -> float:
+        cluster_size = 1 + len(cluster.get("dups", []))
+        rep_row = cluster["rep"]
+        if not evidence:
+            risk = 0.5
+            support = 1.0
+        else:
+            available_slots = self._get_available_priority_slots(rep_row)
+            weighted_total = 0.0
+            weighted_high_risk = 0.0
+
+            for item in evidence:
+                matched_slots = 0
+                if item.get("matched_ops"):
+                    matched_slots += 1
+                if item.get("matched_elements"):
+                    matched_slots += 1
+                if item.get("matched_bug_symptoms"):
+                    matched_slots += 1
+                if item.get("matched_pages"):
+                    matched_slots += 1
+
+                overlap_ratio = matched_slots / float(available_slots)
+                weight = max(0.0, float(item.get("vector_score", 0.0))) * (1.0 + overlap_ratio)
+                weighted_total += weight
+                if str(item.get("severity", "")).strip() in HIGH_RISK_SEVERITIES:
+                    weighted_high_risk += weight
+
+            if weighted_total <= 0:
+                risk = 0.5
+                support = 1.0
+            else:
+                risk = weighted_high_risk / weighted_total
+                support = math.log1p(weighted_total)
+
+        cluster_support = math.log1p(cluster_size)
+        base_priority = float(risk * support * cluster_support)
+        cluster["risk_score"] = risk
+        cluster["support_score"] = support
+        cluster["cluster_support"] = cluster_support
+        cluster["cluster_score"] = base_priority
+        return base_priority
+
+    def _kg_priority_scoring(self) -> Optional[Dict[int, float]]:
+        if not self.kg_service or not hasattr(self.kg_service, "retrieve_priority_evidence"):
+            return None
+
+        score_map: Dict[int, float] = {}
+        for cluster in self.clusters:
+            rep_row = cluster["rep"]
+            evidence = self.kg_service.retrieve_priority_evidence(
+                query_text=self._build_priority_query_text(rep_row),
+                op_text=str(rep_row.get("Operation", "")),
+                page_text=str(rep_row.get("Page", "")),
+                elem_text=str(rep_row.get("Element", "")),
+                bug_text=str(rep_row.get("Bug", "")),
+                top_k=KG_EVIDENCE_TOP_K,
+            )
+            cluster["priority_evidence"] = evidence
+            score = self._compute_priority_from_evidence(cluster, evidence)
+            score_map[int(rep_row["report_num"])] = score
+            for dup in cluster.get("dups", []):
+                score_map[int(dup["report_num"])] = score
+
+            report_node = f"Report:{rep_row['Report_ID']}"
+            if self.graph.has_node(report_node):
+                self.graph.nodes[report_node]["severity_score"] = score
+
+        return score_map
+
+    def _rank_clusters_with_diversity(self, clusters: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        if not clusters:
+            return []
+
+        rep_texts = [self._get_representation_text(cluster["rep"]) or cluster["rep"].get("Bug", "") for cluster in clusters]
+        vectors = self._get_cached_embeddings(rep_texts)
+        remaining = list(range(len(clusters)))
+        selected: List[int] = []
+
+        while remaining:
+            best_idx = remaining[0]
+            best_score = -1.0
+
+            for idx in remaining:
+                base_priority = float(clusters[idx].get("cluster_score", 0.0))
+                similarity_penalty = 0.0
+                if selected:
+                    similarity_penalty = max(
+                        self._cosine_similarity(vectors[idx], vectors[chosen_idx])
+                        for chosen_idx in selected
+                    )
+                priority = base_priority / (1.0 + max(0.0, similarity_penalty))
+                if priority > best_score:
+                    best_idx = idx
+                    best_score = priority
+
+            selected.append(best_idx)
+            remaining.remove(best_idx)
+
+        return [clusters[idx] for idx in selected]
+
     def _extract_structured(self, report_id: str, description: str, batch_index: int = -1) -> Dict[str, str]:
         normalized_description = self._normalize_prompt_text(description)
         prompt = EXTRACTION_PROMPT.format(report_id=report_id, text=normalized_description)
@@ -662,6 +799,10 @@ class GraphPriorPipeline:
         return extracted_rows
 
     def phase2_topology_scoring(self) -> Dict[int, float]:
+        kg_score_map = self._kg_priority_scoring()
+        if kg_score_map is not None:
+            return kg_score_map
+
         score_map: Dict[int, float] = {}
 
         # 1. 统计所有的组件数 I (Program 级影响) 以及具体页面的组件映射
@@ -709,8 +850,8 @@ class GraphPriorPipeline:
         self.phase1_extract_and_fuse(reports)
         score_map = self.phase2_topology_scoring()
 
-        # Sort clusters by score descending
-        sorted_clusters = sorted(self.clusters, key=lambda c: c.get("cluster_score", 1.0), reverse=True)
+        # Sort cluster representatives with diversity-aware reranking.
+        sorted_clusters = self._rank_clusters_with_diversity(self.clusters)
         
         round1 = []
         round2 = []

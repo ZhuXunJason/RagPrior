@@ -1,10 +1,11 @@
 '''
 Knowledge Graph RAG Service for Bug Report Prioritization.
-Provides vector similarity search and severity querying from Neo4j knowledge graph.
+Provides vector similarity search, priority evidence retrieval, and severity querying from Neo4j knowledge graph.
 '''
 
-from typing import Optional, List, Tuple, Dict, Set, cast, LiteralString
+from typing import Optional, List, Tuple, Dict, Set, Any, cast, LiteralString
 import os
+import math
 
 from neo4j import GraphDatabase
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
@@ -79,6 +80,12 @@ class KGService:
             "分页器", "滑块", "菜单", "列表", "卡片", "下拉框", "标签页", "开关", 
             "进度条", "时间选择器", "日期选择器", "提示框"
         ]
+        self.bug_symptoms = [
+            "未调用", "不生效", "不支持", "重叠", "缺失", "模糊", "不显示", "卡顿", "缓慢", "耗时过长",
+            "加载失败", "崩溃", "退出", "无响应", "停止运行", "错位", "遮挡", "位置错误", "提示", "弹出",
+            "报错", "SQL ERROR", "404", "502", "无法连接", "跳转异常", "返回异常", "进入错误页面", "白屏",
+            "黑屏", "空白", "乱码", "无法识别",
+        ]
 
     @staticmethod
     def _merge_candidate(candidates: Dict[str, Dict], node, score: float, reason: Optional[str] = None) -> None:
@@ -101,11 +108,45 @@ class KGService:
         if self.driver:
             self.driver.close()
 
+    @staticmethod
+    def _normalize_text(text: str) -> str:
+        return " ".join((text or "").split()).strip()
+
+    @staticmethod
+    def _cosine_similarity(v1: List[float], v2: List[float]) -> float:
+        if not v1 or not v2 or len(v1) != len(v2):
+            return 0.0
+        dot = sum(a * b for a, b in zip(v1, v2))
+        n1 = math.sqrt(sum(a * a for a in v1))
+        n2 = math.sqrt(sum(b * b for b in v2))
+        if n1 == 0 or n2 == 0:
+            return 0.0
+        return dot / (n1 * n2)
+
+    def _embed_documents(self, texts: List[str]) -> List[List[float]]:
+        if not texts:
+            return []
+
+        normalized = [self._normalize_text(text) or "unknown" for text in texts]
+        try:
+            embed_documents = getattr(self.embeddings, "embed_documents", None)
+            if callable(embed_documents):
+                return cast(List[List[float]], embed_documents(normalized))
+        except Exception:
+            pass
+
+        return [cast(List[float], self.embeddings.embed_query(text)) for text in normalized]
+
     def extract_entities(self, text: str) -> Tuple[List[str], List[str]]:
         """Simple keyword matching for Operations and Elements in the text."""
         found_ops = [op for op in self.operations if op in text]
         found_elems = [elem for elem in self.elements if elem in text]
         return found_ops, found_elems
+
+    def extract_bug_symptoms(self, text: str) -> List[str]:
+        """Simple keyword matching for bug symptoms in the text."""
+        normalized = self._normalize_text(text)
+        return [sym for sym in self.bug_symptoms if sym in normalized]
 
     def expand_entities(self, ops: List[str], elems: List[str]) -> Tuple[Set[str], Set[str]]:
         """
@@ -290,6 +331,120 @@ class KGService:
         except Exception as e:
             print(f"Error retrieving context: {e}")
             return ""
+
+    def retrieve_priority_evidence(
+        self,
+        query_text: str,
+        op_text: str,
+        page_text: str,
+        elem_text: str,
+        bug_text: str,
+        top_k: int = 20,
+    ) -> List[Dict[str, Any]]:
+        """
+        Retrieve historical report evidence for priority scoring.
+
+        Returns a list of evidence dicts with:
+        - vector_score
+        - severity
+        - matched_ops
+        - matched_elements
+        - matched_bug_symptoms
+        - matched_pages
+        - bug_types
+        - description
+        """
+        normalized_query = self._normalize_text(query_text)
+        ops, elems = self.extract_entities(" ".join([query_text, op_text, elem_text]))
+        bug_symptoms = self.extract_bug_symptoms(" ".join([query_text, bug_text]))
+        page_lower = self._normalize_text(page_text).lower()
+        if page_lower in {"", "未知页面"}:
+            page_lower = ""
+
+        try:
+            with self.driver.session() as session:
+                structural_query = """
+                    MATCH (r:Report)
+                    OPTIONAL MATCH (r)-[:TRIGGERED_BY]->(o:Operation)
+                    OPTIONAL MATCH (r)-[:OCCURS_ON]->(ie:Instance_Element)
+                    OPTIONAL MATCH (ie)-[:IS_A]->(e:Element)
+                    OPTIONAL MATCH (ie)-[:LOCATED_ON]->(p:Instance_Page)
+                    OPTIONAL MATCH (r)-[:HAS_BUG_SYMPTOM]->(bs:BugSymptom)
+                    OPTIONAL MATCH (r)-[:HAS_BUG_TYPE]->(bt:BugType)
+                    OPTIONAL MATCH (r)-[:HAS_SEVERITY]->(sev:Severity)
+                    WITH
+                        r,
+                        sev,
+                        [name IN collect(DISTINCT CASE WHEN o.name IN $ops THEN o.name END) WHERE name IS NOT NULL] AS matched_ops,
+                        [name IN collect(DISTINCT CASE WHEN e.name IN $elems THEN e.name END) WHERE name IS NOT NULL] AS matched_elements,
+                        [name IN collect(DISTINCT CASE WHEN bs.name IN $bug_symptoms THEN bs.name END) WHERE name IS NOT NULL] AS matched_bug_symptoms,
+                        [
+                            name IN collect(
+                                DISTINCT CASE
+                                    WHEN $page_lower <> '' AND p.name IS NOT NULL AND
+                                         (toLower(p.name) CONTAINS $page_lower OR $page_lower CONTAINS toLower(p.name))
+                                    THEN p.name
+                                END
+                            ) WHERE name IS NOT NULL
+                        ] AS matched_pages,
+                        collect(DISTINCT bt.name) AS bug_types
+                    WITH r, sev, matched_ops, matched_elements, matched_bug_symptoms, matched_pages, bug_types,
+                         size(matched_ops) + size(matched_elements) + size(matched_bug_symptoms) + size(matched_pages) AS hit_count
+                    WHERE hit_count > 0
+                    RETURN
+                        elementId(r) AS report_eid,
+                        r.description AS description,
+                        sev.name AS severity,
+                        matched_ops,
+                        matched_elements,
+                        matched_bug_symptoms,
+                        matched_pages,
+                        bug_types,
+                        hit_count
+                    ORDER BY hit_count DESC
+                    LIMIT $limit
+                """
+                records = list(
+                    session.run(
+                        structural_query,
+                        ops=ops,
+                        elems=elems,
+                        bug_symptoms=bug_symptoms,
+                        page_lower=page_lower,
+                        limit=max(top_k * 3, 30),
+                    )
+                )
+        except Exception as e:
+            print(f"Error retrieving priority evidence: {e}")
+            return []
+
+        if not records:
+            return []
+
+        query_vector = cast(List[float], self.embeddings.embed_query(normalized_query or "unknown"))
+        descriptions = [self._normalize_text(str(record["description"] or "")) or "unknown" for record in records]
+        doc_vectors = self._embed_documents(descriptions)
+
+        evidence: List[Dict[str, Any]] = []
+        for record, doc_vec in zip(records, doc_vectors):
+            vector_score = max(0.0, self._cosine_similarity(query_vector, doc_vec))
+            evidence.append(
+                {
+                    "report_eid": record["report_eid"],
+                    "description": record["description"] or "",
+                    "severity": record["severity"] or "",
+                    "vector_score": vector_score,
+                    "matched_ops": list(record["matched_ops"] or []),
+                    "matched_elements": list(record["matched_elements"] or []),
+                    "matched_bug_symptoms": list(record["matched_bug_symptoms"] or []),
+                    "matched_pages": list(record["matched_pages"] or []),
+                    "bug_types": list(record["bug_types"] or []),
+                    "hit_count": int(record["hit_count"] or 0),
+                }
+            )
+
+        evidence.sort(key=lambda item: (float(item["vector_score"]), int(item["hit_count"])), reverse=True)
+        return evidence[:top_k]
 
     def query_severity(self, query: str) -> int:
         """
