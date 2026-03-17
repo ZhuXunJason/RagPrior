@@ -16,8 +16,8 @@ def _make_reports(total: int):
 def _extract_report_ids(prompt: str) -> list[str]:
     if "待处理报告：" in prompt:
         payload = prompt.split("待处理报告：", 1)[1]
-    elif "输入：" in prompt:
-        payload = prompt.split("输入：", 1)[1]
+    elif "输入报告：" in prompt:
+        payload = prompt.split("输入报告：", 1)[1]
     else:
         payload = prompt
 
@@ -48,21 +48,41 @@ def _fake_embeddings(texts, **_kwargs):
     return np.array([[float(len(text)), float(index + 1)] for index, text in enumerate(texts)], dtype=float)
 
 
+def _fake_embeddings_unique(texts, **_kwargs):
+    size = max(1, len(texts))
+    return np.eye(size, dtype=float)
+
+
+def _build_block(report_id: str, same_fields: bool = False) -> str:
+    item = _build_item(report_id, same_fields=same_fields)
+    return "\n".join(
+        [
+            f"ID: {item['id']}",
+            f"OP: {item['op']}",
+            f"PG: {item['pg']}",
+            f"EL: {item['el']}",
+            f"BUG: {item['bug']}",
+            f"SCOPE: {item['scope']}",
+            "###",
+        ]
+    )
+
+
 def test_batch_size_groups_requests_and_limits_tokens(monkeypatch):
     call_log = []
 
     def fake_ask_gpt(prompt, model, max_token, base_url=None, api_key=None):
         report_ids = _extract_report_ids(prompt)
-        is_batch = "JSON 数组" in prompt
+        is_batch = "待处理报告：" in prompt
         call_log.append({"ids": report_ids, "max_token": max_token, "is_batch": is_batch})
         if is_batch:
-            content = json.dumps([_build_item(report_id) for report_id in report_ids], ensure_ascii=False)
+            content = "\n".join(_build_block(report_id) for report_id in report_ids)
         else:
-            content = json.dumps(_build_item(report_ids[0]), ensure_ascii=False)
+            content = _build_block(report_ids[0])
         return content, 10, 20
 
     monkeypatch.setattr(graph_prior, "ask_gpt", fake_ask_gpt)
-    monkeypatch.setattr(graph_prior, "get_embeddings", _fake_embeddings)
+    monkeypatch.setattr(graph_prior, "get_embeddings", _fake_embeddings_unique)
     monkeypatch.setattr(graph_prior, "get_kg_service", lambda **kwargs: None)
 
     pipeline = graph_prior.GraphPriorPipeline(model="fake-model", batch_size=4, workers=1)
@@ -86,18 +106,16 @@ def test_batch_size_groups_requests_and_limits_tokens(monkeypatch):
 def test_short_key_batch_response_is_normalized(monkeypatch):
     def fake_ask_gpt(prompt, model, max_token, base_url=None, api_key=None):
         report_ids = _extract_report_ids(prompt)
-        content = json.dumps(
+        content = "\n".join(
             [
-                {
-                    "id": report_ids[0],
-                    "op": "点击登录",
-                    "pg": "登录页",
-                    "el": "登录按钮",
-                    "bug": "闪退",
-                    "scope": "program",
-                }
-            ],
-            ensure_ascii=False,
+                f"ID: {report_ids[0]}",
+                "OP: 点击登录",
+                "PG: 登录页",
+                "EL: 登录按钮",
+                "BUG: 闪退",
+                "SCOPE: program",
+                "###",
+            ]
         )
         return content, 1, 1
 
@@ -122,16 +140,16 @@ def test_partial_batch_response_only_falls_back_for_missing_reports(monkeypatch)
 
     def fake_ask_gpt(prompt, model, max_token, base_url=None, api_key=None):
         report_ids = _extract_report_ids(prompt)
-        is_batch = "JSON 数组" in prompt
+        is_batch = "待处理报告：" in prompt
         call_log.append({"ids": report_ids, "max_token": max_token, "is_batch": is_batch})
         if is_batch:
-            content = json.dumps([_build_item("R_001")], ensure_ascii=False)
+            content = _build_block("R_001")
         else:
-            content = json.dumps(_build_item(report_ids[0]), ensure_ascii=False)
+            content = _build_block(report_ids[0])
         return content, 3, 4
 
     monkeypatch.setattr(graph_prior, "ask_gpt", fake_ask_gpt)
-    monkeypatch.setattr(graph_prior, "get_embeddings", _fake_embeddings)
+    monkeypatch.setattr(graph_prior, "get_embeddings", _fake_embeddings_unique)
     monkeypatch.setattr(graph_prior, "get_kg_service", lambda **kwargs: None)
 
     pipeline = graph_prior.GraphPriorPipeline(model="fake-model", batch_size=2, workers=1)
@@ -147,28 +165,31 @@ def test_partial_batch_response_only_falls_back_for_missing_reports(monkeypatch)
     assert sequence == [1, 2]
 
 
-def test_batch_retry_uses_larger_but_bounded_token_budget(monkeypatch):
+def test_missing_reports_are_retried_in_small_batches_before_single(monkeypatch):
     call_log = []
 
     def fake_ask_gpt(prompt, model, max_token, base_url=None, api_key=None):
         report_ids = _extract_report_ids(prompt)
-        call_log.append(max_token)
-        if len(call_log) == 1:
-            return "not-json", 5, 0
-        content = json.dumps([_build_item(report_id) for report_id in report_ids], ensure_ascii=False)
-        return content, 5, 6
+        is_batch = "待处理报告：" in prompt
+        call_log.append({"ids": report_ids, "is_batch": is_batch})
+        if is_batch and len(call_log) == 1:
+            return _build_block("R_001"), 5, 0
+        if is_batch:
+            return "\n".join(_build_block(report_id) for report_id in report_ids), 5, 6
+        return _build_block(report_ids[0]), 5, 6
 
     monkeypatch.setattr(graph_prior, "ask_gpt", fake_ask_gpt)
+    monkeypatch.setattr(graph_prior, "get_embeddings", _fake_embeddings_unique)
     monkeypatch.setattr(graph_prior, "get_kg_service", lambda **kwargs: None)
 
-    pipeline = graph_prior.GraphPriorPipeline(model="fake-model", batch_size=2, workers=1)
-    result = pipeline._extract_structured_batch(
-        [("R_001", "报告 1"), ("R_002", "报告 2")],
-        batch_index=1,
-    )
+    pipeline = graph_prior.GraphPriorPipeline(model="fake-model", batch_size=4, workers=1)
+    pipeline.run(_make_reports(4))
 
-    assert set(result.keys()) == {"R_001", "R_002"}
-    assert call_log == [512, 1024]
+    assert call_log == [
+        {"ids": ["R_001", "R_002", "R_003", "R_004"], "is_batch": True},
+        {"ids": ["R_002", "R_003"], "is_batch": True},
+        {"ids": ["R_004"], "is_batch": False},
+    ]
 
 
 def test_embedding_cache_reuses_identical_texts(monkeypatch):
@@ -176,7 +197,7 @@ def test_embedding_cache_reuses_identical_texts(monkeypatch):
 
     def fake_ask_gpt(prompt, model, max_token, base_url=None, api_key=None):
         report_ids = _extract_report_ids(prompt)
-        content = json.dumps([_build_item(report_id, same_fields=True) for report_id in report_ids], ensure_ascii=False)
+        content = "\n".join(_build_block(report_id, same_fields=True) for report_id in report_ids)
         return content, 2, 2
 
     def fake_embeddings(texts, **_kwargs):
@@ -190,5 +211,46 @@ def test_embedding_cache_reuses_identical_texts(monkeypatch):
     pipeline = graph_prior.GraphPriorPipeline(model="fake-model", batch_size=2, workers=1)
     pipeline.run(_make_reports(3))
 
-    assert len(embedding_calls) == 1
-    assert embedding_calls[0] == ["操作-共享", "页面-共享", "组件-共享", "现象-共享"]
+    assert len(embedding_calls) == 2
+    assert embedding_calls[0] == ["报告 1 点击按钮后无响应", "报告 2 点击按钮后无响应", "报告 3 点击按钮后无响应"]
+    assert embedding_calls[1] == ["操作-共享", "页面-共享", "组件-共享", "现象-共享"]
+
+
+def test_near_duplicate_reports_only_send_representatives_to_llm(monkeypatch):
+    call_log = []
+
+    def fake_ask_gpt(prompt, model, max_token, base_url=None, api_key=None):
+        report_ids = _extract_report_ids(prompt)
+        call_log.append(report_ids)
+        return "\n".join(_build_block(report_id) for report_id in report_ids), 3, 4
+
+    def fake_embeddings(texts, **_kwargs):
+        if len(texts) == 4:
+            return np.array(
+                [
+                    [1.0, 0.0],
+                    [0.99, 0.01],
+                    [0.0, 1.0],
+                    [0.0, 0.99],
+                ],
+                dtype=float,
+            )
+        return _fake_embeddings(texts)
+
+    monkeypatch.setattr(graph_prior, "ask_gpt", fake_ask_gpt)
+    monkeypatch.setattr(graph_prior, "get_embeddings", fake_embeddings)
+    monkeypatch.setattr(graph_prior, "get_kg_service", lambda **kwargs: None)
+
+    reports = [
+        {"description": "帮助页面一直加载不出内容"},
+        {"description": "帮助页面一直加载不出内容 变体"},
+        {"description": "点击收藏后列表不显示"},
+        {"description": "点击收藏后列表不显示 变体"},
+    ]
+
+    pipeline = graph_prior.GraphPriorPipeline(model="fake-model", batch_size=4, workers=1)
+    sequence, score_map, _, _, _ = pipeline.run(reports)
+
+    assert call_log == [["R_001", "R_003"]]
+    assert len(sequence) == 4
+    assert len(score_map) == 4
