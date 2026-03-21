@@ -6,12 +6,14 @@ Provides vector similarity search, priority evidence retrieval, and severity que
 from typing import Optional, List, Tuple, Dict, Set, Any, cast, LiteralString
 import os
 import math
+import re
 
 from neo4j import GraphDatabase
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_community.embeddings import OpenAIEmbeddings, DashScopeEmbeddings
 
-from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_AUTH, GOOGLE_API_KEY, OPENAI_API_KEY
+from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_AUTH, GOOGLE_API_KEY, OPENAI_API_KEY, KG_MODE, KG_DESC_PATH
+from offline_kg import OfflineKGService
 
 if GOOGLE_API_KEY:
     os.environ["GOOGLE_API_KEY"] = GOOGLE_API_KEY
@@ -68,6 +70,8 @@ class KGService:
         # Note: vector index is queried directly in Cypher; avoid eager Neo4jVector binding here,
         # which can fail at startup when historical index dimensions differ.
         self.vector_store = None
+        self._report_cache: Optional[List[Dict[str, Any]]] = None
+        self._report_vectors: Optional[List[List[float]]] = None
         
         # Defined entities from the knowledge graph framework (Updated per KG_desc.md)
         self.operations = [
@@ -75,17 +79,8 @@ class KGService:
             "注册", "登录", "运行", "清空", "切换网络", "拖拽", "滑动", "长按", "删除", 
             "切换账号", "双击", "右键点击", "填写", "确认", "取消"
         ]
-        self.elements = [
-            "按钮", "输入框", "文本标签", "表格", "文本域", "弹窗", "图片", "复选框", 
-            "分页器", "滑块", "菜单", "列表", "卡片", "下拉框", "标签页", "开关", 
-            "进度条", "时间选择器", "日期选择器", "提示框"
-        ]
-        self.bug_symptoms = [
-            "未调用", "不生效", "不支持", "重叠", "缺失", "模糊", "不显示", "卡顿", "缓慢", "耗时过长",
-            "加载失败", "崩溃", "退出", "无响应", "停止运行", "错位", "遮挡", "位置错误", "提示", "弹出",
-            "报错", "SQL ERROR", "404", "502", "无法连接", "跳转异常", "返回异常", "进入错误页面", "白屏",
-            "黑屏", "空白", "乱码", "无法识别",
-        ]
+        self.elements = []
+        self.bug_symptoms = []
 
     @staticmethod
     def _merge_candidate(candidates: Dict[str, Dict], node, score: float, reason: Optional[str] = None) -> None:
@@ -138,15 +133,182 @@ class KGService:
         return [cast(List[float], self.embeddings.embed_query(text)) for text in normalized]
 
     def extract_entities(self, text: str) -> Tuple[List[str], List[str]]:
-        """Simple keyword matching for Operations and Elements in the text."""
+        """Simple keyword matching for Operations only; elements are instance-only in GraphPrior."""
         found_ops = [op for op in self.operations if op in text]
-        found_elems = [elem for elem in self.elements if elem in text]
-        return found_ops, found_elems
+        return found_ops, []
 
     def extract_bug_symptoms(self, text: str) -> List[str]:
-        """Simple keyword matching for bug symptoms in the text."""
-        normalized = self._normalize_text(text)
-        return [sym for sym in self.bug_symptoms if sym in normalized]
+        """GraphPrior no longer relies on predefined BugSymptom nodes."""
+        return []
+
+    @staticmethod
+    def _collect_tokens(text: str) -> Set[str]:
+        normalized = re.sub(r"[^\w\u4e00-\u9fff]+", " ", text or "")
+        tokens = {token for token in normalized.split() if len(token) >= 2}
+        return tokens
+
+    def _ensure_report_cache(self) -> List[Dict[str, Any]]:
+        if self._report_cache is not None and self._report_vectors is not None:
+            return self._report_cache
+
+        query = """
+            MATCH (r:Report)
+            OPTIONAL MATCH (r)-[:TRIGGERED_BY]->(o:Operation)
+            OPTIONAL MATCH (r)-[:OCCURS_ON]->(ie:Instance_Element)
+            OPTIONAL MATCH (ie)-[:LOCATED_ON]->(p:Instance_Page)
+            OPTIONAL MATCH (r)-[:HAS_SEVERITY]->(sev:Severity)
+            RETURN
+                elementId(r) AS report_eid,
+                r.description AS description,
+                sev.name AS severity,
+                collect(DISTINCT o.name) AS operations,
+                collect(DISTINCT ie.name) AS element_instances,
+                collect(DISTINCT p.name) AS page_instances
+        """
+
+        records: List[Dict[str, Any]] = []
+        try:
+            with self.driver.session() as session:
+                for record in session.run(cast(LiteralString, query)):
+                    description = self._normalize_text(str(record["description"] or ""))
+                    if not description:
+                        continue
+                    records.append(
+                        {
+                            "report_eid": str(record["report_eid"]),
+                            "description": description,
+                            "severity": str(record["severity"] or ""),
+                            "operations": [item for item in list(record["operations"] or []) if item],
+                            "element_instances": [item for item in list(record["element_instances"] or []) if item],
+                            "page_instances": [item for item in list(record["page_instances"] or []) if item],
+                            "tokens": self._collect_tokens(description),
+                        }
+                    )
+        except Exception as e:
+            print(f"Error building report cache: {e}")
+            self._report_cache = []
+            self._report_vectors = []
+            return self._report_cache
+
+        self._report_cache = records
+        descriptions = [item["description"] for item in records]
+        self._report_vectors = self._embed_documents(descriptions) if descriptions else []
+        return self._report_cache
+
+    def _score_historical_reports(
+        self,
+        query_text: str,
+        matched_ops: List[str],
+        top_k: int,
+    ) -> List[Dict[str, Any]]:
+        records = self._ensure_report_cache()
+        if not records or self._report_vectors is None:
+            return []
+
+        query_norm = self._normalize_text(query_text) or "unknown"
+        query_vec = cast(List[float], self.embeddings.embed_query(query_norm))
+        query_tokens = self._collect_tokens(query_norm)
+
+        scored: List[Dict[str, Any]] = []
+        for record, doc_vec in zip(records, self._report_vectors):
+            vector_score = max(0.0, self._cosine_similarity(query_vec, doc_vec))
+            op_hits = [op for op in record["operations"] if op in matched_ops]
+            token_hits = len(query_tokens & record["tokens"])
+            support = float(vector_score + 0.08 * len(op_hits) + 0.01 * token_hits)
+            if support <= 0:
+                continue
+            scored.append(
+                {
+                    **record,
+                    "vector_score": vector_score,
+                    "matched_ops": op_hits,
+                    "token_hits": token_hits,
+                    "support_score": support,
+                }
+            )
+
+        scored.sort(
+            key=lambda item: (
+                float(item["support_score"]),
+                float(item["vector_score"]),
+                len(item["matched_ops"]),
+                int(item["token_hits"]),
+            ),
+            reverse=True,
+        )
+        return scored[:top_k]
+
+    def retrieve_link_candidates(
+        self,
+        query_text: str,
+        top_k_op: int = 4,
+        top_k_history: int = 5,
+    ) -> Dict[str, List[Dict[str, Any]]]:
+        """
+        Retrieve compact candidate sets for GraphPrior linking.
+
+        Returns:
+        - operations: [{"id","name","score","source"}]
+        - historical_reports: [{"id","report_eid","description","severity","operations","score"}]
+        """
+        normalized_query = self._normalize_text(query_text)
+        direct_ops, _ = self.extract_entities(normalized_query)
+        historical_reports = self._score_historical_reports(
+            normalized_query,
+            matched_ops=direct_ops,
+            top_k=max(top_k_history, top_k_op + 1),
+        )
+
+        op_support: Dict[str, Dict[str, Any]] = {}
+        for op in direct_ops:
+            op_support[op] = {"name": op, "score": 2.0, "source": {"direct"}}
+
+        for history in historical_reports:
+            for op in history.get("operations", []):
+                item = op_support.setdefault(op, {"name": op, "score": 0.0, "source": set()})
+                item["score"] += 0.6 + 0.2 * float(history.get("vector_score", 0.0))
+                item["source"].add("history")
+
+        if not op_support and self.operations:
+            best_ops = []
+            for op in self.operations:
+                if op in normalized_query:
+                    best_ops.append((op, 1.5))
+                else:
+                    overlap = len(self._collect_tokens(op) & self._collect_tokens(normalized_query))
+                    best_ops.append((op, float(overlap)))
+            best_ops.sort(key=lambda item: item[1], reverse=True)
+            for op, score in best_ops[:top_k_op]:
+                op_support[op] = {"name": op, "score": max(0.1, score), "source": {"fallback"}}
+
+        operation_candidates = [
+            {
+                "id": f"O{idx}",
+                "name": item["name"],
+                "score": float(item["score"]),
+                "source": ",".join(sorted(item["source"])),
+            }
+            for idx, item in enumerate(
+                sorted(op_support.values(), key=lambda value: float(value["score"]), reverse=True)[:top_k_op],
+                start=1,
+            )
+        ]
+
+        history_candidates = [
+            {
+                "id": f"H{idx}",
+                "report_eid": item["report_eid"],
+                "description": item["description"],
+                "severity": item["severity"],
+                "operations": list(item["operations"]),
+                "score": float(item["support_score"]),
+            }
+            for idx, item in enumerate(historical_reports[:top_k_history], start=1)
+        ]
+        return {
+            "operations": operation_candidates,
+            "historical_reports": history_candidates,
+        }
 
     def expand_entities(self, ops: List[str], elems: List[str]) -> Tuple[Set[str], Set[str]]:
         """
@@ -341,109 +503,73 @@ class KGService:
         bug_text: str,
         top_k: int = 20,
     ) -> List[Dict[str, Any]]:
-        """
-        Retrieve historical report evidence for priority scoring.
-
-        Returns a list of evidence dicts with:
-        - vector_score
-        - severity
-        - matched_ops
-        - matched_elements
-        - matched_bug_symptoms
-        - matched_pages
-        - bug_types
-        - description
-        """
+        """Retrieve historical report evidence using operation + instance-level text overlap."""
         normalized_query = self._normalize_text(query_text)
-        ops, elems = self.extract_entities(" ".join([query_text, op_text, elem_text]))
-        bug_symptoms = self.extract_bug_symptoms(" ".join([query_text, bug_text]))
-        page_lower = self._normalize_text(page_text).lower()
-        if page_lower in {"", "未知页面"}:
-            page_lower = ""
+        ops, _ = self.extract_entities(" ".join([query_text, op_text]))
+        page_norm = self._normalize_text(page_text)
+        elem_norm = self._normalize_text(elem_text)
+        bug_norm = self._normalize_text(bug_text)
 
-        try:
-            with self.driver.session() as session:
-                structural_query = """
-                    MATCH (r:Report)
-                    OPTIONAL MATCH (r)-[:TRIGGERED_BY]->(o:Operation)
-                    OPTIONAL MATCH (r)-[:OCCURS_ON]->(ie:Instance_Element)
-                    OPTIONAL MATCH (ie)-[:IS_A]->(e:Element)
-                    OPTIONAL MATCH (ie)-[:LOCATED_ON]->(p:Instance_Page)
-                    OPTIONAL MATCH (r)-[:HAS_BUG_SYMPTOM]->(bs:BugSymptom)
-                    OPTIONAL MATCH (r)-[:HAS_BUG_TYPE]->(bt:BugType)
-                    OPTIONAL MATCH (r)-[:HAS_SEVERITY]->(sev:Severity)
-                    WITH
-                        r,
-                        sev,
-                        [name IN collect(DISTINCT CASE WHEN o.name IN $ops THEN o.name END) WHERE name IS NOT NULL] AS matched_ops,
-                        [name IN collect(DISTINCT CASE WHEN e.name IN $elems THEN e.name END) WHERE name IS NOT NULL] AS matched_elements,
-                        [name IN collect(DISTINCT CASE WHEN bs.name IN $bug_symptoms THEN bs.name END) WHERE name IS NOT NULL] AS matched_bug_symptoms,
-                        [
-                            name IN collect(
-                                DISTINCT CASE
-                                    WHEN $page_lower <> '' AND p.name IS NOT NULL AND
-                                         (toLower(p.name) CONTAINS $page_lower OR $page_lower CONTAINS toLower(p.name))
-                                    THEN p.name
-                                END
-                            ) WHERE name IS NOT NULL
-                        ] AS matched_pages,
-                        collect(DISTINCT bt.name) AS bug_types
-                    WITH r, sev, matched_ops, matched_elements, matched_bug_symptoms, matched_pages, bug_types,
-                         size(matched_ops) + size(matched_elements) + size(matched_bug_symptoms) + size(matched_pages) AS hit_count
-                    WHERE hit_count > 0
-                    RETURN
-                        elementId(r) AS report_eid,
-                        r.description AS description,
-                        sev.name AS severity,
-                        matched_ops,
-                        matched_elements,
-                        matched_bug_symptoms,
-                        matched_pages,
-                        bug_types,
-                        hit_count
-                    ORDER BY hit_count DESC
-                    LIMIT $limit
-                """
-                records = list(
-                    session.run(
-                        structural_query,
-                        ops=ops,
-                        elems=elems,
-                        bug_symptoms=bug_symptoms,
-                        page_lower=page_lower,
-                        limit=max(top_k * 3, 30),
-                    )
-                )
-        except Exception as e:
-            print(f"Error retrieving priority evidence: {e}")
+        historical_reports = self._score_historical_reports(
+            normalized_query,
+            matched_ops=ops,
+            top_k=max(top_k * 3, 30),
+        )
+        if not historical_reports:
             return []
 
-        if not records:
-            return []
-
-        query_vector = cast(List[float], self.embeddings.embed_query(normalized_query or "unknown"))
-        descriptions = [self._normalize_text(str(record["description"] or "")) or "unknown" for record in records]
-        doc_vectors = self._embed_documents(descriptions)
+        bug_tokens = self._collect_tokens(bug_norm)
+        elem_tokens = self._collect_tokens(elem_norm)
+        page_tokens = self._collect_tokens(page_norm)
 
         evidence: List[Dict[str, Any]] = []
-        for record, doc_vec in zip(records, doc_vectors):
-            vector_score = max(0.0, self._cosine_similarity(query_vector, doc_vec))
+        for item in historical_reports:
+            description = self._normalize_text(item["description"])
+            description_tokens = item["tokens"]
+            matched_elements = [
+                name for name in item.get("element_instances", [])
+                if elem_norm and (name == elem_norm or elem_norm in name or name in elem_norm)
+            ]
+            matched_pages = [
+                name for name in item.get("page_instances", [])
+                if page_norm and (name == page_norm or page_norm in name or name in page_norm)
+            ]
+            matched_bugs: List[str] = []
+            if bug_norm:
+                if bug_norm in description or description in bug_norm:
+                    matched_bugs = [bug_norm]
+                else:
+                    overlap = sorted(bug_tokens & description_tokens)
+                    if overlap:
+                        matched_bugs = overlap[:3]
+
+            hit_count = (
+                len(item.get("matched_ops", []))
+                + len(matched_elements)
+                + len(matched_pages)
+                + len(matched_bugs)
+            )
+            if hit_count <= 0 and float(item.get("vector_score", 0.0)) <= 0:
+                continue
+
             evidence.append(
                 {
-                    "report_eid": record["report_eid"],
-                    "description": record["description"] or "",
-                    "severity": record["severity"] or "",
-                    "vector_score": vector_score,
-                    "matched_ops": list(record["matched_ops"] or []),
-                    "matched_elements": list(record["matched_elements"] or []),
-                    "matched_bug_symptoms": list(record["matched_bug_symptoms"] or []),
-                    "matched_pages": list(record["matched_pages"] or []),
-                    "bug_types": list(record["bug_types"] or []),
-                    "hit_count": int(record["hit_count"] or 0),
+                    "report_eid": item["report_eid"],
+                    "description": description,
+                    "severity": item["severity"],
+                    "vector_score": float(item["vector_score"]),
+                    "matched_ops": list(item.get("matched_ops", [])),
+                    "matched_elements": matched_elements,
+                    "matched_pages": matched_pages,
+                    "matched_bugs": matched_bugs,
+                    "hit_count": hit_count,
                 }
             )
 
-        evidence.sort(key=lambda item: (float(item["vector_score"]), int(item["hit_count"])), reverse=True)
+        evidence.sort(
+            key=lambda item: (float(item["vector_score"]), int(item["hit_count"])),
+            reverse=True,
+        )
         return evidence[:top_k]
 
     def query_severity(self, query: str) -> int:
@@ -457,28 +583,33 @@ class KGService:
 
 # Singleton instance for easy import
 kg_service: Optional[KGService] = None
-kg_service_config: Optional[Tuple[Optional[str], Optional[str], Optional[str], Optional[str]]] = None
+kg_service_config: Optional[Tuple[Optional[str], Optional[str], Optional[str], Optional[str], Optional[str]]] = None
 
 def get_kg_service(
     model_name: str = "gemini",
     embedding_model: Optional[str] = None,
     base_url: Optional[str] = None,
     api_key: Optional[str] = None,
+    kg_mode: Optional[str] = None,
 ) -> Optional[KGService]:
     """Get or create the KGService singleton."""
     global kg_service, kg_service_config
-    current_config = (model_name, embedding_model, base_url, api_key)
+    resolved_mode = (kg_mode or KG_MODE or "offline").lower()
+    current_config = (model_name, embedding_model, base_url, api_key, resolved_mode)
 
     if kg_service is None or kg_service_config != current_config:
-        if kg_service is not None:
+        if kg_service is not None and hasattr(kg_service, "close"):
             kg_service.close()
         try:
-            kg_service = KGService(
-                model_name=model_name,
-                embedding_model=embedding_model,
-                base_url=base_url,
-                api_key=api_key,
-            )
+            if resolved_mode == "offline":
+                kg_service = OfflineKGService(KG_DESC_PATH)
+            else:
+                kg_service = KGService(
+                    model_name=model_name,
+                    embedding_model=embedding_model,
+                    base_url=base_url,
+                    api_key=api_key,
+                )
             kg_service_config = current_config
         except Exception as e:
             print(f"Warning: Could not initialize KGService: {e}")

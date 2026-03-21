@@ -97,9 +97,9 @@ def find_node_by_value(node: TreeNode, value: int) -> Optional[TreeNode]:
     return None
 
 
-def parse(s: str, mode: str, app: int = None, use_severity: bool = False, csv_file: Optional[str] = None):
+def parse(s: str, mode: str, app: int = None, use_severity: bool = False, csv_file: Optional[str] = None, kg_mode: Optional[str] = None):
     if mode == "llmprior":
-        return parse_v1(s, app, use_severity=use_severity, csv_file=csv_file)
+        return parse_v1(s, app, use_severity=use_severity, csv_file=csv_file, kg_mode=kg_mode)
     elif mode == "simple":
         try:
             return parse_v2(s)
@@ -121,7 +121,7 @@ def format_sequence_result(sequence: List[int], categories: Optional[Dict[int, s
     return "\n".join(lines)
 
 
-def parse_v1(s: str, app: int = None, use_severity: bool = False, csv_file: Optional[str] = None) -> str:
+def parse_v1(s: str, app: int = None, use_severity: bool = False, csv_file: Optional[str] = None, kg_mode: Optional[str] = None) -> str:
     # Load reports
     reports_data = []
     if csv_file is not None:
@@ -138,7 +138,7 @@ def parse_v1(s: str, app: int = None, use_severity: bool = False, csv_file: Opti
     # Get KG service for severity queries
     kg_service = None
     if use_severity and get_kg_service:
-        kg_service = get_kg_service()
+        kg_service = get_kg_service(kg_mode=kg_mode)
 
     lines = [line.strip() for line in s.split("\n")]
     start_line = 0

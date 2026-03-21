@@ -26,56 +26,65 @@ SINGLE_EXTRACTION_MAX_TOKENS = 256
 BATCH_EXTRACTION_MAX_TOKENS = 8192
 REPRESENTATIVE_SIM_THRESHOLD = 0.90
 MISSING_RETRY_BATCH_SIZE = 2
+BATCH_RETRY_COVERAGE_THRESHOLD = 0.70
 KG_EVIDENCE_TOP_K = 20
 HIGH_RISK_SEVERITIES = {"高", "致命"}
+PRIORITY_ALPHA = 1.0
+PRIORITY_BETA = 1.0
+PRIORITY_LAMBDA = 0.5
+INSTANCE_MATCH_THRESHOLD = 0.92
+OPERATION_MATCH_THRESHOLD = 0.98
+TOP_K_OPERATION_CANDIDATES = 2
+TOP_K_HISTORY_CANDIDATES = 5
+TOP_K_INSTANCE_CANDIDATES = 3
+OPERATION_KG_CONFIDENCE_THRESHOLD = 1.2
+SLOT_KG_CONFIDENCE_THRESHOLD = 1.6
 
 
-EXTRACTION_PROMPT = """
-你是缺陷报告抽取器。只输出 1 个报告 block，不要解释，不要 Markdown，不要 JSON，不要代码块。
-规则：
-1. 信息缺失时分别填：op=未知操作, pg=未知页面, el=未知组件, bug=未知缺陷。
-2. pg 和 el 不要同时无意义；若页面无法确定，尽量提取业务组件到 el。
-3. scope 仅允许 element/page/program。
-4. 严格按以下格式输出，字段名不要改：
-ID: {report_id}
-OP: 操作
-PG: 页面
-EL: 组件
-BUG: 缺陷现象
-SCOPE: element|page|program
-###
-输入报告：
-{report_id}\t{text}
+LINK_SELECTION_PROMPT = """
+/no_think
+你是缺陷报告链接器。请根据候选列表，为每条报告选择最合适的候选编号。
+要求：
+1. 只输出纯文本结果，不要解释，不要 Markdown，不要 JSON。
+2. OP 只能从 Operation 候选中选 1 个编号；若实在无法判断，可填 NONE。
+3. PG / EL 可填候选编号或 NONE。
+4. BUG 只能从 Bug 候选中选 1 个编号；若候选都不合适，选最接近的一项。
+5. SCOPE 仅允许 element/page/program。
+6. 每个报告严格输出一行，格式固定为：
+R_001|O1|P0|E2|B3|page
+其中 P0 / E0 表示 NONE。
+7. 不要输出额外行，不要重复输入内容。
+
+示例输入：
+[Report R_000]
+TEXT: 点击登录按钮后应用闪退并返回桌面
+Operation Candidates:
+O1. 点击
+O2. 打开
+Page Candidates:
+P1. 登录页
+P2. NONE
+Element Candidates:
+E1. 登录按钮
+E2. 登录入口
+Bug Candidates:
+B1. 应用闪退
+B2. 返回桌面
+
+示例输出：
+R_000|O1|P0|E1|B1|program
+
+待处理报告：
+{reports_block}
 """.strip()
 
 
-EXTRACTION_BATCH_PROMPT = """
-你是缺陷报告抽取器。请为每条报告输出 1 个 block，不要解释。
-规则：
-1. 信息缺失时分别填：op=未知操作, pg=未知页面, el=未知组件, bug=未知缺陷。
-2. pg 和 el 不要同时无意义；若页面无法确定，尽量提取业务组件到 el。
-3. bug描述尽可能简洁
-4. scope 仅允许 element/page/program。
-5. 必须覆盖输入中的每条报告，各 id 只能出现一次。
-6. 每个报告严格使用以下格式，块与块之间用 ### 结束：
-ID: R_001
-OP: 操作
-PG: 页面
-EL: 组件
-BUG: 缺陷现象
-SCOPE: element|page|program
-###
-
-示例输入：
-R_000\t点击登录按钮后应用闪退并返回桌面
-示例输出：
-ID: R_000
-OP: 点击
-PG: 未知页面
-EL: 登录按钮
-BUG: 应用闪退
-SCOPE: program
-###
+LINK_SELECTION_RETRY_PROMPT = """
+/no_think
+只按一行一个报告输出，不要解释，不要 Markdown。
+格式固定：
+R_001|O1|P0|E2|B3|page
+其中 P0 / E0 表示 NONE；scope 只能是 element/page/program。
 
 待处理报告：
 {reports_block}
@@ -88,6 +97,7 @@ class GraphPriorPipeline:
         model: str = "gemini-3-pro-preview",
         batch_size: int = 16,
         workers: int = 4,
+        kg_mode: str = "offline",
         embedding_model: Optional[str] = None,
         base_url: Optional[str] = None,
         api_key: Optional[str] = None,
@@ -95,6 +105,7 @@ class GraphPriorPipeline:
         self.model = model
         self.batch_size = max(1, int(batch_size))
         self.workers = max(1, int(workers))
+        self.kg_mode = kg_mode
         self.embedding_model = embedding_model
         self.base_url = base_url
         self.api_key = api_key
@@ -103,6 +114,7 @@ class GraphPriorPipeline:
             embedding_model=embedding_model,
             base_url=base_url,
             api_key=api_key,
+            kg_mode=kg_mode,
         )
         self.graph = nx.MultiDiGraph()
         self.clusters: List[Dict[str, Any]] = []
@@ -144,6 +156,17 @@ class GraphPriorPipeline:
                     "batch_index": batch_index,
                 }
             )
+
+    def _build_request_options(self) -> Dict[str, Any]:
+        model_lower = (self.model or "").lower()
+        if "qwen" in model_lower:
+            return {
+                "extra_body": {
+                    "enable_thinking": False,
+                    "thinking_budget": 64,
+                }
+            }
+        return {}
 
     @staticmethod
     def _parse_report_num(report_id: str) -> int:
@@ -235,11 +258,300 @@ class GraphPriorPipeline:
             return "page"
         return "element"
 
-    def _build_batch_reports_block(self, reports_batch: List[Tuple[str, str]]) -> str:
-        return "\n".join(
-            f"{report_id}\t{self._normalize_prompt_text(text)}"
-            for report_id, text in reports_batch
+    @staticmethod
+    def _normalize_phrase(text: str) -> str:
+        normalized = re.sub(r"\s+", " ", str(text or "")).strip(" ，。；;,.!?！？:：\"'[]【】()（）")
+        normalized = normalized.strip()
+        return normalized or "未知"
+
+    @staticmethod
+    def _dedupe_keep_order(items: List[str]) -> List[str]:
+        seen = set()
+        ordered: List[str] = []
+        for item in items:
+            normalized = GraphPriorPipeline._normalize_phrase(item)
+            if normalized == "未知" or normalized in seen:
+                continue
+            seen.add(normalized)
+            ordered.append(normalized)
+        return ordered
+
+    @staticmethod
+    def _candidate_confidence(candidates: List[Dict[str, Any]]) -> float:
+        if not candidates:
+            return 0.0
+        return max(float(item.get("score", 0.0)) for item in candidates)
+
+    @staticmethod
+    def _contains_failure_keyword(text: str) -> bool:
+        return any(keyword in text for keyword in PAGE_FAILURE_KEYWORDS)
+
+    def _extract_operation_mentions(self, text: str) -> List[str]:
+        if self.kg_service and getattr(self.kg_service, "extract_entities", None):
+            ops, _ = self.kg_service.extract_entities(text)
+            return self._dedupe_keep_order(ops)
+        return []
+
+    def _extract_page_instances(self, text: str) -> List[str]:
+        normalized = self._normalize_prompt_text(text, limit=800)
+        patterns = [
+            r"([^\s，。；,;]{1,16}(?:页面|界面|页面中|界面中|页|目录|栏目|中心))",
+            r"(帮助|设置|收藏|所有|最近的|首页|加载页|登录页|关于页|个人中心)(?:页面|界面|页)?",
+        ]
+        hits: List[str] = []
+        for pattern in patterns:
+            for match in re.findall(pattern, normalized):
+                hits.append(self._normalize_phrase(match))
+        return self._dedupe_keep_order(hits)
+
+    def _extract_element_instances(self, text: str) -> List[str]:
+        normalized = self._normalize_prompt_text(text, limit=800)
+        patterns = [
+            r"([^\s，。；,;]{1,16}(?:按钮|图标|星标|星星|入口|菜单栏|菜单|下拉框|输入框|弹窗|对话框|列表|标签|卡片))",
+            r"(?:点击|打开|进入|选择|切换|查看|点亮)([^\s，。；,;]{1,12})",
+        ]
+        hits: List[str] = []
+        for pattern in patterns:
+            for match in re.findall(pattern, normalized):
+                candidate = self._normalize_phrase(match)
+                if candidate in {"点击", "打开", "进入", "选择", "切换", "查看", "点亮"}:
+                    continue
+                hits.append(candidate)
+        return self._dedupe_keep_order(hits)
+
+    def _extract_bug_instances(self, text: str) -> List[str]:
+        normalized = self._normalize_prompt_text(text, limit=800)
+        bug_patterns = [
+            r"(无法[^，。；,;]{0,18})",
+            r"(不能[^，。；,;]{0,18})",
+            r"(不(?:会|能|显示|刷新|更新|生效|响应|支持)[^，。；,;]{0,18})",
+            r"(一直在?加载[^，。；,;]{0,18})",
+            r"(页面(?:空白|白屏|黑屏)[^，。；,;]{0,12})",
+            r"((?:应用|程序|GnuCash)?(?:闪退|崩溃|停止运行|无响应)[^，。；,;]{0,12})",
+            r"(报错[^，。；,;]{0,18})",
+        ]
+        hits: List[str] = []
+        for pattern in bug_patterns:
+            for match in re.findall(pattern, normalized):
+                hits.append(self._normalize_phrase(match))
+        if not hits:
+            parts = [self._normalize_phrase(part) for part in re.split(r"[。！？!?]", normalized) if part.strip()]
+            if parts:
+                hits.append(parts[-1])
+        return self._dedupe_keep_order(hits)
+
+    def _build_instance_candidates(
+        self,
+        report_text: str,
+        history_candidates: List[Dict[str, Any]],
+        memory_label: str,
+        extractor,
+        top_k: int = TOP_K_INSTANCE_CANDIDATES,
+    ) -> List[Dict[str, Any]]:
+        support: Dict[str, Dict[str, Any]] = {}
+
+        def add_candidate(name: str, score: float, source: str) -> None:
+            normalized = self._normalize_phrase(name)
+            if normalized == "未知":
+                return
+            item = support.setdefault(normalized, {"name": normalized, "score": 0.0, "source": set()})
+            item["score"] += score
+            item["source"].add(source)
+
+        for item in extractor(report_text):
+            add_candidate(item, 2.0, "report")
+
+        for history in history_candidates:
+            history_text = str(history.get("description", ""))
+            for item in extractor(history_text):
+                add_candidate(item, 0.8 + 0.2 * float(history.get("score", 0.0)), "history")
+
+        seeds = extractor(report_text)
+        for memory_item in self._instance_store.get(memory_label, []):
+            memory_name = str(memory_item.get("name", ""))
+            if not memory_name or not seeds:
+                continue
+            sim = 0.0
+            for seed in seeds:
+                sim = max(
+                    sim,
+                    self._cosine_similarity(
+                        self._get_cached_embeddings([memory_name])[0],
+                        self._get_cached_embeddings([seed])[0],
+                    ),
+                )
+            if sim >= 0.78:
+                add_candidate(memory_name, 0.5 + sim, "memory")
+
+        sorted_items = sorted(
+            support.values(),
+            key=lambda item: (float(item["score"]), len(item["name"])),
+            reverse=True,
+        )[:top_k]
+        return [
+            {
+                "id": f"{memory_label[0]}{idx}",
+                "name": item["name"],
+                "score": float(item["score"]),
+                "source": ",".join(sorted(item["source"])),
+            }
+            for idx, item in enumerate(sorted_items, start=1)
+        ]
+
+    @staticmethod
+    def _merge_candidate_lists(
+        primary: List[Dict[str, Any]],
+        secondary: List[Dict[str, Any]],
+        prefix: str,
+        top_k: int,
+    ) -> List[Dict[str, Any]]:
+        support: Dict[str, Dict[str, Any]] = {}
+        for bucket, boost in ((primary, 1.0), (secondary, 0.7)):
+            for item in bucket:
+                name = str(item.get("name", "")).strip()
+                if not name:
+                    continue
+                merged = support.setdefault(name, {"name": name, "score": 0.0, "source": set()})
+                merged["score"] += float(item.get("score", 0.0)) + boost
+                source = item.get("source", "")
+                if source:
+                    merged["source"].add(str(source))
+        sorted_items = sorted(
+            support.values(),
+            key=lambda item: (float(item["score"]), len(item["name"])),
+            reverse=True,
+        )[:top_k]
+        return [
+            {
+                "id": f"{prefix}{idx}",
+                "name": item["name"],
+                "score": float(item["score"]),
+                "source": ",".join(sorted(item["source"])),
+            }
+            for idx, item in enumerate(sorted_items, start=1)
+        ]
+
+    def _build_link_candidates(self, report_id: str, description: str) -> Dict[str, Any]:
+        normalized_description = self._normalize_prompt_text(description)
+        kg_candidates = {
+            "operations": [],
+            "pages": [],
+            "elements": [],
+            "bugs": [],
+            "historical_reports": [],
+            "operation_confidence": 0.0,
+            "page_confidence": 0.0,
+            "element_confidence": 0.0,
+            "bug_confidence": 0.0,
+        }
+        if self.kg_service and hasattr(self.kg_service, "retrieve_link_candidates"):
+            kg_candidates = self.kg_service.retrieve_link_candidates(
+                normalized_description,
+                top_k_op=TOP_K_OPERATION_CANDIDATES,
+                top_k_history=0,
+                top_k_instance=TOP_K_INSTANCE_CANDIDATES,
+            )
+
+        operation_candidates = list(kg_candidates.get("operations", []))
+        operation_confidence = float(kg_candidates.get("operation_confidence", self._candidate_confidence(operation_candidates)))
+
+        if operation_confidence < OPERATION_KG_CONFIDENCE_THRESHOLD:
+            fallback_ops = self._extract_operation_mentions(normalized_description) or ["点击"]
+            operation_candidates = [
+                {"id": f"O{idx}", "name": name, "score": float(len(fallback_ops) - idx + 1), "source": "fallback"}
+                for idx, name in enumerate(fallback_ops[:TOP_K_OPERATION_CANDIDATES], start=1)
+            ]
+            operation_confidence = self._candidate_confidence(operation_candidates)
+
+        local_page_candidates = self._build_instance_candidates(
+            normalized_description,
+            [],
+            memory_label="Page",
+            extractor=self._extract_page_instances,
         )
+        local_element_candidates = self._build_instance_candidates(
+            normalized_description,
+            [],
+            memory_label="Element",
+            extractor=self._extract_element_instances,
+        )
+        local_bug_candidates = self._build_instance_candidates(
+            normalized_description,
+            [],
+            memory_label="Bug",
+            extractor=self._extract_bug_instances,
+        )
+
+        kg_page_candidates = list(kg_candidates.get("pages", [])) if float(kg_candidates.get("page_confidence", 0.0)) >= SLOT_KG_CONFIDENCE_THRESHOLD else []
+        kg_element_candidates = list(kg_candidates.get("elements", [])) if float(kg_candidates.get("element_confidence", 0.0)) >= SLOT_KG_CONFIDENCE_THRESHOLD else []
+        kg_bug_candidates = list(kg_candidates.get("bugs", [])) if float(kg_candidates.get("bug_confidence", 0.0)) >= SLOT_KG_CONFIDENCE_THRESHOLD else []
+
+        page_candidates = self._merge_candidate_lists(
+            kg_page_candidates,
+            local_page_candidates,
+            prefix="P",
+            top_k=TOP_K_INSTANCE_CANDIDATES,
+        )
+        element_candidates = self._merge_candidate_lists(
+            kg_element_candidates,
+            local_element_candidates,
+            prefix="E",
+            top_k=TOP_K_INSTANCE_CANDIDATES,
+        )
+        bug_candidates = self._merge_candidate_lists(
+            kg_bug_candidates,
+            local_bug_candidates,
+            prefix="B",
+            top_k=TOP_K_INSTANCE_CANDIDATES,
+        )
+
+        if not page_candidates:
+            page_candidates = [{"id": "P1", "name": "未知页面", "score": 0.1, "source": "fallback"}]
+        if not element_candidates:
+            element_candidates = [{"id": "E1", "name": "未知组件", "score": 0.1, "source": "fallback"}]
+        if not bug_candidates:
+            bug_candidates = [{"id": "B1", "name": self._normalize_phrase(description), "score": 0.1, "source": "fallback"}]
+
+        return {
+            "report_id": report_id,
+            "text": normalized_description,
+            "operations": operation_candidates,
+            "pages": page_candidates,
+            "elements": element_candidates,
+            "bugs": bug_candidates,
+            "operation_confidence": operation_confidence,
+            "page_confidence": self._candidate_confidence(kg_page_candidates),
+            "element_confidence": self._candidate_confidence(kg_element_candidates),
+            "bug_confidence": self._candidate_confidence(kg_bug_candidates),
+        }
+
+    def _format_candidates(self, title: str, candidates: List[Dict[str, Any]]) -> str:
+        if not candidates:
+            return f"{title}:\nNONE"
+        lines = [f"{title}:"]
+        for item in candidates:
+            suffix = ""
+            if "severity" in item and item.get("severity"):
+                suffix = f" | severity={item['severity']}"
+            lines.append(f"{item['id']}. {item['name'] if 'name' in item else item['description'][:80]}{suffix}")
+        return "\n".join(lines)
+
+    def _build_candidate_report_block(self, candidate_payloads: List[Dict[str, Any]]) -> str:
+        blocks = []
+        for payload in candidate_payloads:
+            blocks.append(
+                "\n".join(
+                    [
+                        f"[Report {payload['report_id']}]",
+                        f"TEXT: {payload['text']}",
+                        self._format_candidates("Operation Candidates", payload["operations"]),
+                        self._format_candidates("Page Candidates", payload["pages"]),
+                        self._format_candidates("Element Candidates", payload["elements"]),
+                        self._format_candidates("Bug Candidates", payload["bugs"]),
+                    ]
+                )
+            )
+        return "\n\n".join(blocks)
 
     def _batch_max_tokens(self, report_count: int, retry: bool = False) -> int:
         budget = min(BATCH_EXTRACTION_MAX_TOKENS, SINGLE_EXTRACTION_MAX_TOKENS * max(1, report_count))
@@ -253,16 +565,47 @@ class GraphPriorPipeline:
                 return str(value).strip()
         return ""
 
-    def _normalize_extraction_item(
+    def _select_candidate_name(
+        self,
+        raw_value: str,
+        candidates: List[Dict[str, Any]],
+        fallback: str,
+    ) -> str:
+        value = self._normalize_phrase(raw_value)
+        if not value or value.upper() in {"NONE", "P0", "E0", "O0", "B0"}:
+            return fallback
+        for item in candidates:
+            if value == str(item.get("id", "")).strip():
+                return self._normalize_phrase(str(item.get("name", fallback)))
+        return fallback
+
+    def _normalize_link_selection_item(
         self,
         data: Dict[str, Any],
-        report_id: str,
+        candidate_payload: Dict[str, Any],
         description: str,
     ) -> Dict[str, str]:
-        operation = self._get_field(data, "Operation", "op") or "未知操作"
-        page = self._get_field(data, "Page", "pg") or "未知页面"
-        element = self._get_field(data, "Element", "el") or "未知组件"
-        bug = self._get_field(data, "Bug", "bug") or description
+        report_id = candidate_payload["report_id"]
+        operation = self._select_candidate_name(
+            self._get_field(data, "Operation", "op"),
+            candidate_payload["operations"],
+            fallback=self._normalize_phrase(candidate_payload["operations"][0]["name"]) if candidate_payload["operations"] else "未知操作",
+        )
+        page = self._select_candidate_name(
+            self._get_field(data, "Page", "pg"),
+            candidate_payload["pages"],
+            fallback="未知页面",
+        )
+        element = self._select_candidate_name(
+            self._get_field(data, "Element", "el"),
+            candidate_payload["elements"],
+            fallback="未知组件",
+        )
+        bug = self._select_candidate_name(
+            self._get_field(data, "Bug", "bug"),
+            candidate_payload["bugs"],
+            fallback=self._normalize_phrase(description),
+        )
         severity_scope = self._resolve_scope(self._get_field(data, "Severity_Scope", "scope"))
 
         return {
@@ -272,6 +615,7 @@ class GraphPriorPipeline:
             "Element": element,
             "Bug": bug,
             "Severity_Scope": severity_scope,
+            "Reference_Report": self._get_field(data, "Reference_Report", "ref"),
         }
 
     @staticmethod
@@ -288,6 +632,7 @@ class GraphPriorPipeline:
             "PG": "pg",
             "EL": "el",
             "BUG": "bug",
+            "REF": "ref",
             "SCOPE": "scope",
         }
 
@@ -305,13 +650,43 @@ class GraphPriorPipeline:
             key, value = line.split(":", 1)
             mapped = field_map.get(key.strip().upper())
             if mapped:
+                if mapped == "id" and current.get("id"):
+                    items.append(current)
+                    current = {}
                 current[mapped] = value.strip()
 
         if current.get("id"):
             items.append(current)
         return items
 
+    @staticmethod
+    def _try_compact_line_load(raw: str) -> List[Dict[str, Any]]:
+        items: List[Dict[str, Any]] = []
+        for line in (raw or "").splitlines():
+            compact = line.strip()
+            if not compact or "|" not in compact or not compact.startswith("R_"):
+                continue
+            parts = [part.strip() for part in compact.split("|")]
+            if len(parts) != 6:
+                continue
+            report_id, op, pg, el, bug, scope = parts
+            items.append(
+                {
+                    "id": report_id,
+                    "op": op,
+                    "pg": "NONE" if pg.upper() == "P0" else pg,
+                    "el": "NONE" if el.upper() == "E0" else el,
+                    "bug": "NONE" if bug.upper() == "B0" else bug,
+                    "scope": scope,
+                }
+            )
+        return items
+
     def _parse_extraction_items(self, raw: str) -> List[Dict[str, Any]]:
+        compact_items = self._try_compact_line_load(raw)
+        if compact_items:
+            return compact_items
+
         block_items = self._try_block_load(raw)
         if block_items:
             return block_items
@@ -326,7 +701,7 @@ class GraphPriorPipeline:
         return []
 
     @staticmethod
-    def _chunk_pairs(items: List[Tuple[str, str]], chunk_size: int) -> List[List[Tuple[str, str]]]:
+    def _chunk_pairs(items: List[Any], chunk_size: int) -> List[List[Any]]:
         if not items:
             return []
         return [items[start:start + chunk_size] for start in range(0, len(items), chunk_size)]
@@ -421,9 +796,8 @@ class GraphPriorPipeline:
             available += 1
         if str(rep_row.get("Page", "")).strip() and not str(rep_row.get("Page", "")).startswith("未知"):
             available += 1
-        if self.kg_service and getattr(self.kg_service, "extract_bug_symptoms", None):
-            if self.kg_service.extract_bug_symptoms(str(rep_row.get("Bug", ""))):
-                available += 1
+        if str(rep_row.get("Bug", "")).strip() and not str(rep_row.get("Bug", "")).startswith("未知"):
+            available += 1
         return max(1, available)
 
     def _compute_priority_from_evidence(
@@ -447,13 +821,13 @@ class GraphPriorPipeline:
                     matched_slots += 1
                 if item.get("matched_elements"):
                     matched_slots += 1
-                if item.get("matched_bug_symptoms"):
-                    matched_slots += 1
                 if item.get("matched_pages"):
+                    matched_slots += 1
+                if item.get("matched_bugs"):
                     matched_slots += 1
 
                 overlap_ratio = matched_slots / float(available_slots)
-                weight = max(0.0, float(item.get("vector_score", 0.0))) * (1.0 + overlap_ratio)
+                weight = max(0.0, float(item.get("vector_score", 0.0))) * (1.0 + PRIORITY_ALPHA * overlap_ratio)
                 weighted_total += weight
                 if str(item.get("severity", "")).strip() in HIGH_RISK_SEVERITIES:
                     weighted_high_risk += weight
@@ -465,7 +839,7 @@ class GraphPriorPipeline:
                 risk = weighted_high_risk / weighted_total
                 support = math.log1p(weighted_total)
 
-        cluster_support = math.log1p(cluster_size)
+        cluster_support = math.pow(math.log1p(cluster_size), PRIORITY_BETA)
         base_priority = float(risk * support * cluster_support)
         cluster["risk_score"] = risk
         cluster["support_score"] = support
@@ -474,7 +848,11 @@ class GraphPriorPipeline:
         return base_priority
 
     def _kg_priority_scoring(self) -> Optional[Dict[int, float]]:
-        if not self.kg_service or not hasattr(self.kg_service, "retrieve_priority_evidence"):
+        if (
+            not self.kg_service
+            or not hasattr(self.kg_service, "retrieve_priority_evidence")
+            or not getattr(self.kg_service, "supports_priority_evidence", True)
+        ):
             return None
 
         score_map: Dict[int, float] = {}
@@ -521,7 +899,7 @@ class GraphPriorPipeline:
                         self._cosine_similarity(vectors[idx], vectors[chosen_idx])
                         for chosen_idx in selected
                     )
-                priority = base_priority / (1.0 + max(0.0, similarity_penalty))
+                priority = base_priority / (1.0 + PRIORITY_LAMBDA * max(0.0, similarity_penalty))
                 if priority > best_score:
                     best_idx = idx
                     best_score = priority
@@ -531,21 +909,31 @@ class GraphPriorPipeline:
 
         return [clusters[idx] for idx in selected]
 
-    def _extract_structured(self, report_id: str, description: str, batch_index: int = -1) -> Dict[str, str]:
-        normalized_description = self._normalize_prompt_text(description)
-        prompt = EXTRACTION_PROMPT.format(report_id=report_id, text=normalized_description)
+    def _render_link_prompt(self, candidate_payloads: List[Dict[str, Any]], compact_only: bool = False) -> str:
+        prompt_template = LINK_SELECTION_RETRY_PROMPT if compact_only else LINK_SELECTION_PROMPT
+        return prompt_template.format(reports_block=self._build_candidate_report_block(candidate_payloads))
+
+    def _extract_structured(
+        self,
+        candidate_payload: Dict[str, Any],
+        batch_index: int = -1,
+        compact_only: bool = False,
+    ) -> Dict[str, str]:
+        report_id = candidate_payload["report_id"]
+        prompt = self._render_link_prompt([candidate_payload], compact_only=compact_only)
         content, p_tokens, r_tokens = ask_gpt(
             prompt,
             model=self.model,
             max_token=SINGLE_EXTRACTION_MAX_TOKENS,
             base_url=self.base_url,
             api_key=self.api_key,
+            request_options=self._build_request_options(),
         )
         with self.token_lock:
             self.input_tokens += p_tokens
             self.output_tokens += r_tokens
         self._record_raw_response(
-            call_type="single",
+            call_type="single_retry" if compact_only else "single",
             report_ids=[report_id],
             content=content,
             prompt_tokens=p_tokens,
@@ -554,24 +942,34 @@ class GraphPriorPipeline:
         )
         parsed_items = self._parse_extraction_items(content)
         parsed = parsed_items[0] if parsed_items else {}
-        return self._normalize_extraction_item(parsed, report_id=report_id, description=description)
+        return self._normalize_link_selection_item(
+            parsed,
+            candidate_payload=candidate_payload,
+            description=str(candidate_payload.get("text", "")),
+        )
 
-    def _extract_structured_batch(self, reports_batch: List[Tuple[str, str]], batch_index: int) -> Dict[str, Dict[str, str]]:
-        reports_block = self._build_batch_reports_block(reports_batch)
-        report_ids = [report_id for report_id, _ in reports_batch]
-        prompt = EXTRACTION_BATCH_PROMPT.format(reports_block=reports_block)
+    def _extract_structured_batch(
+        self,
+        candidate_payloads: List[Dict[str, Any]],
+        batch_index: int,
+        compact_only: bool = False,
+        call_type: str = "batch",
+    ) -> Dict[str, Dict[str, str]]:
+        report_ids = [payload["report_id"] for payload in candidate_payloads]
+        prompt = self._render_link_prompt(candidate_payloads, compact_only=compact_only)
         content, p_tokens, r_tokens = ask_gpt(
             prompt,
             model=self.model,
-            max_token=self._batch_max_tokens(len(reports_batch)),
+            max_token=self._batch_max_tokens(len(candidate_payloads)),
             base_url=self.base_url,
             api_key=self.api_key,
+            request_options=self._build_request_options(),
         )
         with self.token_lock:
             self.input_tokens += p_tokens
             self.output_tokens += r_tokens
         self._record_raw_response(
-            call_type="batch",
+            call_type=call_type,
             report_ids=report_ids,
             content=content,
             prompt_tokens=p_tokens,
@@ -586,42 +984,68 @@ class GraphPriorPipeline:
                 parsed_by_id[rid] = item
 
         normalized: Dict[str, Dict[str, str]] = {}
-        for report_id, description in reports_batch:
+        for payload in candidate_payloads:
+            report_id = payload["report_id"]
             parsed = parsed_by_id.get(report_id)
             if not parsed:
                 continue
-            normalized[report_id] = self._normalize_extraction_item(
+            normalized[report_id] = self._normalize_link_selection_item(
                 parsed,
-                report_id=report_id,
-                description=description,
+                candidate_payload=payload,
+                description=str(payload.get("text", "")),
             )
         return normalized
 
+    @staticmethod
+    def _coverage_ratio(candidate_payloads: List[Dict[str, Any]], extracted_batch: Dict[str, Dict[str, str]]) -> float:
+        total = max(1, len(candidate_payloads))
+        covered = sum(1 for payload in candidate_payloads if payload["report_id"] in extracted_batch)
+        return covered / float(total)
+
     def _fill_missing_extractions(
         self,
-        reports_batch: List[Tuple[str, str]],
+        candidate_payloads: List[Dict[str, Any]],
         extracted_batch: Dict[str, Dict[str, str]],
         batch_index: int,
     ) -> Dict[str, Dict[str, str]]:
-        missing_reports = [(report_id, text) for report_id, text in reports_batch if report_id not in extracted_batch]
+        coverage = self._coverage_ratio(candidate_payloads, extracted_batch)
+        if len(candidate_payloads) > 1 and coverage < BATCH_RETRY_COVERAGE_THRESHOLD:
+            retry_batch = self._extract_structured_batch(
+                candidate_payloads,
+                batch_index=batch_index,
+                compact_only=True,
+                call_type="batch_retry",
+            )
+            for report_id, item in retry_batch.items():
+                extracted_batch[report_id] = item
+
+        missing_reports = [payload for payload in candidate_payloads if payload["report_id"] not in extracted_batch]
         if not missing_reports:
             return extracted_batch
 
         for retry_batch in self._chunk_pairs(
-            [item for item in missing_reports if item[0] not in extracted_batch],
+            [item for item in missing_reports if item["report_id"] not in extracted_batch],
             MISSING_RETRY_BATCH_SIZE,
         ):
             if len(retry_batch) == 1:
                 break
-            extracted_batch.update(self._extract_structured_batch(retry_batch, batch_index=batch_index))
+            extracted_batch.update(
+                self._extract_structured_batch(
+                    retry_batch,
+                    batch_index=batch_index,
+                    compact_only=True,
+                    call_type="batch_missing",
+                )
+            )
 
-        for report_id, description in reports_batch:
+        for payload in candidate_payloads:
+            report_id = payload["report_id"]
             if report_id in extracted_batch:
                 continue
             extracted_batch[report_id] = self._extract_structured(
-                report_id=report_id,
-                description=description,
+                payload,
                 batch_index=batch_index,
+                compact_only=True,
             )
         return extracted_batch
 
@@ -652,20 +1076,25 @@ class GraphPriorPipeline:
         chunk: List[Tuple[int, Dict[str, Any]]],
         grouped_reports: Dict[int, List[Tuple[int, Dict[str, Any]]]],
     ) -> List[Dict[str, Any]]:
-        batch_input: List[Tuple[str, str]] = []
+        candidate_payloads: List[Dict[str, Any]] = []
         for idx, report in chunk:
             report_id = f"R_{idx:03d}"
             description = report.get("description", "")
-            batch_input.append((report_id, description))
+            candidate_payloads.append(self._build_link_candidates(report_id, description))
 
-        extracted_batch = self._extract_structured_batch(batch_input, batch_index=batch_index)
-        extracted_batch = self._fill_missing_extractions(batch_input, extracted_batch, batch_index=batch_index)
+        extracted_batch = self._extract_structured_batch(candidate_payloads, batch_index=batch_index)
+        extracted_batch = self._fill_missing_extractions(candidate_payloads, extracted_batch, batch_index=batch_index)
 
         records: List[Tuple[int, str, str, Dict[str, str]]] = []
         embedding_texts: List[str] = []
         for rep_idx, _report in chunk:
             rep_report_id = f"R_{rep_idx:03d}"
-            ext = extracted_batch[rep_report_id]
+            ext = extracted_batch.get(rep_report_id)
+            if not ext:
+                payload = next((item for item in candidate_payloads if item["report_id"] == rep_report_id), None)
+                if payload is None:
+                    continue
+                ext = self._normalize_link_selection_item({}, candidate_payload=payload, description=str(payload.get("text", "")))
             for idx, report in grouped_reports.get(rep_idx, []):
                 report_id = f"R_{idx:03d}"
                 description = report.get("description", "")
@@ -746,10 +1175,10 @@ class GraphPriorPipeline:
             v_el = item["v_el"]
             v_bg = item["v_bg"]
 
-            op_eid = self._match_or_create_instance_dimension("Operation", op_text, v_op, threshold=0.9)
-            page_eid = self._match_or_create_instance_dimension("Page", page_text, v_pg, threshold=0.9)
-            elem_eid = self._match_or_create_instance_dimension("Element", elem_text, v_el, threshold=0.9)
-            bug_eid = self._match_or_create_instance_dimension("Bug", bug_text, v_bg, threshold=0.9)
+            op_eid = self._match_or_create_instance_dimension("Operation", op_text, v_op, threshold=OPERATION_MATCH_THRESHOLD)
+            page_eid = self._match_or_create_instance_dimension("Page", page_text, v_pg, threshold=INSTANCE_MATCH_THRESHOLD)
+            elem_eid = self._match_or_create_instance_dimension("Element", elem_text, v_el, threshold=INSTANCE_MATCH_THRESHOLD)
+            bug_eid = self._match_or_create_instance_dimension("Bug", bug_text, v_bg, threshold=INSTANCE_MATCH_THRESHOLD)
 
             signature = (op_eid, page_eid, elem_eid, bug_eid)
             
@@ -875,6 +1304,7 @@ def run_graph_prior(
     model: str,
     batch_size: int = 16,
     workers: int = 4,
+    kg_mode: str = "offline",
     embedding_model: Optional[str] = None,
     base_url: Optional[str] = None,
     api_key: Optional[str] = None,
@@ -883,6 +1313,7 @@ def run_graph_prior(
         model=model,
         batch_size=batch_size,
         workers=workers,
+        kg_mode=kg_mode,
         embedding_model=embedding_model,
         base_url=base_url,
         api_key=api_key,

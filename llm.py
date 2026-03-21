@@ -3,7 +3,7 @@ LLM Service for Bug Report Prioritization.
 Provides interface to Google Gemini API for text generation.
 """
 
-from typing import Optional, Tuple
+from typing import Any, Dict, Optional, Tuple
 from google import genai
 from google.genai import types
 from openai import OpenAI
@@ -31,6 +31,7 @@ def ask_gpt(
     max_token: int = 65536,
     base_url: Optional[str] = None,
     api_key: Optional[str] = None,
+    request_options: Optional[Dict[str, Any]] = None,
 ) -> Tuple[str, int, int]:
     """
     Send prompt to LLM API (Google or OpenAI) and get response.
@@ -40,25 +41,47 @@ def ask_gpt(
     model_lower = model.lower()
 
     if "gemini" in model_lower:
-        return ask_gemini(prompt, model, max_token)
+        return ask_gemini(prompt, model, max_token, request_options=request_options)
     if "gpt" in model_lower:
-        return ask_openai(prompt, model, max_token, base_url=base_url, api_key=api_key)
+        return ask_openai(
+            prompt,
+            model,
+            max_token,
+            base_url=base_url,
+            api_key=api_key,
+            request_options=request_options,
+        )
 
     # Custom model: call with OpenAI-compatible API under the given base_url.
     if not base_url and not BASE_URL:
         print("Warning: custom model detected but base_url is not set; falling back to default OpenAI endpoint.")
-    return ask_openai(prompt, model, max_token, base_url=base_url, api_key=api_key)
+    return ask_openai(
+        prompt,
+        model,
+        max_token,
+        base_url=base_url,
+        api_key=api_key,
+        request_options=request_options,
+    )
 
 
-def ask_gemini(prompt: str, model: str, max_token: int) -> Tuple[str, int, int]:
+def ask_gemini(
+    prompt: str,
+    model: str,
+    max_token: int,
+    request_options: Optional[Dict[str, Any]] = None,
+) -> Tuple[str, int, int]:
     try:
+        config_kwargs: Dict[str, Any] = {
+            "max_output_tokens": max_token,
+            "temperature": 0.0,
+        }
+        if request_options:
+            config_kwargs.update(request_options.get("gemini_config", {}))
         response = google_client.models.generate_content(
             model=model,
             contents={'text': prompt},
-            config=types.GenerateContentConfig(
-                max_output_tokens=max_token,
-                temperature=0.0,
-            ),
+            config=types.GenerateContentConfig(**config_kwargs),
         )
         
         # Extract content
@@ -92,6 +115,7 @@ def ask_openai(
     max_token: int,
     base_url: Optional[str] = None,
     api_key: Optional[str] = None,
+    request_options: Optional[Dict[str, Any]] = None,
 ) -> Tuple[str, int, int]:
     openai_client = _build_openai_client(api_key=api_key, base_url=base_url)
     if not openai_client:
@@ -101,14 +125,34 @@ def ask_openai(
     # Default to gpt-5.2 if an invalid model name might be passed or just rely on caller
     # Use user-specified model.
     
+    request_kwargs: Dict[str, Any] = {
+        "model": model,
+        "messages": [{"role": "user", "content": prompt}],
+        "max_tokens": max_token if max_token < 16000 else 4096,
+        "temperature": 0.0,
+    }
+    if request_options:
+        if request_options.get("extra_body"):
+            request_kwargs["extra_body"] = request_options["extra_body"]
+        if request_options.get("stream_options"):
+            request_kwargs["stream_options"] = request_options["stream_options"]
+
     try:
-        response = openai_client.chat.completions.create(
-            model=model,
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=max_token if max_token < 16000 else 4096, # Adjust max tokens for OpenAI if needed, or keep high
-            temperature=0.0,
-        )
-        
+        response = openai_client.chat.completions.create(**request_kwargs)
+    except Exception as e:
+        if request_kwargs.get("extra_body"):
+            fallback_kwargs = dict(request_kwargs)
+            fallback_kwargs.pop("extra_body", None)
+            try:
+                response = openai_client.chat.completions.create(**fallback_kwargs)
+            except Exception as inner_e:
+                print(f"Error calling OpenAI API: {inner_e}")
+                return "", 0, 0
+        else:
+            print(f"Error calling OpenAI API: {e}")
+            return "", 0, 0
+
+    try:
         content = response.choices[0].message.content
         
         prompt_tokens = response.usage.prompt_tokens

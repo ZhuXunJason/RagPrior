@@ -22,6 +22,7 @@ if not GOOGLE_API_KEY:
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 BASE_URL = os.getenv("BASE_URL", "https://api.openai.com/v1")
+KG_MODE = os.getenv("KG_MODE", "offline")
 
 if not OPENAI_API_KEY:
     print("Warning: OPENAI_API_KEY not found in .env file or environment variables.")
@@ -31,3 +32,4 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 RESPONSE_DIR = os.path.join(PROJECT_ROOT, "response")
 RESULT_DIR = os.path.join(PROJECT_ROOT, "result")
 REPORTS_DIR = os.path.join(PROJECT_ROOT, "reports")
+KG_DESC_PATH = os.path.join(PROJECT_ROOT, "KG_desc.md")
