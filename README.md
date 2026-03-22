@@ -14,8 +14,7 @@ The current GraphPrior implementation is no longer the old “free-form extracti
 It now uses:
 
 - offline KG by default, built from [`KG_desc.md`](/d:/OneDrive/Project/GraphPrior/GraphPrior/KG_desc.md)
-- relation-enhanced candidate generation
-- app-local lexicon mining from the current app’s reports
+- KG-driven local mention extraction plus relation-enhanced candidate generation
 - deterministic slot prefill before any LLM call
 - selective LLM linking only for ambiguous slots
 - single-line extraction output such as `R_001|O1|P0|E2|B3|page`
@@ -32,16 +31,16 @@ Core file: [`graph_prior.py`](/d:/OneDrive/Project/GraphPrior/GraphPrior/graph_p
 
 For each representative report, GraphPrior builds candidates for `Operation`, `Page`, `Element`, and `Bug` from three evidence sources:
 
-- current-report local phrase extraction
-- app-local lexicon mined from the current app’s reports
-- offline KG relation priors from [`KG_desc.md`](/d:/OneDrive/Project/GraphPrior/GraphPrior/KG_desc.md)
+- current-report direct mentions extracted with KG-provided surfaces, aliases, and markers
+- offline KG textual matches from [`KG_desc.md`](/d:/OneDrive/Project/GraphPrior/GraphPrior/KG_desc.md)
+- runtime fallback matches from the in-memory instance store
 
-The candidates are ranked by layered evidence rather than a black-box mixed score:
+The candidates are still ordered by evidence tiers rather than shown with opaque prompt scores:
 
 1. direct report hit
-2. app-local lexicon support
-3. offline KG support
-4. memory-based similarity support
+2. offline KG support
+3. operation relation support
+4. fallback memory support
 
 Then GraphPrior performs deterministic prefill:
 
@@ -203,7 +202,6 @@ GraphPrior response files now include:
 
 - GraphPrior is still conservative on `Page / Element` extraction in some apps
 - the offline KG is only as good as the coverage of [`KG_desc.md`](/d:/OneDrive/Project/GraphPrior/GraphPrior/KG_desc.md)
-- app-local lexicon is heuristic and can still miss rare expressions
 - current scoring is deterministic and explainable, but not yet learned from larger cross-app supervision
 - results can still vary by model family, especially outside the extraction path
 

@@ -74,21 +74,21 @@ class _FakeKGService:
     def retrieve_link_candidates(self, query_text, top_k_op=4, top_k_history=0, top_k_instance=4):
         return {
             "operations": [
-                {"id": "O1", "name": "点击", "score": 2.0, "source": "direct"},
-                {"id": "O2", "name": "打开", "score": 1.0, "source": "history"},
+                {"id": "O1", "name": "点击", "score": 2.0, "source": "kg", "evidence": {"kg": True}},
+                {"id": "O2", "name": "打开", "score": 1.0, "source": "kg", "evidence": {"kg": True}},
             ][:top_k_op],
-            "pages": [{"id": "P1", "name": "帮助页面", "score": 2.0, "source": "offline-kg"}][:top_k_instance],
-            "elements": [{"id": "E1", "name": "帮助按钮", "score": 1.5, "source": "offline-kg"}][:top_k_instance],
-            "bugs": [{"id": "B1", "name": "加载失败", "score": 2.0, "source": "offline-kg"}][:top_k_instance],
+            "pages": [{"id": "P1", "name": "帮助页面", "score": 2.0, "source": "kg", "evidence": {"kg": True}}][:top_k_instance],
+            "elements": [{"id": "E1", "name": "帮助按钮", "score": 1.5, "source": "kg", "evidence": {"kg": True, "relation": True}}][:top_k_instance],
+            "bugs": [{"id": "B1", "name": "加载失败", "score": 2.0, "source": "kg", "evidence": {"kg": True, "relation": True}}][:top_k_instance],
             "historical_reports": [],
             "operation_confidence": 2.0,
             "page_confidence": 2.0,
             "element_confidence": 1.8,
             "bug_confidence": 2.0,
-            "operation_evidence": {"direct_hit": True, "relation_hit": False, "lexicon_hit": False},
-            "page_evidence": {"direct_hit": True, "relation_hit": False, "lexicon_hit": False},
-            "element_evidence": {"direct_hit": True, "relation_hit": True, "lexicon_hit": False},
-            "bug_evidence": {"direct_hit": True, "relation_hit": True, "lexicon_hit": False},
+            "operation_evidence": {"kg": True, "relation": False, "fallback": False},
+            "page_evidence": {"kg": True, "relation": False, "fallback": False},
+            "element_evidence": {"kg": True, "relation": True, "fallback": False},
+            "bug_evidence": {"kg": True, "relation": True, "fallback": False},
         }
 
     def retrieve_priority_evidence(self, query_text, op_text, page_text, elem_text, bug_text, top_k=20):
@@ -105,10 +105,47 @@ def _make_manual_payload(
     slot_prefill=None,
     llm_slots=None,
 ):
-    operations = operations or [{"id": "O1", "name": "点击", "score": 3.0, "source": "report", "evidence": {"report_hit": True}}]
-    pages = pages or []
-    elements = elements or []
-    bugs = bugs or [{"id": "B1", "name": "加载失败", "score": 3.0, "source": "report", "evidence": {"report_hit": True}}]
+    def _normalize_candidate(item):
+        normalized = dict(item)
+        source = str(normalized.get("source", "")).strip()
+        normalized["source"] = {"report": "direct", "lexicon": "kg", "memory": "fallback"}.get(source, source)
+
+        evidence = dict(normalized.get("evidence", {}) or {})
+        if evidence.pop("report_hit", False):
+            evidence["direct"] = True
+        if evidence.pop("lexicon_hit", False):
+            evidence["kg"] = True
+        if evidence.pop("kg_hit", False):
+            evidence["kg"] = True
+        if evidence.pop("relation_hit", False):
+            evidence["relation"] = True
+        if evidence.pop("memory_hit", False):
+            evidence["fallback"] = True
+        if normalized["source"] == "direct":
+            evidence.setdefault("direct", True)
+        if normalized["source"] == "kg":
+            evidence.setdefault("kg", True)
+        if normalized["source"] == "fallback":
+            evidence.setdefault("fallback", True)
+        normalized["evidence"] = evidence
+        return normalized
+
+    def _normalize_bucket(items):
+        return [_normalize_candidate(item) for item in (items or [])]
+
+    def _summarize_bucket(items):
+        summary = {"kg": False, "relation": False, "fallback": False}
+        for item in items:
+            evidence = item.get("evidence", {}) or {}
+            summary["kg"] = bool(summary["kg"]) or bool(evidence.get("kg"))
+            summary["relation"] = bool(summary["relation"]) or bool(evidence.get("relation"))
+            summary["fallback"] = bool(summary["fallback"]) or bool(evidence.get("fallback"))
+        return summary
+
+    operations = _normalize_bucket(operations or [{"id": "O1", "name": "点击", "score": 3.0, "source": "direct", "evidence": {"direct": True}}])
+    pages = _normalize_bucket(pages or [])
+    elements = _normalize_bucket(elements or [])
+    bugs = _normalize_bucket(bugs or [{"id": "B1", "name": "加载失败", "score": 3.0, "source": "direct", "evidence": {"direct": True}}])
     slot_prefill = slot_prefill or {
         "Operation": {"resolved": True, "value": operations[0]["name"], "candidate_id": operations[0]["id"], "reason": "test", "score": operations[0]["score"]},
         "Page": {"resolved": not bool(pages), "value": "未知页面" if not pages else pages[0]["name"], "candidate_id": "P0" if not pages else pages[0]["id"], "reason": "test", "score": pages[0]["score"] if pages else 0.0},
@@ -131,10 +168,10 @@ def _make_manual_payload(
         "llm_slots": llm_slots,
         "llm_required": bool(llm_slots),
         "slot_evidence": {
-            "Operation": {"confidence": 2.0, "kg": {}, "candidates": {"count": len(operations), "top": operations[:3]}},
-            "Page": {"confidence": 2.0, "kg": {}, "candidates": {"count": len(pages), "top": pages[:3]}},
-            "Element": {"confidence": 2.0, "kg": {}, "candidates": {"count": len(elements), "top": elements[:3]}},
-            "Bug": {"confidence": 2.0, "kg": {}, "candidates": {"count": len(bugs), "top": bugs[:3]}},
+            "Operation": {"confidence": 2.0, "kg": _summarize_bucket(operations), "candidates": {"count": len(operations), "top": operations[:3]}},
+            "Page": {"confidence": 2.0, "kg": _summarize_bucket(pages), "candidates": {"count": len(pages), "top": pages[:3]}},
+            "Element": {"confidence": 2.0, "kg": _summarize_bucket(elements), "candidates": {"count": len(elements), "top": elements[:3]}},
+            "Bug": {"confidence": 2.0, "kg": _summarize_bucket(bugs), "candidates": {"count": len(bugs), "top": bugs[:3]}},
         },
     }
 
@@ -362,19 +399,19 @@ def test_weak_kg_candidates_are_gated_out(monkeypatch):
     class _WeakKG(_FakeKGService):
         def retrieve_link_candidates(self, query_text, top_k_op=4, top_k_history=0, top_k_instance=4):
             return {
-                "operations": [{"id": "O1", "name": "错误操作", "score": 0.2, "source": "offline-kg"}],
-                "pages": [{"id": "P1", "name": "错误页面", "score": 0.2, "source": "offline-kg"}],
-                "elements": [{"id": "E1", "name": "错误按钮", "score": 0.2, "source": "offline-kg"}],
-                "bugs": [{"id": "B1", "name": "错误症状", "score": 0.2, "source": "offline-kg"}],
+                "operations": [{"id": "O1", "name": "错误操作", "score": 0.2, "source": "kg", "evidence": {"kg": True}}],
+                "pages": [{"id": "P1", "name": "错误页面", "score": 0.2, "source": "kg", "evidence": {"kg": True}}],
+                "elements": [{"id": "E1", "name": "错误按钮", "score": 0.2, "source": "kg", "evidence": {"kg": True}}],
+                "bugs": [{"id": "B1", "name": "错误症状", "score": 0.2, "source": "kg", "evidence": {"kg": True}}],
                 "historical_reports": [],
                 "operation_confidence": 0.2,
                 "page_confidence": 0.2,
                 "element_confidence": 0.2,
                 "bug_confidence": 0.2,
-                "operation_evidence": {"direct_hit": False, "relation_hit": False, "lexicon_hit": False},
-                "page_evidence": {"direct_hit": False, "relation_hit": False, "lexicon_hit": False},
-                "element_evidence": {"direct_hit": False, "relation_hit": False, "lexicon_hit": False},
-                "bug_evidence": {"direct_hit": False, "relation_hit": False, "lexicon_hit": False},
+                "operation_evidence": {"kg": False, "relation": False, "fallback": False},
+                "page_evidence": {"kg": False, "relation": False, "fallback": False},
+                "element_evidence": {"kg": False, "relation": False, "fallback": False},
+                "bug_evidence": {"kg": False, "relation": False, "fallback": False},
             }
 
     monkeypatch.setattr(graph_prior, "get_kg_service", lambda **kwargs: _WeakKG())
@@ -671,8 +708,8 @@ def test_offline_kg_uses_operation_relations_for_candidates(tmp_path):
     assert any(item["name"] == "帮助页面" for item in candidates["pages"])
     assert any(item["name"] == "帮助按钮" for item in candidates["elements"])
     assert any(item["name"] == "加载失败" for item in candidates["bugs"])
-    assert candidates["page_evidence"]["relation_hit"] is True
-    assert candidates["elements"][0]["evidence"]["kg_hit"] is True
+    assert candidates["page_evidence"]["relation"] is True
+    assert candidates["elements"][0]["evidence"]["kg"] is True
     assert candidates["pages"][0]["evidence"]["matched_surface"] == "帮助"
     assert candidates["pages"][0]["evidence"]["matched_marker"] in {"界面", "中心", ""}
 
@@ -895,8 +932,8 @@ def test_kg_driven_local_page_element_extraction_marks_report_hits(tmp_path, mon
 
     assert payload["pages"][0]["name"] == "帮助页面"
     assert payload["elements"][0]["name"] == "帮助按钮"
-    assert payload["pages"][0]["evidence"]["report_hit"] is True
-    assert payload["elements"][0]["evidence"]["report_hit"] is True
+    assert payload["pages"][0]["evidence"]["direct"] is True
+    assert payload["elements"][0]["evidence"]["direct"] is True
 
 
 def test_local_element_extraction_uses_kg_operation_vocabulary(tmp_path, monkeypatch):
@@ -939,7 +976,7 @@ def test_local_element_extraction_uses_kg_operation_vocabulary(tmp_path, monkeyp
     payload = pipeline._build_link_candidates("R_001", "轻触帮助入口后无响应")
 
     assert payload["elements"][0]["name"] == "帮助按钮"
-    assert payload["elements"][0]["evidence"]["report_hit"] is True
+    assert payload["elements"][0]["evidence"]["direct"] is True
 
 
 def test_page_element_memory_only_used_as_fallback(monkeypatch):
@@ -950,8 +987,8 @@ def test_page_element_memory_only_used_as_fallback(monkeypatch):
             payload["elements"] = []
             payload["page_confidence"] = 0.0
             payload["element_confidence"] = 0.0
-            payload["page_evidence"] = {"direct_hit": False, "relation_hit": False, "lexicon_hit": False}
-            payload["element_evidence"] = {"direct_hit": False, "relation_hit": False, "lexicon_hit": False}
+            payload["page_evidence"] = {"kg": False, "relation": False, "fallback": False}
+            payload["element_evidence"] = {"kg": False, "relation": False, "fallback": False}
             return payload
 
     monkeypatch.setattr(graph_prior, "get_kg_service", lambda **kwargs: _EmptyPageElementKG())
@@ -964,9 +1001,10 @@ def test_page_element_memory_only_used_as_fallback(monkeypatch):
 
     assert payload["pages"]
     assert payload["elements"]
-    assert payload["pages"][0]["source"] == "memory"
-    assert payload["elements"][0]["source"] == "memory"
+    assert payload["pages"][0]["source"] == "fallback"
+    assert payload["elements"][0]["source"] == "fallback"
     assert payload["pages"][0]["evidence"]["memory_fallback"] is True
+    assert payload["elements"][0]["evidence"]["memory_fallback"] is True
 
 
 def test_tail_bias_prefers_later_page_match(tmp_path):
@@ -1081,3 +1119,4 @@ def test_prompt_only_lists_unresolved_slots(monkeypatch):
     assert "Element Candidates" not in prompt
     assert "Bug Candidates" not in prompt
     assert "Page Candidates" in prompt
+    assert "[kg]" in prompt

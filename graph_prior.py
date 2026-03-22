@@ -5,7 +5,6 @@ GraphPrior pipeline
 from __future__ import annotations
 
 from typing import Any, Dict, List, Optional, Tuple
-from collections import Counter
 import json
 import math
 import re
@@ -39,14 +38,9 @@ PRIORITY_LAMBDA = 0.5
 INSTANCE_MATCH_THRESHOLD = 0.92
 OPERATION_MATCH_THRESHOLD = 0.98
 TOP_K_OPERATION_CANDIDATES = 2
-TOP_K_HISTORY_CANDIDATES = 5
 TOP_K_INSTANCE_CANDIDATES = 3
 OPERATION_KG_CONFIDENCE_THRESHOLD = 1.2
 SLOT_KG_CONFIDENCE_THRESHOLD = 1.6
-APP_LEXICON_MIN_FREQ = 2
-APP_LEXICON_SIM_THRESHOLD = 0.92
-APP_LEXICON_MAX_ITEMS = 32
-APP_LEXICON_SCORE_THRESHOLD = 0.65
 PREFILL_STRONG_SCORE = 1.9
 PREFILL_STRONG_MARGIN = 0.75
 PREFILL_STRONG_RATIO = 1.35
@@ -146,11 +140,6 @@ class GraphPriorPipeline:
         self.embedding_lock = threading.Lock()
         self.raw_responses: List[Dict[str, Any]] = []
         self._embedding_cache: Dict[str, List[float]] = {}
-        self.app_local_lexicon: Dict[str, List[Dict[str, Any]]] = {
-            "Page": [],
-            "Element": [],
-            "Bug": [],
-        }
 
     def _record_raw_response(
         self,
@@ -341,10 +330,6 @@ class GraphPriorPipeline:
             return 0.0
         return max(float(item.get("score", 0.0)) for item in candidates)
 
-    @staticmethod
-    def _contains_failure_keyword(text: str) -> bool:
-        return any(keyword in text for keyword in PAGE_FAILURE_KEYWORDS)
-
     def _extract_operation_mentions(self, text: str) -> List[str]:
         if self.kg_service and getattr(self.kg_service, "extract_entities", None):
             ops, _ = self.kg_service.extract_entities(text)
@@ -502,19 +487,17 @@ class GraphPriorPipeline:
         name: str,
         score: float,
         source: str,
-        report_hit: bool = False,
-        lexicon_hit: bool = False,
-        kg_hit: bool = False,
-        relation_hit: bool = False,
-        memory_hit: bool = False,
+        direct: bool = False,
+        kg: bool = False,
+        relation: bool = False,
+        fallback: bool = False,
         evidence: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         merged_evidence = {
-            "report_hit": bool(report_hit),
-            "lexicon_hit": bool(lexicon_hit),
-            "kg_hit": bool(kg_hit),
-            "relation_hit": bool(relation_hit),
-            "memory_hit": bool(memory_hit),
+            "direct": bool(direct),
+            "kg": bool(kg),
+            "relation": bool(relation),
+            "fallback": bool(fallback),
         }
         if evidence:
             merged_evidence.update(evidence)
@@ -526,120 +509,29 @@ class GraphPriorPipeline:
         }
 
     @staticmethod
-    def _candidate_sort_key(item: Dict[str, Any]) -> Tuple[int, int, int, int, float, int]:
+    def _candidate_sort_key(item: Dict[str, Any]) -> Tuple[int, int, int, float, int]:
         evidence = item.get("evidence", {})
-        kg_layer = int(bool(evidence.get("kg_hit")) or bool(evidence.get("relation_hit")))
         return (
-            int(bool(evidence.get("report_hit"))),
-            int(bool(evidence.get("lexicon_hit"))),
-            kg_layer,
-            int(bool(evidence.get("memory_hit"))),
+            int(bool(evidence.get("direct"))),
+            int(bool(evidence.get("kg")) or bool(evidence.get("relation"))),
+            int(not bool(evidence.get("fallback"))),
             float(item.get("score", 0.0)),
             len(str(item.get("name", ""))),
         )
 
-    def _canonicalize_phrases(self, phrases: Counter) -> List[Dict[str, Any]]:
-        if not phrases:
-            return []
-
-        items = [
-            {"name": self._normalize_phrase(name), "count": int(count)}
-            for name, count in phrases.items()
-            if self._normalize_phrase(name) != "未知"
-        ]
-        items.sort(key=lambda item: (int(item["count"]), len(item["name"])), reverse=True)
-        if not items:
-            return []
-
-        embeddings = self._get_cached_embeddings([item["name"] for item in items])
-        canonical: List[Dict[str, Any]] = []
-        for item, embedding in zip(items, embeddings):
-            matched = None
-            for existing in canonical:
-                sim = self._cosine_similarity(existing["embedding"], embedding)
-                if sim >= APP_LEXICON_SIM_THRESHOLD:
-                    matched = existing
-                    break
-            if matched is None:
-                canonical.append(
-                    {
-                        "name": item["name"],
-                        "count": int(item["count"]),
-                        "variants": [item["name"]],
-                        "embedding": embedding,
-                    }
-                )
-                continue
-
-            previous_count = int(matched["count"])
-            matched["count"] += int(item["count"])
-            matched["variants"].append(item["name"])
-            if int(item["count"]) > previous_count or len(item["name"]) > len(matched["name"]):
-                matched["name"] = item["name"]
-
-        canonical.sort(key=lambda item: (int(item["count"]), len(item["name"])), reverse=True)
-        return [
-            {
-                "name": item["name"],
-                "count": int(item["count"]),
-                "variants": list(dict.fromkeys(item["variants"])),
-            }
-            for item in canonical[:APP_LEXICON_MAX_ITEMS]
-        ]
-
-    def _build_app_local_lexicon(self, reports: List[Dict[str, Any]]) -> None:
-        phrase_extractors = {
-            "Page": self._extract_page_instances,
-            "Element": self._extract_element_instances,
-            "Bug": self._extract_bug_instances,
-        }
-        lexicon: Dict[str, List[Dict[str, Any]]] = {}
-        for label, extractor in phrase_extractors.items():
-            counts: Counter = Counter()
-            for report in reports:
-                description = str(report.get("description", ""))
-                for phrase in extractor(description):
-                    counts[self._normalize_phrase(phrase)] += 1
-            filtered = Counter({name: count for name, count in counts.items() if int(count) >= APP_LEXICON_MIN_FREQ})
-            lexicon[label] = self._canonicalize_phrases(filtered)
-        self.app_local_lexicon = lexicon
-
-    def _rank_lexicon_candidates(
-        self,
-        report_text: str,
-        memory_label: str,
-        prefix: str,
-        top_k: int = TOP_K_INSTANCE_CANDIDATES,
-    ) -> List[Dict[str, Any]]:
-        ranked: List[Dict[str, Any]] = []
-        for item in self.app_local_lexicon.get(memory_label, []):
-            phrase = str(item.get("name", "")).strip()
-            if not phrase:
-                continue
-            lexical_score = self._score_phrase_match(report_text, phrase)
-            if lexical_score < APP_LEXICON_SCORE_THRESHOLD:
-                continue
-            freq_bonus = min(int(item.get("count", 0)), 5) * 0.2
-            ranked.append(
-                self._make_candidate(
-                    phrase,
-                    score=lexical_score + freq_bonus,
-                    source="lexicon",
-                    lexicon_hit=True,
-                    evidence={"frequency": int(item.get("count", 0)), "variants": list(item.get("variants", []))},
-                )
-            )
-        ranked.sort(key=self._candidate_sort_key, reverse=True)
-        return [
-            {
-                "id": f"{prefix}{idx}",
-                "name": item["name"],
-                "score": float(item["score"]),
-                "source": item["source"],
-                "evidence": dict(item.get("evidence", {})),
-            }
-            for idx, item in enumerate(ranked[:top_k], start=1)
-        ]
+    @staticmethod
+    def _candidate_labels(item: Dict[str, Any]) -> List[str]:
+        evidence = item.get("evidence", {}) or {}
+        labels: List[str] = []
+        if bool(evidence.get("direct")):
+            labels.append("direct")
+        if bool(evidence.get("kg")):
+            labels.append("kg")
+        if bool(evidence.get("relation")):
+            labels.append("relation")
+        if bool(evidence.get("fallback")):
+            labels.append("fallback")
+        return labels or ["none"]
 
     def _rank_memory_candidates(
         self,
@@ -665,8 +557,8 @@ class GraphPriorPipeline:
                 self._make_candidate(
                     memory_name,
                     score=0.5 + sim,
-                    source="memory",
-                    memory_hit=True,
+                    source="fallback",
+                    fallback=True,
                     evidence={"memory_fallback": True},
                 )
             )
@@ -701,11 +593,10 @@ class GraphPriorPipeline:
                         "score": float(item.get("score", 0.0)),
                         "source": set(),
                         "evidence": {
-                            "report_hit": False,
-                            "lexicon_hit": False,
-                            "kg_hit": False,
-                            "relation_hit": False,
-                            "memory_hit": False,
+                            "direct": False,
+                            "kg": False,
+                            "relation": False,
+                            "fallback": False,
                         },
                     },
                 )
@@ -809,6 +700,7 @@ class GraphPriorPipeline:
                     "name": item.get("name", ""),
                     "score": float(item.get("score", 0.0)),
                     "source": item.get("source", ""),
+                    "labels": self._candidate_labels(item),
                     "evidence": dict(item.get("evidence", {})),
                 }
                 for item in candidates[:3]
@@ -846,19 +738,19 @@ class GraphPriorPipeline:
         bug_seeds = self._extract_bug_instances(normalized_description)
 
         direct_operations = [
-            self._make_candidate(name, score=float(len(operation_seeds) - idx + 1) + 2.0, source="report", report_hit=True)
+            self._make_candidate(name, score=float(len(operation_seeds) - idx + 1) + 2.0, source="direct", direct=True)
             for idx, name in enumerate(operation_seeds, start=1)
         ][:TOP_K_OPERATION_CANDIDATES]
         direct_pages = [
-            self._make_candidate(name, score=float(len(page_seeds) - idx + 1) + 2.0, source="report", report_hit=True)
+            self._make_candidate(name, score=float(len(page_seeds) - idx + 1) + 2.0, source="direct", direct=True)
             for idx, name in enumerate(page_seeds, start=1)
         ][:TOP_K_INSTANCE_CANDIDATES]
         direct_elements = [
-            self._make_candidate(name, score=float(len(element_seeds) - idx + 1) + 2.0, source="report", report_hit=True)
+            self._make_candidate(name, score=float(len(element_seeds) - idx + 1) + 2.0, source="direct", direct=True)
             for idx, name in enumerate(element_seeds, start=1)
         ][:TOP_K_INSTANCE_CANDIDATES]
         direct_bugs = [
-            self._make_candidate(name, score=float(len(bug_seeds) - idx + 1) + 2.0, source="report", report_hit=True)
+            self._make_candidate(name, score=float(len(bug_seeds) - idx + 1) + 2.0, source="direct", direct=True)
             for idx, name in enumerate(bug_seeds, start=1)
         ][:TOP_K_INSTANCE_CANDIDATES]
 
@@ -879,7 +771,7 @@ class GraphPriorPipeline:
                     "name": "点击",
                     "score": 1.0,
                     "source": "fallback",
-                    "evidence": {"report_hit": False, "lexicon_hit": False, "kg_hit": False, "relation_hit": False, "memory_hit": False},
+                    "evidence": {"direct": False, "kg": False, "relation": False, "fallback": True},
                 }
             ]
         operation_confidence = self._candidate_confidence(operation_candidates)
@@ -908,7 +800,7 @@ class GraphPriorPipeline:
                     "name": self._normalize_phrase(description),
                     "score": 1.0,
                     "source": "fallback",
-                    "evidence": {"report_hit": False, "lexicon_hit": False, "kg_hit": False, "relation_hit": False, "memory_hit": False},
+                    "evidence": {"direct": False, "kg": False, "relation": False, "fallback": True},
                 }
             ]
 
@@ -962,10 +854,12 @@ class GraphPriorPipeline:
             return f"{title}:\nNONE"
         lines = [f"{title}:"]
         for item in candidates:
+            labels = self._candidate_labels(item)
+            label_suffix = f" [{'|'.join(labels)}]" if labels else ""
             suffix = ""
             if "severity" in item and item.get("severity"):
                 suffix = f" | severity={item['severity']}"
-            lines.append(f"{item['id']}. {item['name'] if 'name' in item else item['description'][:80]}{suffix}")
+            lines.append(f"{item['id']}. {item['name'] if 'name' in item else item['description'][:80]}{label_suffix}{suffix}")
         return "\n".join(lines)
 
     @staticmethod

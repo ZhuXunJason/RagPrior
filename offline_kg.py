@@ -418,19 +418,15 @@ class OfflineKGService:
             if text_score < 0.6 and final_score < 1.0:
                 continue
 
-            sources = ["offline-kg"]
-            if relation_ops:
-                sources.extend([f"offline-rel:{name}" for name in relation_ops])
             ranked.append(
                 {
                     "name": entity.name,
                     "score": final_score,
-                    "source": ",".join(sources),
+                    "source": "kg",
                     "evidence": {
-                        "kg_hit": True,
-                        "direct_hit": bool(text_score >= 0.6),
-                        "relation_hit": bool(relation_ops),
-                        "lexicon_hit": False,
+                        "kg": True,
+                        "relation": bool(relation_ops),
+                        "fallback": False,
                         "matched_surface": entity.surface,
                         "matched_form": best_form,
                         "matched_marker": best_marker or "",
@@ -474,10 +470,9 @@ class OfflineKGService:
             if score < 0.45:
                 continue
             evidence = {
-                "kg_hit": True,
-                "direct_hit": True,
-                "relation_hit": False,
-                "lexicon_hit": False,
+                "kg": True,
+                "relation": False,
+                "fallback": False,
             }
             if tail_bias:
                 evidence.update(
@@ -500,7 +495,7 @@ class OfflineKGService:
                 "id": f"{prefix}{idx}",
                 "name": item["name"],
                 "score": float(item["score"]),
-                "source": "offline-kg",
+                "source": "kg",
                 "evidence": dict(item.get("evidence", {})),
             }
             for idx, item in enumerate(scored[:top_k], start=1)
@@ -583,10 +578,9 @@ class OfflineKGService:
                         "score": 0.0,
                         "source": set(),
                         "evidence": {
-                            "kg_hit": True,
-                            "direct_hit": False,
-                            "relation_hit": True,
-                            "lexicon_hit": False,
+                            "kg": True,
+                            "relation": True,
+                            "fallback": False,
                             "matched_form": matched_form,
                             "position_ratio": position_ratio,
                             "position_weight": position_weight,
@@ -594,7 +588,7 @@ class OfflineKGService:
                     },
                 )
                 entry["score"] += total_score
-                entry["source"].add(f"offline-rel:{op_name}")
+                entry["source"].add("kg")
                 if tail_bias and position_ratio >= float(entry["evidence"].get("position_ratio", 0.0)):
                     entry["evidence"]["matched_form"] = matched_form
                     entry["evidence"]["position_ratio"] = position_ratio
@@ -617,12 +611,12 @@ class OfflineKGService:
 
     @staticmethod
     def _summarize_evidence(candidates: List[Dict[str, Any]]) -> Dict[str, Any]:
-        summary = {"direct_hit": False, "relation_hit": False, "lexicon_hit": False}
+        summary = {"kg": False, "relation": False, "fallback": False}
         for item in candidates:
             evidence = item.get("evidence", {}) or {}
-            summary["direct_hit"] = bool(summary["direct_hit"]) or bool(evidence.get("direct_hit"))
-            summary["relation_hit"] = bool(summary["relation_hit"]) or bool(evidence.get("relation_hit"))
-            summary["lexicon_hit"] = bool(summary["lexicon_hit"]) or bool(evidence.get("lexicon_hit"))
+            summary["kg"] = bool(summary["kg"]) or bool(evidence.get("kg"))
+            summary["relation"] = bool(summary["relation"]) or bool(evidence.get("relation"))
+            summary["fallback"] = bool(summary["fallback"]) or bool(evidence.get("fallback"))
         return summary
 
     def extract_entities(self, text: str) -> Tuple[List[str], List[str]]:

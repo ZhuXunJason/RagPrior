@@ -12,8 +12,7 @@
 当前版本已经不是早期的“自由字段抽取 + Neo4j 默认依赖”方案，而是下面这条主链路：
 
 - 默认使用离线 KG，来源是 [`KG_desc.md`](/d:/OneDrive/Project/GraphPrior/GraphPrior/KG_desc.md)
-- 使用 KG 关系先验增强候选生成
-- 从当前 app 全部报告中构建 app-local lexicon
+- 使用 KG 驱动的本地 mention 抽取与 KG 关系增强候选生成
 - 在调用 LLM 之前先做确定性 prefill
 - 只有歧义槽位才交给 LLM
 - LLM 输出单行链接结果，例如 `R_001|O1|P0|E2|B3|page`
@@ -30,16 +29,16 @@ Neo4j 仍然可以通过 `--kg-mode online` 使用，但现在它是可选项，
 
 对每条代表性报告，GraphPrior 会为 `Operation / Page / Element / Bug` 构造候选。候选来自三类证据：
 
-- 当前报告本地短语抽取
-- 当前 app 的 app-local lexicon
-- 离线 KG 关系先验
+- 基于 KG `surface / aliases / markers` 的当前报告直接 mention
+- 离线 KG 文本匹配
+- 运行时实例池提供的 fallback 候选
 
 候选排序不是简单叠加分数，而是按证据层次排序：
 
 1. 当前报告直接命中
-2. app-local lexicon 支持
-3. offline KG 支持
-4. memory 相似归并支持
+2. offline KG 支持
+3. operation 关系支持
+4. memory fallback 支持
 
 随后执行确定性 prefill：
 
@@ -201,7 +200,6 @@ python main.py --app 2 --mode llmprior --model qwen3.5-plus
 
 - 某些 app 上 `Page / Element` 的解析仍然偏保守
 - 离线 KG 的效果依赖 [`KG_desc.md`](/d:/OneDrive/Project/GraphPrior/GraphPrior/KG_desc.md) 的覆盖度
-- app-local lexicon 仍然是启发式方法，可能漏掉低频表达
 - 当前打分具有可解释性，但还没有引入跨 app 学习型参数优化
 - 除抽取阶段外，不同模型族在整体排序上仍可能有差异
 
