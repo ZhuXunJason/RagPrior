@@ -39,13 +39,6 @@ INSTANCE_MATCH_THRESHOLD = 0.92
 OPERATION_MATCH_THRESHOLD = 0.98
 TOP_K_OPERATION_CANDIDATES = 2
 TOP_K_INSTANCE_CANDIDATES = 3
-OPERATION_KG_CONFIDENCE_THRESHOLD = 1.2
-SLOT_KG_CONFIDENCE_THRESHOLD = 1.6
-PREFILL_STRONG_SCORE = 1.9
-PREFILL_STRONG_MARGIN = 0.75
-PREFILL_STRONG_RATIO = 1.35
-
-
 LINK_SELECTION_PROMPT = """
 /no_think
 你是缺陷报告链接器。请根据候选列表，为每条报告选择最合适的候选编号。
@@ -55,6 +48,11 @@ LINK_SELECTION_PROMPT = """
 3. PG / EL 可填候选编号或 NONE。
 4. BUG 只能从 Bug 候选中选 1 个编号；若候选都不合适，选最接近的一项。
 5. SCOPE 仅允许 element/page/program。
+6. 候选只分两层：
+   - [direct]：报告文本里直接提到的对象
+   - [fallback]：其余补全候选
+   优先选真正直接引发 bug、或 bug 实际所在的 [direct] Page / Element。
+   如果没有合适的 [direct]，再考虑 [fallback]。
 6. 每个报告严格输出一行，格式固定为：
 R_001|O1|P0|E2|B3|page
 其中 P0 / E0 表示 NONE。
@@ -64,17 +62,17 @@ R_001|O1|P0|E2|B3|page
 [Report R_000]
 TEXT: 点击登录按钮后应用闪退并返回桌面
 Operation Candidates:
-O1. 点击
-O2. 打开
+O1. 点击 [direct]
+O2. 打开 [fallback]
 Page Candidates:
-P1. 登录页
-P2. NONE
+P1. 登录页 [fallback]
+P2. NONE [fallback]
 Element Candidates:
-E1. 登录按钮
-E2. 登录入口
+E1. 登录按钮 [direct]
+E2. 登录入口 [fallback]
 Bug Candidates:
-B1. 应用闪退
-B2. 返回桌面
+B1. 应用闪退 [direct]
+B2. 返回桌面 [fallback]
 
 示例输出：
 R_000|O1|P0|E1|B1|program
@@ -324,12 +322,6 @@ class GraphPriorPipeline:
             ordered.append(normalized)
         return ordered
 
-    @staticmethod
-    def _candidate_confidence(candidates: List[Dict[str, Any]]) -> float:
-        if not candidates:
-            return 0.0
-        return max(float(item.get("score", 0.0)) for item in candidates)
-
     def _extract_operation_mentions(self, text: str) -> List[str]:
         if self.kg_service and getattr(self.kg_service, "extract_entities", None):
             ops, _ = self.kg_service.extract_entities(text)
@@ -485,53 +477,42 @@ class GraphPriorPipeline:
     @staticmethod
     def _make_candidate(
         name: str,
-        score: float,
         source: str,
         direct: bool = False,
-        kg: bool = False,
-        relation: bool = False,
         fallback: bool = False,
         evidence: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         merged_evidence = {
             "direct": bool(direct),
-            "kg": bool(kg),
-            "relation": bool(relation),
             "fallback": bool(fallback),
         }
         if evidence:
             merged_evidence.update(evidence)
         return {
             "name": GraphPriorPipeline._normalize_phrase(name),
-            "score": float(score),
             "source": source,
             "evidence": merged_evidence,
         }
 
     @staticmethod
-    def _candidate_sort_key(item: Dict[str, Any]) -> Tuple[int, int, int, float, int]:
+    def _candidate_sort_key(item: Dict[str, Any]) -> Tuple[int, int, int, int]:
         evidence = item.get("evidence", {})
+        mention_length = int(evidence.get("mention_length", len(str(item.get("name", "")))))
+        order = int(evidence.get("order", 10**6))
+        fallback_priority = 1 if bool(evidence.get("relation")) else 0
         return (
             int(bool(evidence.get("direct"))),
-            int(bool(evidence.get("kg")) or bool(evidence.get("relation"))),
-            int(not bool(evidence.get("fallback"))),
-            float(item.get("score", 0.0)),
-            len(str(item.get("name", ""))),
+            fallback_priority,
+            mention_length,
+            -order,
         )
 
     @staticmethod
     def _candidate_labels(item: Dict[str, Any]) -> List[str]:
         evidence = item.get("evidence", {}) or {}
-        labels: List[str] = []
         if bool(evidence.get("direct")):
-            labels.append("direct")
-        if bool(evidence.get("kg")):
-            labels.append("kg")
-        if bool(evidence.get("relation")):
-            labels.append("relation")
-        if bool(evidence.get("fallback")):
-            labels.append("fallback")
-        return labels or ["none"]
+            return ["direct"]
+        return ["fallback"]
 
     def _rank_memory_candidates(
         self,
@@ -556,10 +537,13 @@ class GraphPriorPipeline:
             ranked.append(
                 self._make_candidate(
                     memory_name,
-                    score=0.5 + sim,
                     source="fallback",
                     fallback=True,
-                    evidence={"memory_fallback": True},
+                    evidence={
+                        "memory_fallback": True,
+                        "mention_length": len(self._normalize_phrase(memory_name)),
+                        "order": len(ranked),
+                    },
                 )
             )
         ranked.sort(key=self._candidate_sort_key, reverse=True)
@@ -567,7 +551,6 @@ class GraphPriorPipeline:
             {
                 "id": f"{prefix}{idx}",
                 "name": item["name"],
-                "score": float(item["score"]),
                 "source": item["source"],
                 "evidence": dict(item.get("evidence", {})),
             }
@@ -590,17 +573,14 @@ class GraphPriorPipeline:
                     name,
                     {
                         "name": name,
-                        "score": float(item.get("score", 0.0)),
                         "source": set(),
                         "evidence": {
                             "direct": False,
-                            "kg": False,
                             "relation": False,
                             "fallback": False,
                         },
                     },
                 )
-                entry["score"] = max(float(entry["score"]), float(item.get("score", 0.0)))
                 source = str(item.get("source", "")).strip()
                 if source:
                     entry["source"].add(source)
@@ -609,7 +589,14 @@ class GraphPriorPipeline:
                     if isinstance(value, bool):
                         entry["evidence"][key] = bool(entry["evidence"].get(key)) or value
                     elif isinstance(value, (int, float)):
-                        entry["evidence"][key] = max(float(entry["evidence"].get(key, 0.0) or 0.0), float(value))
+                        if key == "order":
+                            current = entry["evidence"].get(key)
+                            if current is None:
+                                entry["evidence"][key] = int(value)
+                            else:
+                                entry["evidence"][key] = min(int(current), int(value))
+                        else:
+                            entry["evidence"][key] = max(float(entry["evidence"].get(key, 0.0) or 0.0), float(value))
                     elif isinstance(value, list):
                         existing = list(entry["evidence"].get(key, []))
                         entry["evidence"][key] = list(dict.fromkeys(existing + value))
@@ -621,25 +608,11 @@ class GraphPriorPipeline:
             {
                 "id": f"{prefix}{idx}",
                 "name": item["name"],
-                "score": float(item["score"]),
                 "source": ",".join(sorted(item["source"])),
                 "evidence": dict(item["evidence"]),
             }
             for idx, item in enumerate(ranked, start=1)
         ]
-
-    @staticmethod
-    def _candidate_gap(candidates: List[Dict[str, Any]]) -> float:
-        if len(candidates) < 2:
-            return float(candidates[0].get("score", 0.0)) if candidates else 0.0
-        return float(candidates[0].get("score", 0.0)) - float(candidates[1].get("score", 0.0))
-
-    @staticmethod
-    def _candidate_ratio(candidates: List[Dict[str, Any]]) -> float:
-        if len(candidates) < 2:
-            return float(candidates[0].get("score", 0.0)) if candidates else 0.0
-        second = max(float(candidates[1].get("score", 0.0)), 1e-6)
-        return float(candidates[0].get("score", 0.0)) / second
 
     def _prefill_slot(
         self,
@@ -654,41 +627,42 @@ class GraphPriorPipeline:
                 "value": unknown_value,
                 "candidate_id": none_id or "NONE",
                 "reason": "no_candidates",
-                "score": 0.0,
             }
 
         top = candidates[0]
-        top_score = float(top.get("score", 0.0))
-        gap = self._candidate_gap(candidates)
-        ratio = self._candidate_ratio(candidates)
-        has_single = len(candidates) == 1
-        is_strong = top_score >= PREFILL_STRONG_SCORE
-        is_clear = gap >= PREFILL_STRONG_MARGIN or ratio >= PREFILL_STRONG_RATIO
+        top_is_direct = bool(top.get("evidence", {}).get("direct"))
+        other_directs = any(bool(item.get("evidence", {}).get("direct")) for item in candidates[1:])
+        fallback_candidates = [item for item in candidates if not bool(item.get("evidence", {}).get("direct"))]
 
-        if has_single and top_score >= 1.0:
+        if len(candidates) == 1:
             return {
                 "resolved": True,
                 "value": self._normalize_phrase(top.get("name", unknown_value)),
                 "candidate_id": str(top.get("id", "NONE")),
                 "reason": "single_candidate",
-                "score": top_score,
             }
 
-        if is_strong and is_clear:
+        if top_is_direct and not other_directs:
             return {
                 "resolved": True,
                 "value": self._normalize_phrase(top.get("name", unknown_value)),
                 "candidate_id": str(top.get("id", "NONE")),
-                "reason": "strong_winner",
-                "score": top_score,
+                "reason": "direct_over_fallback",
+            }
+
+        if not top_is_direct and len(fallback_candidates) == 1:
+            return {
+                "resolved": True,
+                "value": self._normalize_phrase(top.get("name", unknown_value)),
+                "candidate_id": str(top.get("id", "NONE")),
+                "reason": "single_fallback",
             }
 
         return {
             "resolved": False,
             "value": unknown_value,
             "candidate_id": "",
-            "reason": "ambiguous",
-            "score": top_score,
+            "reason": "ambiguous_directs" if top_is_direct or other_directs else "ambiguous_fallbacks",
         }
 
     def _build_slot_debug(self, candidates: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -698,7 +672,6 @@ class GraphPriorPipeline:
                 {
                     "id": item.get("id", ""),
                     "name": item.get("name", ""),
-                    "score": float(item.get("score", 0.0)),
                     "source": item.get("source", ""),
                     "labels": self._candidate_labels(item),
                     "evidence": dict(item.get("evidence", {})),
@@ -715,10 +688,6 @@ class GraphPriorPipeline:
             "elements": [],
             "bugs": [],
             "historical_reports": [],
-            "operation_confidence": 0.0,
-            "page_confidence": 0.0,
-            "element_confidence": 0.0,
-            "bug_confidence": 0.0,
             "operation_evidence": {},
             "page_evidence": {},
             "element_evidence": {},
@@ -738,26 +707,57 @@ class GraphPriorPipeline:
         bug_seeds = self._extract_bug_instances(normalized_description)
 
         direct_operations = [
-            self._make_candidate(name, score=float(len(operation_seeds) - idx + 1) + 2.0, source="direct", direct=True)
+            self._make_candidate(
+                name,
+                source="direct",
+                direct=True,
+                evidence={"order": idx - 1, "mention_length": len(self._normalize_phrase(name))},
+            )
             for idx, name in enumerate(operation_seeds, start=1)
         ][:TOP_K_OPERATION_CANDIDATES]
         direct_pages = [
-            self._make_candidate(name, score=float(len(page_seeds) - idx + 1) + 2.0, source="direct", direct=True)
+            self._make_candidate(
+                name,
+                source="direct",
+                direct=True,
+                evidence={"order": idx - 1, "mention_length": len(self._normalize_phrase(name))},
+            )
             for idx, name in enumerate(page_seeds, start=1)
         ][:TOP_K_INSTANCE_CANDIDATES]
         direct_elements = [
-            self._make_candidate(name, score=float(len(element_seeds) - idx + 1) + 2.0, source="direct", direct=True)
+            self._make_candidate(
+                name,
+                source="direct",
+                direct=True,
+                evidence={"order": idx - 1, "mention_length": len(self._normalize_phrase(name))},
+            )
             for idx, name in enumerate(element_seeds, start=1)
         ][:TOP_K_INSTANCE_CANDIDATES]
         direct_bugs = [
-            self._make_candidate(name, score=float(len(bug_seeds) - idx + 1) + 2.0, source="direct", direct=True)
+            self._make_candidate(
+                name,
+                source="direct",
+                direct=True,
+                evidence={"order": idx - 1, "mention_length": len(self._normalize_phrase(name))},
+            )
             for idx, name in enumerate(bug_seeds, start=1)
         ][:TOP_K_INSTANCE_CANDIDATES]
 
         kg_operation_candidates = list(kg_candidates.get("operations", []))
-        operation_confidence = float(kg_candidates.get("operation_confidence", self._candidate_confidence(kg_operation_candidates)))
-        if operation_confidence < OPERATION_KG_CONFIDENCE_THRESHOLD:
-            kg_operation_candidates = []
+        kg_operation_candidates = [
+            self._make_candidate(
+                name=str(item.get("name", "")),
+                source="fallback",
+                fallback=True,
+                evidence={
+                    "kind": "kg_operation",
+                    "mention_length": len(self._normalize_phrase(str(item.get("name", "")))),
+                    "order": idx,
+                },
+            )
+            for idx, item in enumerate(kg_operation_candidates)
+            if self._normalize_phrase(str(item.get("name", ""))) != "未知"
+        ]
         operation_candidates = self._merge_slot_candidates(
             "O",
             TOP_K_OPERATION_CANDIDATES,
@@ -769,20 +769,59 @@ class GraphPriorPipeline:
                 {
                     "id": "O1",
                     "name": "点击",
-                    "score": 1.0,
                     "source": "fallback",
-                    "evidence": {"direct": False, "kg": False, "relation": False, "fallback": True},
+                    "evidence": {"direct": False, "relation": False, "fallback": True, "order": 0, "mention_length": 2},
                 }
             ]
-        operation_confidence = self._candidate_confidence(operation_candidates)
-
         memory_pages: List[Dict[str, Any]] = []
         memory_elements: List[Dict[str, Any]] = []
         memory_bugs = self._rank_memory_candidates(bug_seeds, "Bug", "B")
 
-        kg_page_candidates = list(kg_candidates.get("pages", [])) if float(kg_candidates.get("page_confidence", 0.0)) >= SLOT_KG_CONFIDENCE_THRESHOLD else []
-        kg_element_candidates = list(kg_candidates.get("elements", [])) if float(kg_candidates.get("element_confidence", 0.0)) >= SLOT_KG_CONFIDENCE_THRESHOLD else []
-        kg_bug_candidates = list(kg_candidates.get("bugs", [])) if float(kg_candidates.get("bug_confidence", 0.0)) >= SLOT_KG_CONFIDENCE_THRESHOLD else []
+        kg_page_candidates = [
+            self._make_candidate(
+                name=str(item.get("name", "")),
+                source="fallback",
+                fallback=True,
+                evidence={
+                    "relation": bool((item.get("evidence", {}) or {}).get("relation")),
+                    "kind": "kg_page",
+                    "mention_length": len(self._normalize_phrase(str(item.get("name", "")))),
+                    "order": idx,
+                },
+            )
+            for idx, item in enumerate(kg_candidates.get("pages", []))
+            if self._normalize_phrase(str(item.get("name", ""))) != "未知"
+        ]
+        kg_element_candidates = [
+            self._make_candidate(
+                name=str(item.get("name", "")),
+                source="fallback",
+                fallback=True,
+                evidence={
+                    "relation": bool((item.get("evidence", {}) or {}).get("relation")),
+                    "kind": "kg_element",
+                    "mention_length": len(self._normalize_phrase(str(item.get("name", "")))),
+                    "order": idx,
+                },
+            )
+            for idx, item in enumerate(kg_candidates.get("elements", []))
+            if self._normalize_phrase(str(item.get("name", ""))) != "未知"
+        ]
+        kg_bug_candidates = [
+            self._make_candidate(
+                name=str(item.get("name", "")),
+                source="fallback",
+                fallback=True,
+                evidence={
+                    "relation": bool((item.get("evidence", {}) or {}).get("relation")),
+                    "kind": "kg_bug",
+                    "mention_length": len(self._normalize_phrase(str(item.get("name", "")))),
+                    "order": idx,
+                },
+            )
+            for idx, item in enumerate(kg_candidates.get("bugs", []))
+            if self._normalize_phrase(str(item.get("name", ""))) != "未知"
+        ]
 
         if len(direct_pages) + len(kg_page_candidates) < TOP_K_INSTANCE_CANDIDATES:
             memory_pages = self._rank_memory_candidates([normalized_description], "Page", "P")
@@ -798,9 +837,14 @@ class GraphPriorPipeline:
                 {
                     "id": "B1",
                     "name": self._normalize_phrase(description),
-                    "score": 1.0,
                     "source": "fallback",
-                    "evidence": {"direct": False, "kg": False, "relation": False, "fallback": True},
+                    "evidence": {
+                        "direct": False,
+                        "relation": False,
+                        "fallback": True,
+                        "order": 0,
+                        "mention_length": len(self._normalize_phrase(description)),
+                    },
                 }
             ]
 
@@ -818,31 +862,23 @@ class GraphPriorPipeline:
             "pages": page_candidates,
             "elements": element_candidates,
             "bugs": bug_candidates,
-            "operation_confidence": operation_confidence,
-            "page_confidence": self._candidate_confidence(kg_page_candidates),
-            "element_confidence": self._candidate_confidence(kg_element_candidates),
-            "bug_confidence": self._candidate_confidence(kg_bug_candidates),
             "slot_prefill": slot_prefill,
             "llm_slots": llm_slots,
             "llm_required": bool(llm_slots),
             "slot_evidence": {
                 "Operation": {
-                    "confidence": operation_confidence,
                     "kg": dict(kg_candidates.get("operation_evidence", {})),
                     "candidates": self._build_slot_debug(operation_candidates),
                 },
                 "Page": {
-                    "confidence": float(kg_candidates.get("page_confidence", 0.0)),
                     "kg": dict(kg_candidates.get("page_evidence", {})),
                     "candidates": self._build_slot_debug(page_candidates),
                 },
                 "Element": {
-                    "confidence": float(kg_candidates.get("element_confidence", 0.0)),
                     "kg": dict(kg_candidates.get("element_evidence", {})),
                     "candidates": self._build_slot_debug(element_candidates),
                 },
                 "Bug": {
-                    "confidence": float(kg_candidates.get("bug_confidence", 0.0)),
                     "kg": dict(kg_candidates.get("bug_evidence", {})),
                     "candidates": self._build_slot_debug(bug_candidates),
                 },

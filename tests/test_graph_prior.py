@@ -395,8 +395,17 @@ def test_qwen_requests_disable_thinking(monkeypatch):
     assert seen_options[0]["extra_body"]["thinking_budget"] == 64
 
 
-def test_weak_kg_candidates_are_gated_out(monkeypatch):
+def test_weak_kg_candidates_do_not_override_direct_mentions(monkeypatch):
     class _WeakKG(_FakeKGService):
+        def __init__(self):
+            super().__init__()
+            self.pages = [
+                {"name": "帮助页面", "surface": "帮助", "aliases": ["帮助界面"], "markers": ["页面", "界面", "页"]},
+            ]
+            self.elements = [
+                {"name": "帮助按钮", "surface": "帮助", "aliases": ["帮助入口"], "markers": ["按钮", "入口"]},
+            ]
+
         def retrieve_link_candidates(self, query_text, top_k_op=4, top_k_history=0, top_k_instance=4):
             return {
                 "operations": [{"id": "O1", "name": "错误操作", "score": 0.2, "source": "kg", "evidence": {"kg": True}}],
@@ -417,12 +426,14 @@ def test_weak_kg_candidates_are_gated_out(monkeypatch):
     monkeypatch.setattr(graph_prior, "get_kg_service", lambda **kwargs: _WeakKG())
     monkeypatch.setattr(graph_prior, "get_embeddings", _fake_embeddings_unique)
     pipeline = graph_prior.GraphPriorPipeline(model="fake-model", batch_size=1, workers=1)
-    payload = pipeline._build_link_candidates("R_001", "点击帮助 页面加载不出任何信息")
+    payload = pipeline._build_link_candidates("R_001", "点击帮助页面后帮助按钮内容异常")
 
     assert payload["operations"][0]["name"] != "错误操作"
-    assert all(item["name"] != "错误页面" for item in payload["pages"])
-    assert all(item["name"] != "错误按钮" for item in payload["elements"])
-    assert all(item["name"] != "错误症状" for item in payload["bugs"])
+    assert payload["pages"][0]["name"] == "帮助页面"
+    assert payload["elements"][0]["name"] == "帮助按钮"
+    assert payload["pages"][0]["evidence"]["direct"] is True
+    assert payload["elements"][0]["evidence"]["direct"] is True
+    assert payload["bugs"][0]["evidence"]["direct"] is True
 
 
 def test_near_duplicate_reports_only_send_representatives_to_llm(monkeypatch):
@@ -878,9 +889,8 @@ def test_surface_matching_replaces_page_element_local_extraction(tmp_path, monke
 
     assert payload["pages"][0]["name"] == "帮助页面"
     assert payload["elements"][0]["name"] == "帮助按钮"
-    assert payload["pages"][0]["evidence"]["matched_surface"] == "帮助"
-    assert payload["elements"][0]["evidence"]["matched_surface"] == "帮助"
-    assert payload["pages"][0]["evidence"]["relation_bonus"] >= 0.4
+    assert payload["pages"][0]["evidence"]["direct"] is True
+    assert payload["elements"][0]["evidence"]["direct"] is True
 
 
 def test_kg_driven_local_page_element_extraction_marks_report_hits(tmp_path, monkeypatch):
@@ -1119,4 +1129,5 @@ def test_prompt_only_lists_unresolved_slots(monkeypatch):
     assert "Element Candidates" not in prompt
     assert "Bug Candidates" not in prompt
     assert "Page Candidates" in prompt
-    assert "[kg]" in prompt
+    assert "[fallback]" in prompt
+    assert "[kg]" not in prompt
