@@ -351,31 +351,129 @@ class GraphPriorPipeline:
             return self._dedupe_keep_order(ops)
         return []
 
-    def _extract_page_instances(self, text: str) -> List[str]:
+    @staticmethod
+    def _kg_item_attr(item: Any, key: str, default: Any = None) -> Any:
+        if isinstance(item, dict):
+            return item.get(key, default)
+        return getattr(item, key, default)
+
+    def _get_kg_slot_entities(self, slot_name: str) -> List[Dict[str, Any]]:
+        attr_name = "pages" if slot_name == "Page" else "elements" if slot_name == "Element" else ""
+        if not attr_name or not self.kg_service:
+            return []
+
+        raw_entities = getattr(self.kg_service, attr_name, []) or []
+        entities: List[Dict[str, Any]] = []
+        for item in raw_entities:
+            name = self._normalize_phrase(self._kg_item_attr(item, "name", ""))
+            if name == "未知":
+                continue
+            surface = self._normalize_phrase(self._kg_item_attr(item, "surface", name))
+            aliases = [
+                alias
+                for alias in (self._normalize_phrase(value) for value in (self._kg_item_attr(item, "aliases", []) or []))
+                if alias != "未知"
+            ]
+            markers = [
+                marker
+                for marker in (self._normalize_phrase(value) for value in (self._kg_item_attr(item, "markers", []) or []))
+                if marker != "未知"
+            ]
+            entities.append(
+                {
+                    "name": name,
+                    "surface": surface,
+                    "aliases": self._dedupe_keep_order(aliases),
+                    "markers": self._dedupe_keep_order(markers),
+                }
+            )
+        return entities
+
+    def _get_kg_markers(self, slot_name: str) -> List[str]:
+        markers: List[str] = []
+        for item in self._get_kg_slot_entities(slot_name):
+            markers.extend(item.get("markers", []))
+        ordered = self._dedupe_keep_order(markers)
+        return ordered
+
+    def _get_kg_operation_terms(self) -> List[str]:
+        if not self.kg_service:
+            return []
+        operations = getattr(self.kg_service, "operations", []) or []
+        return self._dedupe_keep_order([self._normalize_phrase(item) for item in operations])
+
+    def _iter_kg_entity_forms(self, slot_name: str) -> List[Dict[str, Any]]:
+        forms: List[Dict[str, Any]] = []
+        for item in self._get_kg_slot_entities(slot_name):
+            name = item["name"]
+            surface = item["surface"]
+            aliases = list(item.get("aliases", []))
+            markers = list(item.get("markers", []))
+            raw_forms = [name, surface, *aliases]
+            raw_forms.extend(f"{surface}{marker}" for marker in markers if surface != "未知")
+            raw_forms.extend(f"{alias}{marker}" for alias in aliases for marker in markers)
+            for form in self._dedupe_keep_order(raw_forms):
+                forms.append({"name": name, "form": form, "surface": surface})
+        return forms
+
+    def _resolve_kg_entity_name(self, mention: str, slot_name: str) -> str:
+        normalized_mention = self._normalize_phrase(mention)
+        if normalized_mention == "未知":
+            return normalized_mention
+
+        best_name = normalized_mention
+        best_score = 0.0
+        for item in self._iter_kg_entity_forms(slot_name):
+            score = self._score_phrase_match(normalized_mention, str(item.get("form", "")))
+            if score > best_score:
+                best_score = score
+                best_name = str(item.get("name", normalized_mention))
+        if best_score >= 1.1:
+            return self._normalize_phrase(best_name)
+        return normalized_mention
+
+    def _extract_mentions_by_marker(self, text: str, slot_name: str, max_len: int) -> List[str]:
         normalized = self._normalize_prompt_text(text, limit=800)
-        patterns = [
-            r"([^\s，。；,;]{1,16}(?:页面|界面|页面中|界面中|页|目录|栏目|中心))",
-            r"(帮助|设置|收藏|所有|最近的|首页|加载页|登录页|关于页|个人中心)(?:页面|界面|页)?",
-        ]
+        markers = self._get_kg_markers(slot_name)
+        if not markers:
+            return []
+        marker_pattern = "|".join(sorted((re.escape(marker) for marker in markers), key=len, reverse=True))
+        if not marker_pattern:
+            return []
+        pattern = rf"([^\s，。；,;]{{1,{max_len}}}(?:{marker_pattern}))"
         hits: List[str] = []
-        for pattern in patterns:
-            for match in re.findall(pattern, normalized):
-                hits.append(self._normalize_phrase(match))
+        for match in re.findall(pattern, normalized):
+            hits.append(self._resolve_kg_entity_name(match, slot_name))
+        return self._dedupe_keep_order(hits)
+
+    def _extract_page_instances(self, text: str) -> List[str]:
+        hits: List[str] = []
+        normalized = self._normalize_prompt_text(text, limit=800)
+        for item in self._iter_kg_entity_forms("Page"):
+            form = self._normalize_phrase(item.get("form", ""))
+            if form != "未知" and form in normalized:
+                hits.append(str(item.get("name", form)))
+        hits.extend(self._extract_mentions_by_marker(normalized, "Page", max_len=16))
         return self._dedupe_keep_order(hits)
 
     def _extract_element_instances(self, text: str) -> List[str]:
         normalized = self._normalize_prompt_text(text, limit=800)
-        patterns = [
-            r"([^\s，。；,;]{1,16}(?:按钮|图标|星标|星星|入口|菜单栏|菜单|下拉框|输入框|弹窗|对话框|列表|标签|卡片))",
-            r"(?:点击|打开|进入|选择|切换|查看|点亮)([^\s，。；,;]{1,12})",
-        ]
         hits: List[str] = []
-        for pattern in patterns:
+        for item in self._iter_kg_entity_forms("Element"):
+            form = self._normalize_phrase(item.get("form", ""))
+            if form != "未知" and form in normalized:
+                hits.append(str(item.get("name", form)))
+        hits.extend(self._extract_mentions_by_marker(normalized, "Element", max_len=16))
+
+        operation_terms = self._get_kg_operation_terms()
+        if operation_terms:
+            op_pattern = "|".join(sorted((re.escape(item) for item in operation_terms), key=len, reverse=True))
+            pattern = rf"(?:{op_pattern})([^\s，。；,;]{{1,12}})"
             for match in re.findall(pattern, normalized):
                 candidate = self._normalize_phrase(match)
-                if candidate in {"点击", "打开", "进入", "选择", "切换", "查看", "点亮"}:
+                if candidate in {"未知", *operation_terms}:
                     continue
-                hits.append(candidate)
+                hits.append(self._resolve_kg_entity_name(candidate, "Element"))
         return self._dedupe_keep_order(hits)
 
     def _extract_bug_instances(self, text: str) -> List[str]:
@@ -569,6 +667,7 @@ class GraphPriorPipeline:
                     score=0.5 + sim,
                     source="memory",
                     memory_hit=True,
+                    evidence={"memory_fallback": True},
                 )
             )
         ranked.sort(key=self._candidate_sort_key, reverse=True)
@@ -785,20 +884,22 @@ class GraphPriorPipeline:
             ]
         operation_confidence = self._candidate_confidence(operation_candidates)
 
-        lexicon_pages = self._rank_lexicon_candidates(normalized_description, "Page", "P")
-        lexicon_elements = self._rank_lexicon_candidates(normalized_description, "Element", "E")
-        lexicon_bugs = self._rank_lexicon_candidates(normalized_description, "Bug", "B")
-        memory_pages = self._rank_memory_candidates(page_seeds, "Page", "P")
-        memory_elements = self._rank_memory_candidates(element_seeds, "Element", "E")
+        memory_pages: List[Dict[str, Any]] = []
+        memory_elements: List[Dict[str, Any]] = []
         memory_bugs = self._rank_memory_candidates(bug_seeds, "Bug", "B")
 
         kg_page_candidates = list(kg_candidates.get("pages", [])) if float(kg_candidates.get("page_confidence", 0.0)) >= SLOT_KG_CONFIDENCE_THRESHOLD else []
         kg_element_candidates = list(kg_candidates.get("elements", [])) if float(kg_candidates.get("element_confidence", 0.0)) >= SLOT_KG_CONFIDENCE_THRESHOLD else []
         kg_bug_candidates = list(kg_candidates.get("bugs", [])) if float(kg_candidates.get("bug_confidence", 0.0)) >= SLOT_KG_CONFIDENCE_THRESHOLD else []
 
-        page_candidates = self._merge_slot_candidates("P", TOP_K_INSTANCE_CANDIDATES, direct_pages, lexicon_pages, kg_page_candidates, memory_pages)
-        element_candidates = self._merge_slot_candidates("E", TOP_K_INSTANCE_CANDIDATES, direct_elements, lexicon_elements, kg_element_candidates, memory_elements)
-        bug_candidates = self._merge_slot_candidates("B", TOP_K_INSTANCE_CANDIDATES, direct_bugs, lexicon_bugs, kg_bug_candidates, memory_bugs)
+        if len(direct_pages) + len(kg_page_candidates) < TOP_K_INSTANCE_CANDIDATES:
+            memory_pages = self._rank_memory_candidates([normalized_description], "Page", "P")
+        if len(direct_elements) + len(kg_element_candidates) < TOP_K_INSTANCE_CANDIDATES:
+            memory_elements = self._rank_memory_candidates([normalized_description], "Element", "E")
+
+        page_candidates = self._merge_slot_candidates("P", TOP_K_INSTANCE_CANDIDATES, direct_pages, kg_page_candidates, memory_pages)
+        element_candidates = self._merge_slot_candidates("E", TOP_K_INSTANCE_CANDIDATES, direct_elements, kg_element_candidates, memory_elements)
+        bug_candidates = self._merge_slot_candidates("B", TOP_K_INSTANCE_CANDIDATES, direct_bugs, kg_bug_candidates, memory_bugs)
 
         if not bug_candidates:
             bug_candidates = [
@@ -1579,7 +1680,6 @@ class GraphPriorPipeline:
         return prepared
 
     def phase1_extract_and_fuse(self, reports: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        self._build_app_local_lexicon(reports)
         indexed_reports = list(enumerate(reports, start=1))
         grouped_reports = self._group_reports_for_extraction(indexed_reports)
         representative_reports = [

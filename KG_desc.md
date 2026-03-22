@@ -79,75 +79,77 @@
 - PROGRAM
 
 ### Element（页面元素实例）（35 个）
-密码输入框
-验证码输入框
-手机号码输入框
-物理后退键
-发送反馈按钮
-流量上传开关
-WiFi 上传开关
-设备文件夹复选框
-取消分享按钮
-微信分享按钮
-分享按钮
-收藏按钮
-邀请按钮
-评论取消按钮
-提示文本
-昵称文本
-姓名文本
-头像图片
-截屏图片
-二维码图片
-图标
-微信图标
-通知标记
-照片列表
-视频列表
-好友列表
-推荐列表
-搜索结果列表
-手机联系人列表
-加载提示框
-网络异常提示框
-邀请成功提示框
-加载状态提示
-缺省页占位符
+- markers: 按钮、图标、入口、菜单、菜单栏、输入框、列表、弹窗、对话框、标签、卡片、开关、复选框、文本、图片、标记、提示框、占位符、键、提示、状态
+- name: 密码输入框 | surface: 密码
+- name: 验证码输入框 | surface: 验证码
+- name: 手机号码输入框 | surface: 手机号码
+- name: 物理后退键 | surface: 物理后退
+- name: 发送反馈按钮 | surface: 发送反馈
+- name: 流量上传开关 | surface: 流量上传
+- name: WiFi 上传开关 | surface: WiFi 上传
+- name: 设备文件夹复选框 | surface: 设备文件夹
+- name: 取消分享按钮 | surface: 取消分享
+- name: 微信分享按钮 | surface: 微信分享
+- name: 分享按钮 | surface: 分享
+- name: 收藏按钮 | surface: 收藏
+- name: 邀请按钮 | surface: 邀请
+- name: 评论取消按钮 | surface: 评论取消
+- name: 提示文本 | surface: 提示
+- name: 昵称文本 | surface: 昵称
+- name: 姓名文本 | surface: 姓名
+- name: 头像图片 | surface: 头像
+- name: 截屏图片 | surface: 截屏
+- name: 二维码图片 | surface: 二维码
+- name: 图标 | surface: 图标
+- name: 微信图标 | surface: 微信
+- name: 通知标记 | surface: 通知
+- name: 照片列表 | surface: 照片
+- name: 视频列表 | surface: 视频
+- name: 好友列表 | surface: 好友
+- name: 推荐列表 | surface: 推荐
+- name: 搜索结果列表 | surface: 搜索结果
+- name: 手机联系人列表 | surface: 手机联系人
+- name: 加载提示框 | surface: 加载
+- name: 网络异常提示框 | surface: 网络异常
+- name: 邀请成功提示框 | surface: 邀请成功
+- name: 加载状态提示 | surface: 加载状态
+- name: 缺省页占位符 | surface: 缺省
 
 ### Page（页面实例）（33 个）
-登录页
-注册页
-设置密码页
-个人主页
-好友页面
-添加好友页
-邀请好友页
-消息详情页
-通知页面
-头像设置页
-昵称修改页
-相册详情页
-视频播放页
-推荐页面
-搜索结果页
-评论页面
-设备文件夹页
-许可证页面
-相册创建页
-相册编辑页
-照片上传页
-视频上传页
-图片编辑页
-反馈页面
-分享操作页
-二维码分享页
-光影秀编辑页
-启动页
-加载页
-缺省空页面
-首页
-设置页面
-相册主页
+- markers: 页面、界面、页、目录、栏目、中心
+- name: 登录页 | surface: 登录
+- name: 注册页 | surface: 注册
+- name: 设置密码页 | surface: 设置密码
+- name: 个人主页 | surface: 个人主页
+- name: 好友页面 | surface: 好友
+- name: 添加好友页 | surface: 添加好友
+- name: 邀请好友页 | surface: 邀请好友
+- name: 消息详情页 | surface: 消息详情
+- name: 通知页面 | surface: 通知
+- name: 头像设置页 | surface: 头像设置
+- name: 昵称修改页 | surface: 昵称修改
+- name: 相册详情页 | surface: 相册详情
+- name: 视频播放页 | surface: 视频播放
+- name: 推荐页面 | surface: 推荐
+- name: 搜索结果页 | surface: 搜索结果
+- name: 评论页面 | surface: 评论
+- name: 设备文件夹页 | surface: 设备文件夹
+- name: 许可证页面 | surface: 许可证
+- name: 相册创建页 | surface: 相册创建
+- name: 相册编辑页 | surface: 相册编辑
+- name: 照片上传页 | surface: 照片上传
+- name: 视频上传页 | surface: 视频上传
+- name: 图片编辑页 | surface: 图片编辑
+- name: 反馈页面 | surface: 反馈
+- name: 分享操作页 | surface: 分享操作
+- name: 二维码分享页 | surface: 二维码分享
+- name: 光影秀编辑页 | surface: 光影秀编辑
+- name: 启动页 | surface: 启动
+- name: 加载页 | surface: 加载
+- name: 缺省空页面 | surface: 缺省空
+- name: 首页 | surface: 首页
+- name: 设置页面 | surface: 设置
+- name: 相册主页 | surface: 相册
 
 ## 关系（Relations）
 

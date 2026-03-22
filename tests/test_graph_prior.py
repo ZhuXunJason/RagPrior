@@ -638,12 +638,14 @@ def test_offline_kg_uses_operation_relations_for_candidates(tmp_path):
 - PROGRAM
 
 ### Element（页面元素实例）（2 个）
-帮助按钮
-收藏按钮
+- markers: 按钮、入口
+- name: 帮助按钮 | surface: 帮助 | aliases: 帮助入口
+- name: 收藏按钮 | surface: 收藏 | aliases: 收藏入口
 
 ### Page（页面实例）（2 个）
-帮助页面
-收藏页面
+- markers: 页面、界面、页、中心
+- name: 帮助页面 | surface: 帮助 | aliases: 帮助界面,帮助中心
+- name: 收藏页面 | surface: 收藏 | aliases: 收藏界面
 
 ## 关系（Relations）
 
@@ -671,6 +673,53 @@ def test_offline_kg_uses_operation_relations_for_candidates(tmp_path):
     assert any(item["name"] == "加载失败" for item in candidates["bugs"])
     assert candidates["page_evidence"]["relation_hit"] is True
     assert candidates["elements"][0]["evidence"]["kg_hit"] is True
+    assert candidates["pages"][0]["evidence"]["matched_surface"] == "帮助"
+    assert candidates["pages"][0]["evidence"]["matched_marker"] in {"界面", "中心", ""}
+
+
+def test_offline_kg_legacy_page_element_entries_still_work(tmp_path):
+    kg_text = """
+# 知识图谱描述
+
+## 实体（Entities）
+
+### BugSymptom（缺陷症状）（1 个）
+- 加载失败
+
+### Operation（操作行为）（1 个）
+- 点击
+
+### Severity（风险等级）（3 个）
+- ELEMENT
+- PAGE
+- PROGRAM
+
+### Element（页面元素实例）（1 个）
+收藏按钮
+
+### Page（页面实例）（2 个）
+登录页
+个人中心
+
+## 关系（Relations）
+
+### OperatesOnElement（Operation → Element）
+- 点击 → 收藏按钮
+
+### NavigatesToPage（Operation → Page）
+- 点击 → 登录页、个人中心
+
+### TriggersBugSymptom（Operation → BugSymptom）
+- 点击 → 加载失败
+""".strip()
+    path = tmp_path / "KG_desc_legacy.md"
+    path.write_text(kg_text, encoding="utf-8")
+
+    kg = offline_kg.OfflineKGService(path)
+    candidates = kg.retrieve_link_candidates("点击收藏按钮后登录界面加载失败", top_k_op=1, top_k_instance=3)
+
+    assert any(item["name"] == "登录页" for item in candidates["pages"])
+    assert any(item["name"] == "收藏按钮" for item in candidates["elements"])
 
 
 def test_prefill_can_skip_llm_for_fully_resolved_report(monkeypatch):
@@ -739,23 +788,261 @@ def test_mixed_batch_only_sends_unresolved_reports_to_llm(monkeypatch):
     assert seen_ids == ["R_002"]
 
 
-def test_app_local_lexicon_promotes_repeated_phrases(monkeypatch):
-    monkeypatch.setattr(graph_prior, "get_embeddings", _fake_embeddings)
-    monkeypatch.setattr(graph_prior, "get_kg_service", lambda **kwargs: _FakeKGService())
+def test_surface_matching_replaces_page_element_local_extraction(tmp_path, monkeypatch):
+    kg_text = """
+# 知识图谱描述
 
+## 实体（Entities）
+
+### BugSymptom（缺陷症状）（1 个）
+- 不显示
+
+### Operation（操作行为）（2 个）
+- 点击
+- 进入
+
+### Severity（风险等级）（3 个）
+- ELEMENT
+- PAGE
+- PROGRAM
+
+### Element（页面元素实例）（2 个）
+- markers: 按钮、入口
+- name: 帮助按钮 | surface: 帮助 | aliases: 帮助入口
+- name: 保存按钮 | surface: 保存
+
+### Page（页面实例）（2 个）
+- markers: 页面、界面、页、中心
+- name: 帮助页面 | surface: 帮助 | aliases: 帮助界面,帮助中心
+- name: 设置页面 | surface: 设置
+
+## 关系（Relations）
+
+### OperatesOnElement（Operation → Element）
+- 点击 → 帮助按钮、保存按钮
+- 进入 → 帮助按钮
+
+### NavigatesToPage（Operation → Page）
+- 点击 → 帮助页面
+- 进入 → 帮助页面
+
+### TriggersBugSymptom（Operation → BugSymptom）
+- 点击 → 不显示
+- 进入 → 不显示
+""".strip()
+    path = tmp_path / "KG_desc_surface.md"
+    path.write_text(kg_text, encoding="utf-8")
+
+    monkeypatch.setattr(graph_prior, "get_kg_service", lambda **kwargs: offline_kg.OfflineKGService(path))
+    monkeypatch.setattr(graph_prior, "get_embeddings", _fake_embeddings_unique)
     pipeline = graph_prior.GraphPriorPipeline(model="fake-model", batch_size=1, workers=1)
-    reports = [
-        {"description": "打开帮助页面后内容不显示"},
-        {"description": "进入帮助页面后内容不显示"},
-        {"description": "点击帮助页面后一直加载"},
-    ]
-    pipeline._build_app_local_lexicon(reports)
-    payload = pipeline._build_link_candidates("R_004", "帮助页面无法显示任何内容")
 
-    page_names = [item["name"] for item in payload["pages"]]
-    bug_names = [item["name"] for item in payload["bugs"]]
-    assert any("帮助页面" in name for name in page_names)
-    assert any(("不显示" in name) or ("无法显示" in name) for name in bug_names)
+    payload = pipeline._build_link_candidates("R_001", "进入帮助界面后帮助入口不显示")
+
+    assert payload["pages"][0]["name"] == "帮助页面"
+    assert payload["elements"][0]["name"] == "帮助按钮"
+    assert payload["pages"][0]["evidence"]["matched_surface"] == "帮助"
+    assert payload["elements"][0]["evidence"]["matched_surface"] == "帮助"
+    assert payload["pages"][0]["evidence"]["relation_bonus"] >= 0.4
+
+
+def test_kg_driven_local_page_element_extraction_marks_report_hits(tmp_path, monkeypatch):
+    kg_text = """
+# 知识图谱描述
+
+## 实体（Entities）
+
+### BugSymptom（缺陷症状）（1 个）
+- 不显示
+
+### Operation（操作行为）（2 个）
+- 点击
+- 进入
+
+### Severity（风险等级）（3 个）
+- ELEMENT
+- PAGE
+- PROGRAM
+
+### Element（页面元素实例）（2 个）
+- markers: 按钮、入口
+- name: 帮助按钮 | surface: 帮助 | aliases: 帮助入口
+- name: 保存按钮 | surface: 保存
+
+### Page（页面实例）（2 个）
+- markers: 页面、界面、页、中心
+- name: 帮助页面 | surface: 帮助 | aliases: 帮助界面,帮助中心
+- name: 设置页面 | surface: 设置
+
+## 关系（Relations）
+
+### OperatesOnElement（Operation → Element）
+- 点击 → 帮助按钮、保存按钮
+- 进入 → 帮助按钮
+
+### NavigatesToPage（Operation → Page）
+- 点击 → 帮助页面
+- 进入 → 帮助页面
+""".strip()
+    path = tmp_path / "KG_desc_local_mentions.md"
+    path.write_text(kg_text, encoding="utf-8")
+
+    monkeypatch.setattr(graph_prior, "get_kg_service", lambda **kwargs: offline_kg.OfflineKGService(path))
+    monkeypatch.setattr(graph_prior, "get_embeddings", _fake_embeddings_unique)
+    pipeline = graph_prior.GraphPriorPipeline(model="fake-model", batch_size=1, workers=1)
+
+    payload = pipeline._build_link_candidates("R_001", "进入帮助界面后点击帮助入口不显示")
+
+    assert payload["pages"][0]["name"] == "帮助页面"
+    assert payload["elements"][0]["name"] == "帮助按钮"
+    assert payload["pages"][0]["evidence"]["report_hit"] is True
+    assert payload["elements"][0]["evidence"]["report_hit"] is True
+
+
+def test_local_element_extraction_uses_kg_operation_vocabulary(tmp_path, monkeypatch):
+    kg_text = """
+# 知识图谱描述
+
+## 实体（Entities）
+
+### BugSymptom（缺陷症状）（1 个）
+- 无响应
+
+### Operation（操作行为）（1 个）
+- 轻触
+
+### Severity（风险等级）（3 个）
+- ELEMENT
+- PAGE
+- PROGRAM
+
+### Element（页面元素实例）（1 个）
+- markers: 按钮、入口
+- name: 帮助按钮 | surface: 帮助 | aliases: 帮助入口
+
+### Page（页面实例）（1 个）
+- markers: 页面、界面、页
+- name: 帮助页面 | surface: 帮助
+
+## 关系（Relations）
+
+### OperatesOnElement（Operation → Element）
+- 轻触 → 帮助按钮
+""".strip()
+    path = tmp_path / "KG_desc_op_vocab.md"
+    path.write_text(kg_text, encoding="utf-8")
+
+    monkeypatch.setattr(graph_prior, "get_kg_service", lambda **kwargs: offline_kg.OfflineKGService(path))
+    monkeypatch.setattr(graph_prior, "get_embeddings", _fake_embeddings_unique)
+    pipeline = graph_prior.GraphPriorPipeline(model="fake-model", batch_size=1, workers=1)
+
+    payload = pipeline._build_link_candidates("R_001", "轻触帮助入口后无响应")
+
+    assert payload["elements"][0]["name"] == "帮助按钮"
+    assert payload["elements"][0]["evidence"]["report_hit"] is True
+
+
+def test_page_element_memory_only_used_as_fallback(monkeypatch):
+    class _EmptyPageElementKG(_FakeKGService):
+        def retrieve_link_candidates(self, query_text, top_k_op=4, top_k_history=0, top_k_instance=4):
+            payload = super().retrieve_link_candidates(query_text, top_k_op=top_k_op, top_k_history=top_k_history, top_k_instance=top_k_instance)
+            payload["pages"] = []
+            payload["elements"] = []
+            payload["page_confidence"] = 0.0
+            payload["element_confidence"] = 0.0
+            payload["page_evidence"] = {"direct_hit": False, "relation_hit": False, "lexicon_hit": False}
+            payload["element_evidence"] = {"direct_hit": False, "relation_hit": False, "lexicon_hit": False}
+            return payload
+
+    monkeypatch.setattr(graph_prior, "get_kg_service", lambda **kwargs: _EmptyPageElementKG())
+    monkeypatch.setattr(graph_prior, "get_embeddings", _fake_embeddings_unique)
+    pipeline = graph_prior.GraphPriorPipeline(model="fake-model", batch_size=1, workers=1)
+    pipeline._instance_store["Page"].append({"id": "Page:1", "name": "帮助页面", "embedding": [1.0]})
+    pipeline._instance_store["Element"].append({"id": "Element:1", "name": "帮助按钮", "embedding": [1.0]})
+
+    payload = pipeline._build_link_candidates("R_001", "点击帮助页面后帮助按钮无响应")
+
+    assert payload["pages"]
+    assert payload["elements"]
+    assert payload["pages"][0]["source"] == "memory"
+    assert payload["elements"][0]["source"] == "memory"
+    assert payload["pages"][0]["evidence"]["memory_fallback"] is True
+
+
+def test_tail_bias_prefers_later_page_match(tmp_path):
+    kg_text = """
+# 知识图谱描述
+
+## 实体（Entities）
+
+### BugSymptom（缺陷症状）（1 个）
+- 崩溃
+
+### Operation（操作行为）（1 个）
+- 进入
+
+### Severity（风险等级）（3 个）
+- ELEMENT
+- PAGE
+- PROGRAM
+
+### Element（页面元素实例）（1 个）
+- markers: 按钮
+- name: 进入按钮 | surface: 进入
+
+### Page（页面实例）（2 个）
+- markers: 页面、界面、页
+- name: 设置页面 | surface: 设置
+- name: 帮助页面 | surface: 帮助
+
+## 关系（Relations）
+""".strip()
+    path = tmp_path / "KG_desc_tail_page.md"
+    path.write_text(kg_text, encoding="utf-8")
+
+    service = offline_kg.OfflineKGService(path)
+    candidates = service.retrieve_link_candidates("先进入设置页面 再进入帮助页面后崩溃", top_k_instance=2)
+
+    assert candidates["pages"][0]["name"] == "帮助页面"
+    assert candidates["pages"][0]["evidence"]["position_weight"] > candidates["pages"][1]["evidence"]["position_weight"]
+
+
+def test_tail_bias_prefers_later_bug_match(tmp_path):
+    kg_text = """
+# 知识图谱描述
+
+## 实体（Entities）
+
+### BugSymptom（缺陷症状）（2 个）
+- 未知错误
+- 保存失败
+
+### Operation（操作行为）（1 个）
+- 保存
+
+### Severity（风险等级）（3 个）
+- ELEMENT
+- PAGE
+- PROGRAM
+
+### Element（页面元素实例）（1 个）
+- markers: 按钮
+- name: 保存按钮 | surface: 保存
+
+### Page（页面实例）（1 个）
+- markers: 页面
+- name: 保存页面 | surface: 保存
+
+## 关系（Relations）
+""".strip()
+    path = tmp_path / "KG_desc_tail_bug.md"
+    path.write_text(kg_text, encoding="utf-8")
+
+    service = offline_kg.OfflineKGService(path)
+    candidates = service.retrieve_link_candidates("点击保存前提示未知错误，最终修改保存失败", top_k_instance=2)
+
+    assert candidates["bugs"][0]["name"] == "保存失败"
+    assert candidates["bugs"][0]["evidence"]["position_weight"] > candidates["bugs"][1]["evidence"]["position_weight"]
 
 
 def test_scope_post_calibration_prefers_local_rules(monkeypatch):
