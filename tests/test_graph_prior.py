@@ -85,10 +85,58 @@ class _FakeKGService:
             "page_confidence": 2.0,
             "element_confidence": 1.8,
             "bug_confidence": 2.0,
+            "operation_evidence": {"direct_hit": True, "relation_hit": False, "lexicon_hit": False},
+            "page_evidence": {"direct_hit": True, "relation_hit": False, "lexicon_hit": False},
+            "element_evidence": {"direct_hit": True, "relation_hit": True, "lexicon_hit": False},
+            "bug_evidence": {"direct_hit": True, "relation_hit": True, "lexicon_hit": False},
         }
 
     def retrieve_priority_evidence(self, query_text, op_text, page_text, elem_text, bug_text, top_k=20):
         return list(self.evidence_by_bug.get(bug_text, []))
+
+
+def _make_manual_payload(
+    report_id: str,
+    text: str,
+    operations=None,
+    pages=None,
+    elements=None,
+    bugs=None,
+    slot_prefill=None,
+    llm_slots=None,
+):
+    operations = operations or [{"id": "O1", "name": "点击", "score": 3.0, "source": "report", "evidence": {"report_hit": True}}]
+    pages = pages or []
+    elements = elements or []
+    bugs = bugs or [{"id": "B1", "name": "加载失败", "score": 3.0, "source": "report", "evidence": {"report_hit": True}}]
+    slot_prefill = slot_prefill or {
+        "Operation": {"resolved": True, "value": operations[0]["name"], "candidate_id": operations[0]["id"], "reason": "test", "score": operations[0]["score"]},
+        "Page": {"resolved": not bool(pages), "value": "未知页面" if not pages else pages[0]["name"], "candidate_id": "P0" if not pages else pages[0]["id"], "reason": "test", "score": pages[0]["score"] if pages else 0.0},
+        "Element": {"resolved": not bool(elements), "value": "未知组件" if not elements else elements[0]["name"], "candidate_id": "E0" if not elements else elements[0]["id"], "reason": "test", "score": elements[0]["score"] if elements else 0.0},
+        "Bug": {"resolved": True, "value": bugs[0]["name"], "candidate_id": bugs[0]["id"], "reason": "test", "score": bugs[0]["score"]},
+    }
+    llm_slots = llm_slots if llm_slots is not None else [slot for slot, info in slot_prefill.items() if not info.get("resolved")]
+    return {
+        "report_id": report_id,
+        "text": text,
+        "operations": operations,
+        "pages": pages,
+        "elements": elements,
+        "bugs": bugs,
+        "operation_confidence": 2.0,
+        "page_confidence": 2.0,
+        "element_confidence": 2.0,
+        "bug_confidence": 2.0,
+        "slot_prefill": slot_prefill,
+        "llm_slots": llm_slots,
+        "llm_required": bool(llm_slots),
+        "slot_evidence": {
+            "Operation": {"confidence": 2.0, "kg": {}, "candidates": {"count": len(operations), "top": operations[:3]}},
+            "Page": {"confidence": 2.0, "kg": {}, "candidates": {"count": len(pages), "top": pages[:3]}},
+            "Element": {"confidence": 2.0, "kg": {}, "candidates": {"count": len(elements), "top": elements[:3]}},
+            "Bug": {"confidence": 2.0, "kg": {}, "candidates": {"count": len(bugs), "top": bugs[:3]}},
+        },
+    }
 
 
 def test_batch_size_groups_requests_and_limits_tokens(monkeypatch):
@@ -104,6 +152,29 @@ def test_batch_size_groups_requests_and_limits_tokens(monkeypatch):
     monkeypatch.setattr(graph_prior, "get_kg_service", lambda **kwargs: _FakeKGService())
 
     pipeline = graph_prior.GraphPriorPipeline(model="fake-model", batch_size=4, workers=1)
+    pipeline._build_link_candidates = lambda report_id, description: _make_manual_payload(
+        report_id=report_id,
+        text=description,
+        pages=[
+            {"id": "P1", "name": "帮助页面", "score": 1.2, "source": "lexicon", "evidence": {"lexicon_hit": True}},
+            {"id": "P2", "name": "设置页面", "score": 1.1, "source": "lexicon", "evidence": {"lexicon_hit": True}},
+        ],
+        elements=[
+            {"id": "E1", "name": "帮助按钮", "score": 1.2, "source": "lexicon", "evidence": {"lexicon_hit": True}},
+            {"id": "E2", "name": "帮助入口", "score": 1.1, "source": "lexicon", "evidence": {"lexicon_hit": True}},
+        ],
+        bugs=[
+            {"id": "B1", "name": "加载失败", "score": 1.2, "source": "report", "evidence": {"report_hit": True}},
+            {"id": "B2", "name": "内容不显示", "score": 1.1, "source": "report", "evidence": {"report_hit": True}},
+        ],
+        slot_prefill={
+            "Operation": {"resolved": True, "value": "点击", "candidate_id": "O1", "reason": "test", "score": 3.0},
+            "Page": {"resolved": False, "value": "", "candidate_id": "", "reason": "ambiguous", "score": 1.2},
+            "Element": {"resolved": False, "value": "", "candidate_id": "", "reason": "ambiguous", "score": 1.2},
+            "Bug": {"resolved": False, "value": "", "candidate_id": "", "reason": "ambiguous", "score": 1.2},
+        },
+        llm_slots=["Page", "Element", "Bug"],
+    )
     sequence, score_map, _, _, _ = pipeline.run(_make_reports(9))
 
     assert len(call_log) == 3
@@ -122,6 +193,7 @@ def test_link_selection_ids_are_resolved_to_instance_text(monkeypatch):
         return _build_link_line("R_001", op="O1", pg="P1", el="E1", bug="B1", scope="page"), 1, 1
 
     monkeypatch.setattr(graph_prior, "ask_gpt", fake_ask_gpt)
+    monkeypatch.setattr(graph_prior, "get_embeddings", _fake_embeddings_unique)
     monkeypatch.setattr(graph_prior, "get_kg_service", lambda **kwargs: _FakeKGService())
 
     pipeline = graph_prior.GraphPriorPipeline(model="fake-model", batch_size=1, workers=1)
@@ -171,6 +243,29 @@ def test_partial_batch_response_only_falls_back_for_missing_reports(monkeypatch)
     monkeypatch.setattr(graph_prior, "get_kg_service", lambda **kwargs: _FakeKGService())
 
     pipeline = graph_prior.GraphPriorPipeline(model="fake-model", batch_size=2, workers=1)
+    pipeline._build_link_candidates = lambda report_id, description: _make_manual_payload(
+        report_id=report_id,
+        text=description,
+        pages=[
+            {"id": "P1", "name": "帮助页面", "score": 1.2, "source": "lexicon", "evidence": {"lexicon_hit": True}},
+            {"id": "P2", "name": "设置页面", "score": 1.1, "source": "lexicon", "evidence": {"lexicon_hit": True}},
+        ],
+        elements=[
+            {"id": "E1", "name": "帮助按钮", "score": 1.2, "source": "lexicon", "evidence": {"lexicon_hit": True}},
+            {"id": "E2", "name": "帮助入口", "score": 1.1, "source": "lexicon", "evidence": {"lexicon_hit": True}},
+        ],
+        bugs=[
+            {"id": "B1", "name": "加载失败", "score": 1.2, "source": "report", "evidence": {"report_hit": True}},
+            {"id": "B2", "name": "内容不显示", "score": 1.1, "source": "report", "evidence": {"report_hit": True}},
+        ],
+        slot_prefill={
+            "Operation": {"resolved": True, "value": "点击", "candidate_id": "O1", "reason": "test", "score": 3.0},
+            "Page": {"resolved": False, "value": "", "candidate_id": "", "reason": "ambiguous", "score": 1.2},
+            "Element": {"resolved": False, "value": "", "candidate_id": "", "reason": "ambiguous", "score": 1.2},
+            "Bug": {"resolved": False, "value": "", "candidate_id": "", "reason": "ambiguous", "score": 1.2},
+        },
+        llm_slots=["Page", "Element", "Bug"],
+    )
     sequence, _, _, _, _ = pipeline.run(_make_reports(2))
 
     assert call_log[0]["ids"] == ["R_001", "R_002"]
@@ -193,6 +288,29 @@ def test_low_coverage_batch_retries_once_before_missing_fallback(monkeypatch):
     monkeypatch.setattr(graph_prior, "get_kg_service", lambda **kwargs: _FakeKGService())
 
     pipeline = graph_prior.GraphPriorPipeline(model="fake-model", batch_size=2, workers=1)
+    pipeline._build_link_candidates = lambda report_id, description: _make_manual_payload(
+        report_id=report_id,
+        text=description,
+        pages=[
+            {"id": "P1", "name": "帮助页面", "score": 1.2, "source": "lexicon", "evidence": {"lexicon_hit": True}},
+            {"id": "P2", "name": "设置页面", "score": 1.1, "source": "lexicon", "evidence": {"lexicon_hit": True}},
+        ],
+        elements=[
+            {"id": "E1", "name": "帮助按钮", "score": 1.2, "source": "lexicon", "evidence": {"lexicon_hit": True}},
+            {"id": "E2", "name": "帮助入口", "score": 1.1, "source": "lexicon", "evidence": {"lexicon_hit": True}},
+        ],
+        bugs=[
+            {"id": "B1", "name": "加载失败", "score": 1.2, "source": "report", "evidence": {"report_hit": True}},
+            {"id": "B2", "name": "内容不显示", "score": 1.1, "source": "report", "evidence": {"report_hit": True}},
+        ],
+        slot_prefill={
+            "Operation": {"resolved": True, "value": "点击", "candidate_id": "O1", "reason": "test", "score": 3.0},
+            "Page": {"resolved": False, "value": "", "candidate_id": "", "reason": "ambiguous", "score": 1.2},
+            "Element": {"resolved": False, "value": "", "candidate_id": "", "reason": "ambiguous", "score": 1.2},
+            "Bug": {"resolved": False, "value": "", "candidate_id": "", "reason": "ambiguous", "score": 1.2},
+        },
+        llm_slots=["Page", "Element", "Bug"],
+    )
     sequence, _, _, _, _ = pipeline.run(_make_reports(2))
 
     assert sequence == [1, 2]
@@ -213,6 +331,26 @@ def test_qwen_requests_disable_thinking(monkeypatch):
     monkeypatch.setattr(graph_prior, "get_kg_service", lambda **kwargs: _FakeKGService())
 
     pipeline = graph_prior.GraphPriorPipeline(model="qwen3.5-plus", batch_size=1, workers=1)
+    pipeline._build_link_candidates = lambda report_id, description: _make_manual_payload(
+        report_id=report_id,
+        text=description,
+        pages=[
+            {"id": "P1", "name": "帮助页面", "score": 1.2, "source": "lexicon", "evidence": {"lexicon_hit": True}},
+            {"id": "P2", "name": "设置页面", "score": 1.1, "source": "lexicon", "evidence": {"lexicon_hit": True}},
+        ],
+        elements=[],
+        bugs=[
+            {"id": "B1", "name": "加载失败", "score": 1.2, "source": "report", "evidence": {"report_hit": True}},
+            {"id": "B2", "name": "内容不显示", "score": 1.1, "source": "report", "evidence": {"report_hit": True}},
+        ],
+        slot_prefill={
+            "Operation": {"resolved": True, "value": "点击", "candidate_id": "O1", "reason": "test", "score": 3.0},
+            "Page": {"resolved": False, "value": "", "candidate_id": "", "reason": "ambiguous", "score": 1.2},
+            "Element": {"resolved": True, "value": "未知组件", "candidate_id": "E0", "reason": "no_candidates", "score": 0.0},
+            "Bug": {"resolved": False, "value": "", "candidate_id": "", "reason": "ambiguous", "score": 1.2},
+        },
+        llm_slots=["Page", "Bug"],
+    )
     pipeline.run(_make_reports(1))
 
     assert seen_options
@@ -233,9 +371,14 @@ def test_weak_kg_candidates_are_gated_out(monkeypatch):
                 "page_confidence": 0.2,
                 "element_confidence": 0.2,
                 "bug_confidence": 0.2,
+                "operation_evidence": {"direct_hit": False, "relation_hit": False, "lexicon_hit": False},
+                "page_evidence": {"direct_hit": False, "relation_hit": False, "lexicon_hit": False},
+                "element_evidence": {"direct_hit": False, "relation_hit": False, "lexicon_hit": False},
+                "bug_evidence": {"direct_hit": False, "relation_hit": False, "lexicon_hit": False},
             }
 
     monkeypatch.setattr(graph_prior, "get_kg_service", lambda **kwargs: _WeakKG())
+    monkeypatch.setattr(graph_prior, "get_embeddings", _fake_embeddings_unique)
     pipeline = graph_prior.GraphPriorPipeline(model="fake-model", batch_size=1, workers=1)
     payload = pipeline._build_link_candidates("R_001", "点击帮助 页面加载不出任何信息")
 
@@ -278,6 +421,29 @@ def test_near_duplicate_reports_only_send_representatives_to_llm(monkeypatch):
     ]
 
     pipeline = graph_prior.GraphPriorPipeline(model="fake-model", batch_size=4, workers=1)
+    pipeline._build_link_candidates = lambda report_id, description: _make_manual_payload(
+        report_id=report_id,
+        text=description,
+        pages=[
+            {"id": "P1", "name": "帮助页面", "score": 1.2, "source": "lexicon", "evidence": {"lexicon_hit": True}},
+            {"id": "P2", "name": "收藏页面", "score": 1.1, "source": "lexicon", "evidence": {"lexicon_hit": True}},
+        ],
+        elements=[
+            {"id": "E1", "name": "帮助按钮", "score": 1.2, "source": "lexicon", "evidence": {"lexicon_hit": True}},
+            {"id": "E2", "name": "收藏按钮", "score": 1.1, "source": "lexicon", "evidence": {"lexicon_hit": True}},
+        ],
+        bugs=[
+            {"id": "B1", "name": "加载失败", "score": 1.2, "source": "report", "evidence": {"report_hit": True}},
+            {"id": "B2", "name": "不显示", "score": 1.1, "source": "report", "evidence": {"report_hit": True}},
+        ],
+        slot_prefill={
+            "Operation": {"resolved": True, "value": "点击", "candidate_id": "O1", "reason": "test", "score": 3.0},
+            "Page": {"resolved": False, "value": "", "candidate_id": "", "reason": "ambiguous", "score": 1.2},
+            "Element": {"resolved": False, "value": "", "candidate_id": "", "reason": "ambiguous", "score": 1.2},
+            "Bug": {"resolved": False, "value": "", "candidate_id": "", "reason": "ambiguous", "score": 1.2},
+        },
+        llm_slots=["Page", "Element", "Bug"],
+    )
     sequence, score_map, _, _, _ = pipeline.run(reports)
 
     assert call_log == [["R_001", "R_003"]]
@@ -286,6 +452,7 @@ def test_near_duplicate_reports_only_send_representatives_to_llm(monkeypatch):
 
 
 def test_instance_candidates_come_from_report_and_history_not_coarse_types(monkeypatch):
+    monkeypatch.setattr(graph_prior, "get_embeddings", _fake_embeddings_unique)
     monkeypatch.setattr(graph_prior, "get_kg_service", lambda **kwargs: _FakeKGService())
     pipeline = graph_prior.GraphPriorPipeline(model="fake-model", batch_size=1, workers=1)
 
@@ -345,18 +512,23 @@ def test_kg_priority_scoring_prefers_high_risk_history(monkeypatch):
     monkeypatch.setattr(graph_prior, "get_kg_service", lambda **kwargs: _PriorityKG(evidence_by_bug))
 
     pipeline = graph_prior.GraphPriorPipeline(model="fake-model", batch_size=2, workers=1)
-    pipeline._build_link_candidates = lambda report_id, description: {
-        "report_id": report_id,
-        "text": description,
-        "operations": [{"id": "O1", "name": "点击", "score": 2.0, "source": "direct"}],
-        "pages": [{"id": "P1", "name": "帮助页面", "score": 1.0, "source": "report"}],
-        "elements": [{"id": "E1", "name": "帮助", "score": 1.0, "source": "report"}],
-        "bugs": [
-            {"id": "B1", "name": "页面加载不出任何信息", "score": 1.0, "source": "report"},
-            {"id": "B2", "name": "普通提示", "score": 1.0, "source": "report"},
+    pipeline._build_link_candidates = lambda report_id, description: _make_manual_payload(
+        report_id=report_id,
+        text=description,
+        pages=[{"id": "P1", "name": "帮助页面", "score": 2.5, "source": "report", "evidence": {"report_hit": True}}],
+        elements=[{"id": "E1", "name": "帮助", "score": 2.5, "source": "report", "evidence": {"report_hit": True}}],
+        bugs=[
+            {"id": "B1", "name": "页面加载不出任何信息", "score": 1.0, "source": "report", "evidence": {"report_hit": True}},
+            {"id": "B2", "name": "普通提示", "score": 1.0, "source": "report", "evidence": {"report_hit": True}},
         ],
-        "history": [],
-    }
+        slot_prefill={
+            "Operation": {"resolved": True, "value": "点击", "candidate_id": "O1", "reason": "test", "score": 2.0},
+            "Page": {"resolved": True, "value": "帮助页面", "candidate_id": "P1", "reason": "test", "score": 2.5},
+            "Element": {"resolved": True, "value": "帮助", "candidate_id": "E1", "reason": "test", "score": 2.5},
+            "Bug": {"resolved": False, "value": "", "candidate_id": "", "reason": "ambiguous", "score": 1.0},
+        },
+        llm_slots=["Bug"],
+    )
 
     sequence, score_map, _, _, _ = pipeline.run(_make_reports(2))
 
@@ -415,27 +587,32 @@ def test_diversity_reranking_penalizes_similar_representatives(monkeypatch):
     monkeypatch.setattr(graph_prior, "get_kg_service", lambda **kwargs: _DiversityKG())
 
     pipeline = graph_prior.GraphPriorPipeline(model="fake-model", batch_size=3, workers=1)
-    pipeline._build_link_candidates = lambda report_id, description: {
-        "report_id": report_id,
-        "text": description,
-        "operations": [{"id": "O1", "name": "点击", "score": 2.0, "source": "direct"}],
-        "pages": [
-            {"id": "P1", "name": "页面A", "score": 1.0, "source": "report"},
-            {"id": "P2", "name": "页面B", "score": 1.0, "source": "report"},
-            {"id": "P3", "name": "页面C", "score": 1.0, "source": "report"},
+    pipeline._build_link_candidates = lambda report_id, description: _make_manual_payload(
+        report_id=report_id,
+        text=description,
+        pages=[
+            {"id": "P1", "name": "页面A", "score": 2.5, "source": "report", "evidence": {"report_hit": True}},
+            {"id": "P2", "name": "页面B", "score": 2.5, "source": "report", "evidence": {"report_hit": True}},
+            {"id": "P3", "name": "页面C", "score": 2.5, "source": "report", "evidence": {"report_hit": True}},
         ],
-        "elements": [
-            {"id": "E1", "name": "组件A", "score": 1.0, "source": "report"},
-            {"id": "E2", "name": "组件B", "score": 1.0, "source": "report"},
-            {"id": "E3", "name": "组件C", "score": 1.0, "source": "report"},
+        elements=[
+            {"id": "E1", "name": "组件A", "score": 2.5, "source": "report", "evidence": {"report_hit": True}},
+            {"id": "E2", "name": "组件B", "score": 2.5, "source": "report", "evidence": {"report_hit": True}},
+            {"id": "E3", "name": "组件C", "score": 2.5, "source": "report", "evidence": {"report_hit": True}},
         ],
-        "bugs": [
-            {"id": "B1", "name": "相似问题A", "score": 1.0, "source": "report"},
-            {"id": "B2", "name": "相似问题B", "score": 1.0, "source": "report"},
-            {"id": "B3", "name": "不同问题C", "score": 1.0, "source": "report"},
+        bugs=[
+            {"id": "B1", "name": "相似问题A", "score": 1.0, "source": "report", "evidence": {"report_hit": True}},
+            {"id": "B2", "name": "相似问题B", "score": 1.0, "source": "report", "evidence": {"report_hit": True}},
+            {"id": "B3", "name": "不同问题C", "score": 1.0, "source": "report", "evidence": {"report_hit": True}},
         ],
-        "history": [],
-    }
+        slot_prefill={
+            "Operation": {"resolved": True, "value": "点击", "candidate_id": "O1", "reason": "test", "score": 2.0},
+            "Page": {"resolved": False, "value": "", "candidate_id": "", "reason": "ambiguous", "score": 1.0},
+            "Element": {"resolved": False, "value": "", "candidate_id": "", "reason": "ambiguous", "score": 1.0},
+            "Bug": {"resolved": False, "value": "", "candidate_id": "", "reason": "ambiguous", "score": 1.0},
+        },
+        llm_slots=["Page", "Element", "Bug"],
+    )
 
     sequence, _, _, _, _ = pipeline.run(_make_reports(3))
     assert sequence[:3] == [1, 3, 2]
@@ -492,3 +669,128 @@ def test_offline_kg_uses_operation_relations_for_candidates(tmp_path):
     assert any(item["name"] == "帮助页面" for item in candidates["pages"])
     assert any(item["name"] == "帮助按钮" for item in candidates["elements"])
     assert any(item["name"] == "加载失败" for item in candidates["bugs"])
+    assert candidates["page_evidence"]["relation_hit"] is True
+    assert candidates["elements"][0]["evidence"]["kg_hit"] is True
+
+
+def test_prefill_can_skip_llm_for_fully_resolved_report(monkeypatch):
+    def fail_ask_gpt(*_args, **_kwargs):
+        raise AssertionError("LLM should not be called when every slot is prefilled")
+
+    monkeypatch.setattr(graph_prior, "ask_gpt", fail_ask_gpt)
+    monkeypatch.setattr(graph_prior, "get_embeddings", _fake_embeddings_unique)
+    monkeypatch.setattr(graph_prior, "get_kg_service", lambda **kwargs: _FakeKGService())
+
+    pipeline = graph_prior.GraphPriorPipeline(model="fake-model", batch_size=1, workers=1)
+    payload = pipeline._build_link_candidates("R_001", "点击帮助按钮 帮助页面空白")
+
+    assert payload["llm_required"] is False
+
+    sequence, _, _, _, raw_responses = pipeline.run([{"description": "点击帮助按钮 帮助页面空白"}])
+    assert sequence == [1]
+    assert any(item["call_type"] == "prefill" for item in raw_responses)
+
+
+def test_mixed_batch_only_sends_unresolved_reports_to_llm(monkeypatch):
+    seen_ids = []
+
+    def fake_ask_gpt(prompt, model, max_token, base_url=None, api_key=None, request_options=None):
+        ids = _extract_report_ids(prompt)
+        seen_ids.extend(ids)
+        return "\n".join(_build_link_line(report_id) for report_id in ids), 1, 1
+
+    monkeypatch.setattr(graph_prior, "ask_gpt", fake_ask_gpt)
+    monkeypatch.setattr(graph_prior, "get_embeddings", _fake_embeddings_unique)
+    monkeypatch.setattr(graph_prior, "get_kg_service", lambda **kwargs: _FakeKGService())
+
+    pipeline = graph_prior.GraphPriorPipeline(model="fake-model", batch_size=2, workers=1)
+
+    def fake_payload(report_id, description):
+        if report_id == "R_001":
+            return _make_manual_payload(
+                report_id=report_id,
+                text=description,
+                pages=[{"id": "P1", "name": "帮助页面", "score": 2.5, "source": "report", "evidence": {"report_hit": True}}],
+                elements=[{"id": "E1", "name": "帮助按钮", "score": 2.5, "source": "report", "evidence": {"report_hit": True}}],
+                bugs=[{"id": "B1", "name": "页面空白", "score": 2.5, "source": "report", "evidence": {"report_hit": True}}],
+                llm_slots=[],
+            )
+        return _make_manual_payload(
+            report_id=report_id,
+            text=description,
+            pages=[
+                {"id": "P1", "name": "帮助页面", "score": 1.0, "source": "lexicon", "evidence": {"lexicon_hit": True}},
+                {"id": "P2", "name": "设置页面", "score": 0.95, "source": "lexicon", "evidence": {"lexicon_hit": True}},
+            ],
+            elements=[],
+            bugs=[{"id": "B1", "name": "加载失败", "score": 2.5, "source": "report", "evidence": {"report_hit": True}}],
+            slot_prefill={
+                "Operation": {"resolved": True, "value": "点击", "candidate_id": "O1", "reason": "test", "score": 2.0},
+                "Page": {"resolved": False, "value": "", "candidate_id": "", "reason": "ambiguous", "score": 1.0},
+                "Element": {"resolved": True, "value": "未知组件", "candidate_id": "E0", "reason": "no_candidates", "score": 0.0},
+                "Bug": {"resolved": True, "value": "加载失败", "candidate_id": "B1", "reason": "test", "score": 2.5},
+            },
+            llm_slots=["Page"],
+        )
+
+    pipeline._build_link_candidates = fake_payload
+    pipeline.run([{"description": "帮助页空白"}, {"description": "帮助页内容异常"}])
+
+    assert seen_ids == ["R_002"]
+
+
+def test_app_local_lexicon_promotes_repeated_phrases(monkeypatch):
+    monkeypatch.setattr(graph_prior, "get_embeddings", _fake_embeddings)
+    monkeypatch.setattr(graph_prior, "get_kg_service", lambda **kwargs: _FakeKGService())
+
+    pipeline = graph_prior.GraphPriorPipeline(model="fake-model", batch_size=1, workers=1)
+    reports = [
+        {"description": "打开帮助页面后内容不显示"},
+        {"description": "进入帮助页面后内容不显示"},
+        {"description": "点击帮助页面后一直加载"},
+    ]
+    pipeline._build_app_local_lexicon(reports)
+    payload = pipeline._build_link_candidates("R_004", "帮助页面无法显示任何内容")
+
+    page_names = [item["name"] for item in payload["pages"]]
+    bug_names = [item["name"] for item in payload["bugs"]]
+    assert any("帮助页面" in name for name in page_names)
+    assert any(("不显示" in name) or ("无法显示" in name) for name in bug_names)
+
+
+def test_scope_post_calibration_prefers_local_rules(monkeypatch):
+    monkeypatch.setattr(graph_prior, "get_kg_service", lambda **kwargs: _FakeKGService())
+    pipeline = graph_prior.GraphPriorPipeline(model="fake-model", batch_size=1, workers=1)
+
+    assert pipeline._post_calibrate_scope("点击后页面空白", "帮助页面", "未知组件", "program") == "page"
+    assert pipeline._post_calibrate_scope("点击后帮助按钮无响应", "帮助页面", "帮助按钮", "program") == "element"
+    assert pipeline._post_calibrate_scope("应用闪退并停止运行", "未知页面", "未知组件", "page") == "program"
+
+
+def test_prompt_only_lists_unresolved_slots(monkeypatch):
+    monkeypatch.setattr(graph_prior, "get_kg_service", lambda **kwargs: _FakeKGService())
+    pipeline = graph_prior.GraphPriorPipeline(model="fake-model", batch_size=1, workers=1)
+    payload = _make_manual_payload(
+        report_id="R_001",
+        text="点击帮助页面后内容异常",
+        pages=[
+            {"id": "P1", "name": "帮助页面", "score": 1.2, "source": "lexicon", "evidence": {"lexicon_hit": True}},
+            {"id": "P2", "name": "设置页面", "score": 1.1, "source": "lexicon", "evidence": {"lexicon_hit": True}},
+        ],
+        elements=[],
+        bugs=[{"id": "B1", "name": "内容异常", "score": 2.5, "source": "report", "evidence": {"report_hit": True}}],
+        slot_prefill={
+            "Operation": {"resolved": True, "value": "点击", "candidate_id": "O1", "reason": "test", "score": 2.0},
+            "Page": {"resolved": False, "value": "", "candidate_id": "", "reason": "ambiguous", "score": 1.2},
+            "Element": {"resolved": True, "value": "未知组件", "candidate_id": "E0", "reason": "no_candidates", "score": 0.0},
+            "Bug": {"resolved": True, "value": "内容异常", "candidate_id": "B1", "reason": "test", "score": 2.5},
+        },
+        llm_slots=["Page"],
+    )
+
+    prompt = pipeline._build_candidate_report_block([payload])
+    assert "Preset:" in prompt
+    assert "Operation Candidates" not in prompt
+    assert "Element Candidates" not in prompt
+    assert "Bug Candidates" not in prompt
+    assert "Page Candidates" in prompt

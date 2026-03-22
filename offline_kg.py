@@ -185,10 +185,27 @@ class OfflineKGService:
             score = self._score_entity(query, entity)
             if score < 0.45:
                 continue
-            scored.append({"name": entity, "score": score})
+            scored.append(
+                {
+                    "name": entity,
+                    "score": score,
+                    "evidence": {
+                        "kg_hit": True,
+                        "direct_hit": True,
+                        "relation_hit": False,
+                        "lexicon_hit": False,
+                    },
+                }
+            )
         scored.sort(key=lambda item: (float(item["score"]), len(item["name"])), reverse=True)
         return [
-            {"id": f"{prefix}{idx}", "name": item["name"], "score": float(item["score"]), "source": "offline-kg"}
+            {
+                "id": f"{prefix}{idx}",
+                "name": item["name"],
+                "score": float(item["score"]),
+                "source": "offline-kg",
+                "evidence": dict(item.get("evidence", {})),
+            }
             for idx, item in enumerate(scored[:top_k], start=1)
         ]
 
@@ -216,6 +233,13 @@ class OfflineKGService:
                 source = str(item.get("source", "")).strip()
                 if source:
                     entry["source"].add(source)
+                evidence = item.get("evidence", {}) or {}
+                merged_evidence = entry.setdefault("evidence", {})
+                for key, value in evidence.items():
+                    if isinstance(value, bool):
+                        merged_evidence[key] = bool(merged_evidence.get(key)) or value
+                    else:
+                        merged_evidence[key] = value
         ranked = sorted(
             merged.values(),
             key=lambda item: (float(item["score"]), len(item["name"])),
@@ -227,6 +251,7 @@ class OfflineKGService:
                 "name": item["name"],
                 "score": float(item["score"]),
                 "source": ",".join(sorted(item["source"])),
+                "evidence": dict(item.get("evidence", {})),
             }
             for idx, item in enumerate(ranked, start=1)
         ]
@@ -250,7 +275,7 @@ class OfflineKGService:
                     continue
                 entry = related_scores.setdefault(
                     related_name,
-                    {"name": related_name, "score": 0.0, "source": set()},
+                    {"name": related_name, "score": 0.0, "source": set(), "evidence": {"kg_hit": True, "direct_hit": False, "relation_hit": True, "lexicon_hit": False}},
                 )
                 entry["score"] += total_score
                 entry["source"].add(f"offline-rel:{op_name}")
@@ -265,9 +290,20 @@ class OfflineKGService:
                 "name": item["name"],
                 "score": float(item["score"]),
                 "source": ",".join(sorted(item["source"])),
+                "evidence": dict(item.get("evidence", {})),
             }
             for idx, item in enumerate(ranked, start=1)
         ]
+
+    @staticmethod
+    def _summarize_evidence(candidates: List[Dict[str, Any]]) -> Dict[str, Any]:
+        summary = {"direct_hit": False, "relation_hit": False, "lexicon_hit": False}
+        for item in candidates:
+            evidence = item.get("evidence", {}) or {}
+            summary["direct_hit"] = bool(summary["direct_hit"]) or bool(evidence.get("direct_hit"))
+            summary["relation_hit"] = bool(summary["relation_hit"]) or bool(evidence.get("relation_hit"))
+            summary["lexicon_hit"] = bool(summary["lexicon_hit"]) or bool(evidence.get("lexicon_hit"))
+        return summary
 
     def extract_entities(self, text: str) -> Tuple[List[str], List[str]]:
         query = self._normalize_text(text)
@@ -310,6 +346,10 @@ class OfflineKGService:
             "page_confidence": self._max_candidate_score(merged_pages),
             "element_confidence": self._max_candidate_score(merged_elements),
             "bug_confidence": self._max_candidate_score(merged_bugs),
+            "operation_evidence": self._summarize_evidence(operation_candidates),
+            "page_evidence": self._summarize_evidence(merged_pages),
+            "element_evidence": self._summarize_evidence(merged_elements),
+            "bug_evidence": self._summarize_evidence(merged_bugs),
         }
 
     def retrieve_context(self, query: str, k: int = 3) -> str:

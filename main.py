@@ -10,6 +10,7 @@ from typing import List, Optional
 import os
 import argparse
 import re
+import json
 import numpy as np
 
 from config import RESPONSE_DIR, RESULT_DIR, BASE_URL
@@ -214,6 +215,9 @@ def run_graphprior(app: int, repeat: int = 1, model: str = "gemini-3-pro-preview
                     f.write(f"Report IDs: {report_ids}\n")
                     f.write(f"Batch Input Tokens: {item.get('prompt_tokens', 0)}\n")
                     f.write(f"Batch Output Tokens: {item.get('output_tokens', 0)}\n")
+                    if item.get("debug"):
+                        f.write("Debug:\n")
+                        f.write(f"{json.dumps(item.get('debug', {}), ensure_ascii=False, indent=2)}\n")
                     f.write("Raw Response:\n")
                     f.write(f"{item.get('content', '')}\n")
 

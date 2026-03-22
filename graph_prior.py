@@ -5,6 +5,7 @@ GraphPrior pipeline
 from __future__ import annotations
 
 from typing import Any, Dict, List, Optional, Tuple
+from collections import Counter
 import json
 import math
 import re
@@ -19,6 +20,9 @@ from llm import ask_gpt
 
 PAGE_FAILURE_KEYWORDS = [
     "白屏", "闪退", "卡死", "无法操作", "页面不可用", "整页", "全页面", "崩溃", "crash", "freeze",
+]
+PROGRAM_FAILURE_KEYWORDS = [
+    "白屏", "黑屏", "闪退", "崩溃", "停止运行", "无响应", "卡死", "crash", "freeze",
 ]
 
 PROMPT_TEXT_LIMIT = 500
@@ -39,6 +43,13 @@ TOP_K_HISTORY_CANDIDATES = 5
 TOP_K_INSTANCE_CANDIDATES = 3
 OPERATION_KG_CONFIDENCE_THRESHOLD = 1.2
 SLOT_KG_CONFIDENCE_THRESHOLD = 1.6
+APP_LEXICON_MIN_FREQ = 2
+APP_LEXICON_SIM_THRESHOLD = 0.92
+APP_LEXICON_MAX_ITEMS = 32
+APP_LEXICON_SCORE_THRESHOLD = 0.65
+PREFILL_STRONG_SCORE = 1.9
+PREFILL_STRONG_MARGIN = 0.75
+PREFILL_STRONG_RATIO = 1.35
 
 
 LINK_SELECTION_PROMPT = """
@@ -135,6 +146,11 @@ class GraphPriorPipeline:
         self.embedding_lock = threading.Lock()
         self.raw_responses: List[Dict[str, Any]] = []
         self._embedding_cache: Dict[str, List[float]] = {}
+        self.app_local_lexicon: Dict[str, List[Dict[str, Any]]] = {
+            "Page": [],
+            "Element": [],
+            "Bug": [],
+        }
 
     def _record_raw_response(
         self,
@@ -144,18 +160,20 @@ class GraphPriorPipeline:
         prompt_tokens: int,
         output_tokens: int,
         batch_index: int,
+        debug: Optional[Dict[str, Any]] = None,
     ) -> None:
         with self.token_lock:
-            self.raw_responses.append(
-                {
-                    "call_type": call_type,
-                    "report_ids": report_ids,
-                    "content": content,
-                    "prompt_tokens": prompt_tokens,
-                    "output_tokens": output_tokens,
-                    "batch_index": batch_index,
-                }
-            )
+            payload = {
+                "call_type": call_type,
+                "report_ids": report_ids,
+                "content": content,
+                "prompt_tokens": prompt_tokens,
+                "output_tokens": output_tokens,
+                "batch_index": batch_index,
+            }
+            if debug:
+                payload["debug"] = debug
+            self.raw_responses.append(payload)
 
     def _build_request_options(self) -> Dict[str, Any]:
         model_lower = (self.model or "").lower()
@@ -265,6 +283,47 @@ class GraphPriorPipeline:
         return normalized or "未知"
 
     @staticmethod
+    def _strip_suffixes(text: str) -> str:
+        stripped = str(text or "").strip()
+        for suffix in ("页面", "页面中", "界面", "界面中", "页", "按钮", "图标", "列表", "输入框", "弹窗", "对话框", "提示", "状态"):
+            if stripped.endswith(suffix) and len(stripped) > len(suffix):
+                stripped = stripped[: -len(suffix)]
+                break
+        return stripped
+
+    @staticmethod
+    def _char_overlap_ratio(left: str, right: str) -> float:
+        if not left or not right:
+            return 0.0
+        left_chars = set(left)
+        right_chars = set(right)
+        overlap = len(left_chars & right_chars)
+        return overlap / float(max(len(left_chars), len(right_chars), 1))
+
+    @classmethod
+    def _score_phrase_match(cls, query: str, candidate: str) -> float:
+        query_norm = cls._normalize_prompt_text(query, limit=800)
+        candidate_norm = cls._normalize_phrase(candidate)
+        if not query_norm or candidate_norm == "未知":
+            return 0.0
+
+        score = 0.0
+        if candidate_norm in query_norm:
+            score += 3.0
+        if query_norm in candidate_norm:
+            score += 1.0
+
+        query_base = cls._strip_suffixes(query_norm)
+        candidate_base = cls._strip_suffixes(candidate_norm)
+        if candidate_base and candidate_base in query_norm:
+            score += 1.3
+        if query_base and query_base in candidate_norm:
+            score += 0.7
+
+        score += cls._char_overlap_ratio(query_norm, candidate_norm)
+        return score
+
+    @staticmethod
     def _dedupe_keep_order(items: List[str]) -> List[str]:
         seen = set()
         ordered: List[str] = []
@@ -340,96 +399,322 @@ class GraphPriorPipeline:
                 hits.append(parts[-1])
         return self._dedupe_keep_order(hits)
 
-    def _build_instance_candidates(
-        self,
-        report_text: str,
-        history_candidates: List[Dict[str, Any]],
-        memory_label: str,
-        extractor,
-        top_k: int = TOP_K_INSTANCE_CANDIDATES,
-    ) -> List[Dict[str, Any]]:
-        support: Dict[str, Dict[str, Any]] = {}
-
-        def add_candidate(name: str, score: float, source: str) -> None:
-            normalized = self._normalize_phrase(name)
-            if normalized == "未知":
-                return
-            item = support.setdefault(normalized, {"name": normalized, "score": 0.0, "source": set()})
-            item["score"] += score
-            item["source"].add(source)
-
-        for item in extractor(report_text):
-            add_candidate(item, 2.0, "report")
-
-        for history in history_candidates:
-            history_text = str(history.get("description", ""))
-            for item in extractor(history_text):
-                add_candidate(item, 0.8 + 0.2 * float(history.get("score", 0.0)), "history")
-
-        seeds = extractor(report_text)
-        for memory_item in self._instance_store.get(memory_label, []):
-            memory_name = str(memory_item.get("name", ""))
-            if not memory_name or not seeds:
-                continue
-            sim = 0.0
-            for seed in seeds:
-                sim = max(
-                    sim,
-                    self._cosine_similarity(
-                        self._get_cached_embeddings([memory_name])[0],
-                        self._get_cached_embeddings([seed])[0],
-                    ),
-                )
-            if sim >= 0.78:
-                add_candidate(memory_name, 0.5 + sim, "memory")
-
-        sorted_items = sorted(
-            support.values(),
-            key=lambda item: (float(item["score"]), len(item["name"])),
-            reverse=True,
-        )[:top_k]
-        return [
-            {
-                "id": f"{memory_label[0]}{idx}",
-                "name": item["name"],
-                "score": float(item["score"]),
-                "source": ",".join(sorted(item["source"])),
-            }
-            for idx, item in enumerate(sorted_items, start=1)
-        ]
+    @staticmethod
+    def _make_candidate(
+        name: str,
+        score: float,
+        source: str,
+        report_hit: bool = False,
+        lexicon_hit: bool = False,
+        kg_hit: bool = False,
+        relation_hit: bool = False,
+        memory_hit: bool = False,
+        evidence: Optional[Dict[str, Any]] = None,
+    ) -> Dict[str, Any]:
+        merged_evidence = {
+            "report_hit": bool(report_hit),
+            "lexicon_hit": bool(lexicon_hit),
+            "kg_hit": bool(kg_hit),
+            "relation_hit": bool(relation_hit),
+            "memory_hit": bool(memory_hit),
+        }
+        if evidence:
+            merged_evidence.update(evidence)
+        return {
+            "name": GraphPriorPipeline._normalize_phrase(name),
+            "score": float(score),
+            "source": source,
+            "evidence": merged_evidence,
+        }
 
     @staticmethod
-    def _merge_candidate_lists(
-        primary: List[Dict[str, Any]],
-        secondary: List[Dict[str, Any]],
+    def _candidate_sort_key(item: Dict[str, Any]) -> Tuple[int, int, int, int, float, int]:
+        evidence = item.get("evidence", {})
+        kg_layer = int(bool(evidence.get("kg_hit")) or bool(evidence.get("relation_hit")))
+        return (
+            int(bool(evidence.get("report_hit"))),
+            int(bool(evidence.get("lexicon_hit"))),
+            kg_layer,
+            int(bool(evidence.get("memory_hit"))),
+            float(item.get("score", 0.0)),
+            len(str(item.get("name", ""))),
+        )
+
+    def _canonicalize_phrases(self, phrases: Counter) -> List[Dict[str, Any]]:
+        if not phrases:
+            return []
+
+        items = [
+            {"name": self._normalize_phrase(name), "count": int(count)}
+            for name, count in phrases.items()
+            if self._normalize_phrase(name) != "未知"
+        ]
+        items.sort(key=lambda item: (int(item["count"]), len(item["name"])), reverse=True)
+        if not items:
+            return []
+
+        embeddings = self._get_cached_embeddings([item["name"] for item in items])
+        canonical: List[Dict[str, Any]] = []
+        for item, embedding in zip(items, embeddings):
+            matched = None
+            for existing in canonical:
+                sim = self._cosine_similarity(existing["embedding"], embedding)
+                if sim >= APP_LEXICON_SIM_THRESHOLD:
+                    matched = existing
+                    break
+            if matched is None:
+                canonical.append(
+                    {
+                        "name": item["name"],
+                        "count": int(item["count"]),
+                        "variants": [item["name"]],
+                        "embedding": embedding,
+                    }
+                )
+                continue
+
+            previous_count = int(matched["count"])
+            matched["count"] += int(item["count"])
+            matched["variants"].append(item["name"])
+            if int(item["count"]) > previous_count or len(item["name"]) > len(matched["name"]):
+                matched["name"] = item["name"]
+
+        canonical.sort(key=lambda item: (int(item["count"]), len(item["name"])), reverse=True)
+        return [
+            {
+                "name": item["name"],
+                "count": int(item["count"]),
+                "variants": list(dict.fromkeys(item["variants"])),
+            }
+            for item in canonical[:APP_LEXICON_MAX_ITEMS]
+        ]
+
+    def _build_app_local_lexicon(self, reports: List[Dict[str, Any]]) -> None:
+        phrase_extractors = {
+            "Page": self._extract_page_instances,
+            "Element": self._extract_element_instances,
+            "Bug": self._extract_bug_instances,
+        }
+        lexicon: Dict[str, List[Dict[str, Any]]] = {}
+        for label, extractor in phrase_extractors.items():
+            counts: Counter = Counter()
+            for report in reports:
+                description = str(report.get("description", ""))
+                for phrase in extractor(description):
+                    counts[self._normalize_phrase(phrase)] += 1
+            filtered = Counter({name: count for name, count in counts.items() if int(count) >= APP_LEXICON_MIN_FREQ})
+            lexicon[label] = self._canonicalize_phrases(filtered)
+        self.app_local_lexicon = lexicon
+
+    def _rank_lexicon_candidates(
+        self,
+        report_text: str,
+        memory_label: str,
+        prefix: str,
+        top_k: int = TOP_K_INSTANCE_CANDIDATES,
+    ) -> List[Dict[str, Any]]:
+        ranked: List[Dict[str, Any]] = []
+        for item in self.app_local_lexicon.get(memory_label, []):
+            phrase = str(item.get("name", "")).strip()
+            if not phrase:
+                continue
+            lexical_score = self._score_phrase_match(report_text, phrase)
+            if lexical_score < APP_LEXICON_SCORE_THRESHOLD:
+                continue
+            freq_bonus = min(int(item.get("count", 0)), 5) * 0.2
+            ranked.append(
+                self._make_candidate(
+                    phrase,
+                    score=lexical_score + freq_bonus,
+                    source="lexicon",
+                    lexicon_hit=True,
+                    evidence={"frequency": int(item.get("count", 0)), "variants": list(item.get("variants", []))},
+                )
+            )
+        ranked.sort(key=self._candidate_sort_key, reverse=True)
+        return [
+            {
+                "id": f"{prefix}{idx}",
+                "name": item["name"],
+                "score": float(item["score"]),
+                "source": item["source"],
+                "evidence": dict(item.get("evidence", {})),
+            }
+            for idx, item in enumerate(ranked[:top_k], start=1)
+        ]
+
+    def _rank_memory_candidates(
+        self,
+        seeds: List[str],
+        memory_label: str,
+        prefix: str,
+        top_k: int = TOP_K_INSTANCE_CANDIDATES,
+    ) -> List[Dict[str, Any]]:
+        if not seeds:
+            return []
+        ranked: List[Dict[str, Any]] = []
+        seed_vectors = self._get_cached_embeddings(seeds)
+        for memory_item in self._instance_store.get(memory_label, []):
+            memory_name = str(memory_item.get("name", "")).strip()
+            if not memory_name:
+                continue
+            sim = 0.0
+            for seed_vec in seed_vectors:
+                sim = max(sim, self._cosine_similarity(memory_item["embedding"], seed_vec))
+            if sim < 0.78:
+                continue
+            ranked.append(
+                self._make_candidate(
+                    memory_name,
+                    score=0.5 + sim,
+                    source="memory",
+                    memory_hit=True,
+                )
+            )
+        ranked.sort(key=self._candidate_sort_key, reverse=True)
+        return [
+            {
+                "id": f"{prefix}{idx}",
+                "name": item["name"],
+                "score": float(item["score"]),
+                "source": item["source"],
+                "evidence": dict(item.get("evidence", {})),
+            }
+            for idx, item in enumerate(ranked[:top_k], start=1)
+        ]
+
+    def _merge_slot_candidates(
+        self,
         prefix: str,
         top_k: int,
+        *candidate_buckets: List[Dict[str, Any]],
     ) -> List[Dict[str, Any]]:
-        support: Dict[str, Dict[str, Any]] = {}
-        for bucket, boost in ((primary, 1.0), (secondary, 0.7)):
+        merged: Dict[str, Dict[str, Any]] = {}
+        for bucket in candidate_buckets:
             for item in bucket:
-                name = str(item.get("name", "")).strip()
-                if not name:
+                name = self._normalize_phrase(item.get("name", ""))
+                if not name or name == "未知":
                     continue
-                merged = support.setdefault(name, {"name": name, "score": 0.0, "source": set()})
-                merged["score"] += float(item.get("score", 0.0)) + boost
-                source = item.get("source", "")
+                entry = merged.setdefault(
+                    name,
+                    {
+                        "name": name,
+                        "score": float(item.get("score", 0.0)),
+                        "source": set(),
+                        "evidence": {
+                            "report_hit": False,
+                            "lexicon_hit": False,
+                            "kg_hit": False,
+                            "relation_hit": False,
+                            "memory_hit": False,
+                        },
+                    },
+                )
+                entry["score"] = max(float(entry["score"]), float(item.get("score", 0.0)))
+                source = str(item.get("source", "")).strip()
                 if source:
-                    merged["source"].add(str(source))
-        sorted_items = sorted(
-            support.values(),
-            key=lambda item: (float(item["score"]), len(item["name"])),
-            reverse=True,
-        )[:top_k]
+                    entry["source"].add(source)
+                evidence = item.get("evidence", {}) or {}
+                for key, value in evidence.items():
+                    if isinstance(value, bool):
+                        entry["evidence"][key] = bool(entry["evidence"].get(key)) or value
+                    elif isinstance(value, (int, float)):
+                        entry["evidence"][key] = max(float(entry["evidence"].get(key, 0.0) or 0.0), float(value))
+                    elif isinstance(value, list):
+                        existing = list(entry["evidence"].get(key, []))
+                        entry["evidence"][key] = list(dict.fromkeys(existing + value))
+                    else:
+                        entry["evidence"][key] = value
+
+        ranked = sorted(merged.values(), key=self._candidate_sort_key, reverse=True)[:top_k]
         return [
             {
                 "id": f"{prefix}{idx}",
                 "name": item["name"],
                 "score": float(item["score"]),
                 "source": ",".join(sorted(item["source"])),
+                "evidence": dict(item["evidence"]),
             }
-            for idx, item in enumerate(sorted_items, start=1)
+            for idx, item in enumerate(ranked, start=1)
         ]
+
+    @staticmethod
+    def _candidate_gap(candidates: List[Dict[str, Any]]) -> float:
+        if len(candidates) < 2:
+            return float(candidates[0].get("score", 0.0)) if candidates else 0.0
+        return float(candidates[0].get("score", 0.0)) - float(candidates[1].get("score", 0.0))
+
+    @staticmethod
+    def _candidate_ratio(candidates: List[Dict[str, Any]]) -> float:
+        if len(candidates) < 2:
+            return float(candidates[0].get("score", 0.0)) if candidates else 0.0
+        second = max(float(candidates[1].get("score", 0.0)), 1e-6)
+        return float(candidates[0].get("score", 0.0)) / second
+
+    def _prefill_slot(
+        self,
+        slot_name: str,
+        candidates: List[Dict[str, Any]],
+        unknown_value: str,
+    ) -> Dict[str, Any]:
+        if not candidates:
+            none_id = "P0" if slot_name == "Page" else "E0" if slot_name == "Element" else ""
+            return {
+                "resolved": True,
+                "value": unknown_value,
+                "candidate_id": none_id or "NONE",
+                "reason": "no_candidates",
+                "score": 0.0,
+            }
+
+        top = candidates[0]
+        top_score = float(top.get("score", 0.0))
+        gap = self._candidate_gap(candidates)
+        ratio = self._candidate_ratio(candidates)
+        has_single = len(candidates) == 1
+        is_strong = top_score >= PREFILL_STRONG_SCORE
+        is_clear = gap >= PREFILL_STRONG_MARGIN or ratio >= PREFILL_STRONG_RATIO
+
+        if has_single and top_score >= 1.0:
+            return {
+                "resolved": True,
+                "value": self._normalize_phrase(top.get("name", unknown_value)),
+                "candidate_id": str(top.get("id", "NONE")),
+                "reason": "single_candidate",
+                "score": top_score,
+            }
+
+        if is_strong and is_clear:
+            return {
+                "resolved": True,
+                "value": self._normalize_phrase(top.get("name", unknown_value)),
+                "candidate_id": str(top.get("id", "NONE")),
+                "reason": "strong_winner",
+                "score": top_score,
+            }
+
+        return {
+            "resolved": False,
+            "value": unknown_value,
+            "candidate_id": "",
+            "reason": "ambiguous",
+            "score": top_score,
+        }
+
+    def _build_slot_debug(self, candidates: List[Dict[str, Any]]) -> Dict[str, Any]:
+        return {
+            "count": len(candidates),
+            "top": [
+                {
+                    "id": item.get("id", ""),
+                    "name": item.get("name", ""),
+                    "score": float(item.get("score", 0.0)),
+                    "source": item.get("source", ""),
+                    "evidence": dict(item.get("evidence", {})),
+                }
+                for item in candidates[:3]
+            ],
+        }
 
     def _build_link_candidates(self, report_id: str, description: str) -> Dict[str, Any]:
         normalized_description = self._normalize_prompt_text(description)
@@ -443,6 +728,10 @@ class GraphPriorPipeline:
             "page_confidence": 0.0,
             "element_confidence": 0.0,
             "bug_confidence": 0.0,
+            "operation_evidence": {},
+            "page_evidence": {},
+            "element_evidence": {},
+            "bug_evidence": {},
         }
         if self.kg_service and hasattr(self.kg_service, "retrieve_link_candidates"):
             kg_candidates = self.kg_service.retrieve_link_candidates(
@@ -452,66 +741,83 @@ class GraphPriorPipeline:
                 top_k_instance=TOP_K_INSTANCE_CANDIDATES,
             )
 
-        operation_candidates = list(kg_candidates.get("operations", []))
-        operation_confidence = float(kg_candidates.get("operation_confidence", self._candidate_confidence(operation_candidates)))
+        operation_seeds = self._extract_operation_mentions(normalized_description) or ["点击"]
+        page_seeds = self._extract_page_instances(normalized_description)
+        element_seeds = self._extract_element_instances(normalized_description)
+        bug_seeds = self._extract_bug_instances(normalized_description)
 
+        direct_operations = [
+            self._make_candidate(name, score=float(len(operation_seeds) - idx + 1) + 2.0, source="report", report_hit=True)
+            for idx, name in enumerate(operation_seeds, start=1)
+        ][:TOP_K_OPERATION_CANDIDATES]
+        direct_pages = [
+            self._make_candidate(name, score=float(len(page_seeds) - idx + 1) + 2.0, source="report", report_hit=True)
+            for idx, name in enumerate(page_seeds, start=1)
+        ][:TOP_K_INSTANCE_CANDIDATES]
+        direct_elements = [
+            self._make_candidate(name, score=float(len(element_seeds) - idx + 1) + 2.0, source="report", report_hit=True)
+            for idx, name in enumerate(element_seeds, start=1)
+        ][:TOP_K_INSTANCE_CANDIDATES]
+        direct_bugs = [
+            self._make_candidate(name, score=float(len(bug_seeds) - idx + 1) + 2.0, source="report", report_hit=True)
+            for idx, name in enumerate(bug_seeds, start=1)
+        ][:TOP_K_INSTANCE_CANDIDATES]
+
+        kg_operation_candidates = list(kg_candidates.get("operations", []))
+        operation_confidence = float(kg_candidates.get("operation_confidence", self._candidate_confidence(kg_operation_candidates)))
         if operation_confidence < OPERATION_KG_CONFIDENCE_THRESHOLD:
-            fallback_ops = self._extract_operation_mentions(normalized_description) or ["点击"]
+            kg_operation_candidates = []
+        operation_candidates = self._merge_slot_candidates(
+            "O",
+            TOP_K_OPERATION_CANDIDATES,
+            direct_operations,
+            kg_operation_candidates,
+        )
+        if not operation_candidates:
             operation_candidates = [
-                {"id": f"O{idx}", "name": name, "score": float(len(fallback_ops) - idx + 1), "source": "fallback"}
-                for idx, name in enumerate(fallback_ops[:TOP_K_OPERATION_CANDIDATES], start=1)
+                {
+                    "id": "O1",
+                    "name": "点击",
+                    "score": 1.0,
+                    "source": "fallback",
+                    "evidence": {"report_hit": False, "lexicon_hit": False, "kg_hit": False, "relation_hit": False, "memory_hit": False},
+                }
             ]
-            operation_confidence = self._candidate_confidence(operation_candidates)
+        operation_confidence = self._candidate_confidence(operation_candidates)
 
-        local_page_candidates = self._build_instance_candidates(
-            normalized_description,
-            [],
-            memory_label="Page",
-            extractor=self._extract_page_instances,
-        )
-        local_element_candidates = self._build_instance_candidates(
-            normalized_description,
-            [],
-            memory_label="Element",
-            extractor=self._extract_element_instances,
-        )
-        local_bug_candidates = self._build_instance_candidates(
-            normalized_description,
-            [],
-            memory_label="Bug",
-            extractor=self._extract_bug_instances,
-        )
+        lexicon_pages = self._rank_lexicon_candidates(normalized_description, "Page", "P")
+        lexicon_elements = self._rank_lexicon_candidates(normalized_description, "Element", "E")
+        lexicon_bugs = self._rank_lexicon_candidates(normalized_description, "Bug", "B")
+        memory_pages = self._rank_memory_candidates(page_seeds, "Page", "P")
+        memory_elements = self._rank_memory_candidates(element_seeds, "Element", "E")
+        memory_bugs = self._rank_memory_candidates(bug_seeds, "Bug", "B")
 
         kg_page_candidates = list(kg_candidates.get("pages", [])) if float(kg_candidates.get("page_confidence", 0.0)) >= SLOT_KG_CONFIDENCE_THRESHOLD else []
         kg_element_candidates = list(kg_candidates.get("elements", [])) if float(kg_candidates.get("element_confidence", 0.0)) >= SLOT_KG_CONFIDENCE_THRESHOLD else []
         kg_bug_candidates = list(kg_candidates.get("bugs", [])) if float(kg_candidates.get("bug_confidence", 0.0)) >= SLOT_KG_CONFIDENCE_THRESHOLD else []
 
-        page_candidates = self._merge_candidate_lists(
-            kg_page_candidates,
-            local_page_candidates,
-            prefix="P",
-            top_k=TOP_K_INSTANCE_CANDIDATES,
-        )
-        element_candidates = self._merge_candidate_lists(
-            kg_element_candidates,
-            local_element_candidates,
-            prefix="E",
-            top_k=TOP_K_INSTANCE_CANDIDATES,
-        )
-        bug_candidates = self._merge_candidate_lists(
-            kg_bug_candidates,
-            local_bug_candidates,
-            prefix="B",
-            top_k=TOP_K_INSTANCE_CANDIDATES,
-        )
+        page_candidates = self._merge_slot_candidates("P", TOP_K_INSTANCE_CANDIDATES, direct_pages, lexicon_pages, kg_page_candidates, memory_pages)
+        element_candidates = self._merge_slot_candidates("E", TOP_K_INSTANCE_CANDIDATES, direct_elements, lexicon_elements, kg_element_candidates, memory_elements)
+        bug_candidates = self._merge_slot_candidates("B", TOP_K_INSTANCE_CANDIDATES, direct_bugs, lexicon_bugs, kg_bug_candidates, memory_bugs)
 
-        if not page_candidates:
-            page_candidates = [{"id": "P1", "name": "未知页面", "score": 0.1, "source": "fallback"}]
-        if not element_candidates:
-            element_candidates = [{"id": "E1", "name": "未知组件", "score": 0.1, "source": "fallback"}]
         if not bug_candidates:
-            bug_candidates = [{"id": "B1", "name": self._normalize_phrase(description), "score": 0.1, "source": "fallback"}]
+            bug_candidates = [
+                {
+                    "id": "B1",
+                    "name": self._normalize_phrase(description),
+                    "score": 1.0,
+                    "source": "fallback",
+                    "evidence": {"report_hit": False, "lexicon_hit": False, "kg_hit": False, "relation_hit": False, "memory_hit": False},
+                }
+            ]
 
+        slot_prefill = {
+            "Operation": self._prefill_slot("Operation", operation_candidates, "未知操作"),
+            "Page": self._prefill_slot("Page", page_candidates, "未知页面"),
+            "Element": self._prefill_slot("Element", element_candidates, "未知组件"),
+            "Bug": self._prefill_slot("Bug", bug_candidates, self._normalize_phrase(description)),
+        }
+        llm_slots = [slot for slot, info in slot_prefill.items() if not bool(info.get("resolved"))]
         return {
             "report_id": report_id,
             "text": normalized_description,
@@ -523,6 +829,31 @@ class GraphPriorPipeline:
             "page_confidence": self._candidate_confidence(kg_page_candidates),
             "element_confidence": self._candidate_confidence(kg_element_candidates),
             "bug_confidence": self._candidate_confidence(kg_bug_candidates),
+            "slot_prefill": slot_prefill,
+            "llm_slots": llm_slots,
+            "llm_required": bool(llm_slots),
+            "slot_evidence": {
+                "Operation": {
+                    "confidence": operation_confidence,
+                    "kg": dict(kg_candidates.get("operation_evidence", {})),
+                    "candidates": self._build_slot_debug(operation_candidates),
+                },
+                "Page": {
+                    "confidence": float(kg_candidates.get("page_confidence", 0.0)),
+                    "kg": dict(kg_candidates.get("page_evidence", {})),
+                    "candidates": self._build_slot_debug(page_candidates),
+                },
+                "Element": {
+                    "confidence": float(kg_candidates.get("element_confidence", 0.0)),
+                    "kg": dict(kg_candidates.get("element_evidence", {})),
+                    "candidates": self._build_slot_debug(element_candidates),
+                },
+                "Bug": {
+                    "confidence": float(kg_candidates.get("bug_confidence", 0.0)),
+                    "kg": dict(kg_candidates.get("bug_evidence", {})),
+                    "candidates": self._build_slot_debug(bug_candidates),
+                },
+            },
         }
 
     def _format_candidates(self, title: str, candidates: List[Dict[str, Any]]) -> str:
@@ -536,21 +867,57 @@ class GraphPriorPipeline:
             lines.append(f"{item['id']}. {item['name'] if 'name' in item else item['description'][:80]}{suffix}")
         return "\n".join(lines)
 
+    @staticmethod
+    def _slot_title(slot_name: str) -> str:
+        return {
+            "Operation": "Operation Candidates",
+            "Page": "Page Candidates",
+            "Element": "Element Candidates",
+            "Bug": "Bug Candidates",
+        }[slot_name]
+
+    @staticmethod
+    def _slot_key(slot_name: str) -> str:
+        return {
+            "Operation": "operations",
+            "Page": "pages",
+            "Element": "elements",
+            "Bug": "bugs",
+        }[slot_name]
+
+    def _build_preset_line(self, payload: Dict[str, Any]) -> str:
+        parts: List[str] = []
+        for slot_name in ("Operation", "Page", "Element", "Bug"):
+            info = payload.get("slot_prefill", {}).get(slot_name, {})
+            if not info.get("resolved"):
+                continue
+            candidate_id = str(info.get("candidate_id", "NONE") or "NONE")
+            display_name = str(info.get("value", "NONE"))
+            if slot_name in {"Page", "Element"} and display_name.startswith("未知"):
+                display_name = "NONE"
+            parts.append(f"{slot_name[:2].upper()}={candidate_id}({display_name})")
+        return "Preset: " + ", ".join(parts) if parts else ""
+
     def _build_candidate_report_block(self, candidate_payloads: List[Dict[str, Any]]) -> str:
         blocks = []
         for payload in candidate_payloads:
-            blocks.append(
-                "\n".join(
-                    [
-                        f"[Report {payload['report_id']}]",
-                        f"TEXT: {payload['text']}",
-                        self._format_candidates("Operation Candidates", payload["operations"]),
-                        self._format_candidates("Page Candidates", payload["pages"]),
-                        self._format_candidates("Element Candidates", payload["elements"]),
-                        self._format_candidates("Bug Candidates", payload["bugs"]),
-                    ]
+            lines = [
+                f"[Report {payload['report_id']}]",
+                f"TEXT: {payload['text']}",
+            ]
+            preset_line = self._build_preset_line(payload)
+            if preset_line:
+                lines.append(preset_line)
+
+            unresolved_slots = payload.get("llm_slots", [])
+            for slot_name in unresolved_slots:
+                lines.append(
+                    self._format_candidates(
+                        self._slot_title(slot_name),
+                        payload[self._slot_key(slot_name)],
+                    )
                 )
-            )
+            blocks.append("\n".join(lines))
         return "\n\n".join(blocks)
 
     def _batch_max_tokens(self, report_count: int, retry: bool = False) -> int:
@@ -586,27 +953,50 @@ class GraphPriorPipeline:
         description: str,
     ) -> Dict[str, str]:
         report_id = candidate_payload["report_id"]
-        operation = self._select_candidate_name(
-            self._get_field(data, "Operation", "op"),
-            candidate_payload["operations"],
-            fallback=self._normalize_phrase(candidate_payload["operations"][0]["name"]) if candidate_payload["operations"] else "未知操作",
+        slot_prefill = candidate_payload.get("slot_prefill", {})
+
+        if slot_prefill.get("Operation", {}).get("resolved"):
+            operation = str(slot_prefill["Operation"]["value"])
+        else:
+            operation = self._select_candidate_name(
+                self._get_field(data, "Operation", "op"),
+                candidate_payload["operations"],
+                fallback=self._normalize_phrase(candidate_payload["operations"][0]["name"]) if candidate_payload["operations"] else "未知操作",
+            )
+
+        if slot_prefill.get("Page", {}).get("resolved"):
+            page = str(slot_prefill["Page"]["value"])
+        else:
+            page = self._select_candidate_name(
+                self._get_field(data, "Page", "pg"),
+                candidate_payload["pages"],
+                fallback="未知页面",
+            )
+
+        if slot_prefill.get("Element", {}).get("resolved"):
+            element = str(slot_prefill["Element"]["value"])
+        else:
+            element = self._select_candidate_name(
+                self._get_field(data, "Element", "el"),
+                candidate_payload["elements"],
+                fallback="未知组件",
+            )
+
+        if slot_prefill.get("Bug", {}).get("resolved"):
+            bug = str(slot_prefill["Bug"]["value"])
+        else:
+            bug = self._select_candidate_name(
+                self._get_field(data, "Bug", "bug"),
+                candidate_payload["bugs"],
+                fallback=self._normalize_phrase(description),
+            )
+
+        severity_scope = self._post_calibrate_scope(
+            description=description,
+            page=page,
+            element=element,
+            raw_scope=self._get_field(data, "Severity_Scope", "scope"),
         )
-        page = self._select_candidate_name(
-            self._get_field(data, "Page", "pg"),
-            candidate_payload["pages"],
-            fallback="未知页面",
-        )
-        element = self._select_candidate_name(
-            self._get_field(data, "Element", "el"),
-            candidate_payload["elements"],
-            fallback="未知组件",
-        )
-        bug = self._select_candidate_name(
-            self._get_field(data, "Bug", "bug"),
-            candidate_payload["bugs"],
-            fallback=self._normalize_phrase(description),
-        )
-        severity_scope = self._resolve_scope(self._get_field(data, "Severity_Scope", "scope"))
 
         return {
             "Report_ID": report_id,
@@ -617,6 +1007,21 @@ class GraphPriorPipeline:
             "Severity_Scope": severity_scope,
             "Reference_Report": self._get_field(data, "Reference_Report", "ref"),
         }
+
+    def _post_calibrate_scope(self, description: str, page: str, element: str, raw_scope: str) -> str:
+        page_known = bool(page and not str(page).startswith("未知"))
+        element_known = bool(element and not str(element).startswith("未知"))
+        normalized_description = self._normalize_prompt_text(description, limit=800).lower()
+
+        if element_known:
+            return "element"
+        if page_known:
+            return "page"
+        if any(keyword.lower() in normalized_description for keyword in PROGRAM_FAILURE_KEYWORDS):
+            return "program"
+
+        resolved = self._resolve_scope(raw_scope)
+        return resolved
 
     @staticmethod
     def _try_block_load(raw: str) -> List[Dict[str, Any]]:
@@ -913,6 +1318,23 @@ class GraphPriorPipeline:
         prompt_template = LINK_SELECTION_RETRY_PROMPT if compact_only else LINK_SELECTION_PROMPT
         return prompt_template.format(reports_block=self._build_candidate_report_block(candidate_payloads))
 
+    @staticmethod
+    def _payload_debug_summary(payload: Dict[str, Any]) -> Dict[str, Any]:
+        slot_prefill = payload.get("slot_prefill", {})
+        return {
+            "prefilled_slots": {
+                slot: {
+                    "value": info.get("value", ""),
+                    "candidate_id": info.get("candidate_id", ""),
+                    "reason": info.get("reason", ""),
+                }
+                for slot, info in slot_prefill.items()
+                if info.get("resolved")
+            },
+            "llm_slots": list(payload.get("llm_slots", [])),
+            "slot_evidence": dict(payload.get("slot_evidence", {})),
+        }
+
     def _extract_structured(
         self,
         candidate_payload: Dict[str, Any],
@@ -939,6 +1361,7 @@ class GraphPriorPipeline:
             prompt_tokens=p_tokens,
             output_tokens=r_tokens,
             batch_index=batch_index,
+            debug={"reports": {report_id: self._payload_debug_summary(candidate_payload)}},
         )
         parsed_items = self._parse_extraction_items(content)
         parsed = parsed_items[0] if parsed_items else {}
@@ -975,6 +1398,7 @@ class GraphPriorPipeline:
             prompt_tokens=p_tokens,
             output_tokens=r_tokens,
             batch_index=batch_index,
+            debug={"reports": {payload["report_id"]: self._payload_debug_summary(payload) for payload in candidate_payloads}},
         )
 
         parsed_by_id: Dict[str, Dict[str, Any]] = {}
@@ -1082,8 +1506,34 @@ class GraphPriorPipeline:
             description = report.get("description", "")
             candidate_payloads.append(self._build_link_candidates(report_id, description))
 
-        extracted_batch = self._extract_structured_batch(candidate_payloads, batch_index=batch_index)
-        extracted_batch = self._fill_missing_extractions(candidate_payloads, extracted_batch, batch_index=batch_index)
+        extracted_batch: Dict[str, Dict[str, str]] = {}
+        pending_payloads: List[Dict[str, Any]] = []
+        prefilled_payloads: List[Dict[str, Any]] = []
+        for payload in candidate_payloads:
+            if payload.get("llm_required"):
+                pending_payloads.append(payload)
+                continue
+            prefilled_payloads.append(payload)
+            extracted_batch[payload["report_id"]] = self._normalize_link_selection_item(
+                {},
+                candidate_payload=payload,
+                description=str(payload.get("text", "")),
+            )
+
+        if prefilled_payloads:
+            self._record_raw_response(
+                call_type="prefill",
+                report_ids=[payload["report_id"] for payload in prefilled_payloads],
+                content="",
+                prompt_tokens=0,
+                output_tokens=0,
+                batch_index=batch_index,
+                debug={"reports": {payload["report_id"]: self._payload_debug_summary(payload) for payload in prefilled_payloads}},
+            )
+
+        if pending_payloads:
+            extracted_batch.update(self._extract_structured_batch(pending_payloads, batch_index=batch_index))
+            extracted_batch = self._fill_missing_extractions(pending_payloads, extracted_batch, batch_index=batch_index)
 
         records: List[Tuple[int, str, str, Dict[str, str]]] = []
         embedding_texts: List[str] = []
@@ -1129,6 +1579,7 @@ class GraphPriorPipeline:
         return prepared
 
     def phase1_extract_and_fuse(self, reports: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        self._build_app_local_lexicon(reports)
         indexed_reports = list(enumerate(reports, start=1))
         grouped_reports = self._group_reports_for_extraction(indexed_reports)
         representative_reports = [

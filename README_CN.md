@@ -1,124 +1,209 @@
 # 基于 LLM 与 GraphPrior 的缺陷报告优先级排序
 
-本项目利用大语言模型（LLM）与知识图谱增强方法（GraphPrior），对众包测试报告进行优先级排序。全新的 GraphPrior 包含流式实例抽取与建簇、相对中心度拓扑打分与多样性排序三个高效整合阶段。
-
 [English Documentation](README.md)
 
-## 主要特性
+本项目提供两类主要排序模式：
 
-*   **GraphPrior 三阶段整合流程**：批量结构化抽取、流式实例对齐与去重、基于组件影响范围的严重性打分与多样性优先排序。
-*   **多维动态去重建簇**：提取 Operation, Page, Element, Bug 四个核心维度，实现基于多维向量特征的联合软匹配去重，构建精准的缺陷指纹。
-*   **可解释的严重性打分**：基于影响组件范围与重复出现频次计算簇级分数，尽量减少自由文本输出长度对最终排序的影响。
-*   **自动评估**：统一计算 APFD、APSD 与 NDCG 指标；其中 APSD 在缺少外部严重性标注时会退化为频次代理加权。
+- `llmprior`：直接用 LLM 做报告优先级排序
+- `graphprior`：利用离线 KG、候选生成、选择式 LLM 链接、动态建簇、确定性打分和多样性重排的结构化排序
 
-## GraphPrior 核心流程详解
+## 当前 GraphPrior 的真实实现
 
-重构后的 GraphPrior 将抽取、建簇、打分与排序组合为更紧凑的三个阶段。
+当前版本已经不是早期的“自由字段抽取 + Neo4j 默认依赖”方案，而是下面这条主链路：
 
-### 阶段 1：流式抽取、维度对齐与动态建簇 (Extraction, Alignment & Clustering)
+- 默认使用离线 KG，来源是 [`KG_desc.md`](/d:/OneDrive/Project/GraphPrior/GraphPrior/KG_desc.md)
+- 使用 KG 关系先验增强候选生成
+- 从当前 app 全部报告中构建 app-local lexicon
+- 在调用 LLM 之前先做确定性 prefill
+- 只有歧义槽位才交给 LLM
+- LLM 输出单行链接结果，例如 `R_001|O1|P0|E2|B3|page`
+- GraphPrior 对 Qwen 默认关闭 thinking
+- 对 `scope` 做确定性后校准
 
-**对应核心文件**：`graph_prior.py` (函数 `phase1_extract_and_fuse`)，依赖 `llm.py` (调用大模型) 与 `embedding.py` (向量化层)。GraphPrior 的真实抽取 prompt 也定义在 `graph_prior.py`，不走 `prompt.py` 中的 `graphprior` 分支。
+Neo4j 仍然可以通过 `--kg-mode online` 使用，但现在它是可选项，不再是默认依赖。
 
-*   **输入**：原始缺陷报告文本（标题、正文、复现步骤等）。
-*   **处理**：
-    1. 通过 LLM 以 batch 方式对多条报告做结构化抽取，从每条报告中提取四个固定维度的语义特征：操作 (`Operation`)、页面 (`Page`)、组件 (`Element`) 和现象 (`Bug`)，并额外判定该缺陷的阻断级别（`Element`级、`Page`级或 `Program` 级全局崩溃）。
-    2. 将抽取的各项分别转换为语义向量表示，**独立地**与本地内存中维护的对应维度特征池进行余弦相似度（Cosine Similarity）软匹配。若相似度大于设定的阈值，则绑定至已有的 EID；若不相似或特征池为空，则动态创建新的 EID 并挂载至图谱上下文。
-    3. 合并上述取得的 4 个 EID 联合构成当前缺陷报告的唯一“四维指纹 (Signature)”。
-    4. 报告簇维护：系统实时检查现有报告簇的指纹，若完全一致则将当前报告并入该簇的重复项（Duplicates）列表；若为全新型号，则创建新簇（Cluster）并选取该报告为代表。
-*   **输出**：基于语义和四维特征精确聚合的唯一缺陷报告代表簇列表，及其构成的子网络图谱。
-*   **作用**：在第一阶段即流式完成了知识抽取与无遗漏的去重合并工作，极大地避免了传统方法的重复特征计算与后置图结构的冗余合并过程。
+## GraphPrior 核心流程
 
-### 阶段 2：基于影响组件数的严重性打分（Severity Scoring based on Affected Components）
+### 阶段 1：候选生成与选择式链接
 
-**对应核心文件**：`graph_prior.py` (函数 `phase2_topology_scoring`)。
+核心文件：[`graph_prior.py`](/d:/OneDrive/Project/GraphPrior/GraphPrior/graph_prior.py)
 
-*   **输入**：阶段 1 生成的实例对齐簇列表与图谱网络中的组件关联特征（实体间的 `LOCATED_ON` 依赖边）。
-*   **处理**：摒弃以前单纯依赖图谱边出入度统计的黑盒粗分模型。现在，严重性分数（Severity Score）由大模型判断出的确切影响层级组件数（$I$）和历史发生频次（$T$）精确算出：
-    系统会拉取该分支簇的重复频次 $T$，随后判定受影响的组件底数 $I$：
-    1.  若阶段一判定为局部的 `element` 级，只视作损坏了单一节点，即 $I = 1$。
-    2.  若阶段一判定为该模块的 `page` 级，则通过图结构获取该 `page_eid` 的从属节点，得出该 page 下包含的不同组件总数赋给 $I$。
-    3.  若判定为全局阻断的 `program` 级，则 $I$ 等于系统在本次提报周期内受影响或注册的所有组件总计上限。
-    **最终打分公式**：$Score = I \times \log(T + 1)$
-*   **输出**：每一个独立缺陷簇（及簇内所有对应报告）的精确严重性评估分数。
-*   **作用**：基于明确的业务基础组件影响范围（影响广度）与现实中提报的复现频率（发生热度），建立起可解释强、不随大模型泛化改变且计算纯客观一致的严重性评分基准。
+对每条代表性报告，GraphPrior 会为 `Operation / Page / Element / Bug` 构造候选。候选来自三类证据：
 
-### 阶段 3：多样性优先排序 (Diversity-first Ranking)
+- 当前报告本地短语抽取
+- 当前 app 的 app-local lexicon
+- 离线 KG 关系先验
 
-**对应核心文件**：`graph_prior.py` (函数 `run` 合并排序)，配合 `main.py` 流水线总控。
+候选排序不是简单叠加分数，而是按证据层次排序：
 
-*   **输入**：包含合并去重结果的簇列表与其分数。
-*   **处理**：依据阶段二计算获得的绝对危险客观分数（Score），对收集到的全体缺陷簇执行降序排列。在生成输出序列时，首个簇代表报告依次放出排在前列，紧随其后的将被直接打包附带本簇内的所有其他同类的重复/次要报告。
-*   **输出**：结构明确、兼顾新问题探索和同源复发详尽统计的最终一维优先级列表序列。
-*   **作用**：保证在排序名单的最头部最大化展现高影响度、且类别不重复（Diversity-first）的高危缺陷集群，避免审阅者被同类问题淹没，并在后续序列中有序降级安置相似的缺陷细节以便进一步追踪。
+1. 当前报告直接命中
+2. app-local lexicon 支持
+3. offline KG 支持
+4. memory 相似归并支持
 
-## 当前问题与已知局限
+随后执行确定性 prefill：
 
-*   **打分稳定性依赖特定大模型**：当前排序与严重性打分仍强依赖所选 LLM 的推理能力与输出风格，不同模型/版本之间可能产生显著分数波动，尚未完全沉淀为与模型弱耦合的稳定算法。
-*   **重复报告判定精度仍有提升空间**：图结构与向量相似度的混合去重在语义改写、跨模块描述或长文本场景下仍可能出现误判（误合并或漏检）。
-*   **Token 消耗仍需持续优化**：当前版本已通过批量抽取、短字段 JSON 输出、受控 `max_token` 与 embedding 缓存压缩成本，但在中大规模报告集上仍会带来可观调用费用。
-*   **实验可复现性受模型版本影响**：即使固定提示词与参数，在线模型更新后结果可能变化，横向对比实验需要额外记录模型版本与时间。
+- 没有候选：直接预填 `NONE` 或 `未知*`
+- 只有一个强候选，或第一候选明显胜出：直接本地锁定
+- 只有真正存在歧义的槽位才会进入 LLM
+
+如果某条报告所有槽位都已经本地确定，则完全跳过 LLM。
+
+进入 LLM 的报告只需要返回一行简短结果：
+
+```text
+R_001|O1|P0|E2|B3|page
+```
+
+这让解析更稳，也把 output token 压得很低。
+
+### 阶段 2：实例对齐、签名构造与动态建簇
+
+核心文件：[`graph_prior.py`](/d:/OneDrive/Project/GraphPrior/GraphPrior/graph_prior.py)
+
+完成链接后，每条报告会被转换成四维签名：
+
+- `operation_eid`
+- `page_eid`
+- `element_eid`
+- `bug_eid`
+
+每个维度都与当前运行时维护的实例池做相似度匹配；如果没有足够接近的实例，就新建实例节点。
+
+当两条报告的四维签名完全一致时，它们会进入同一个 cluster。
+
+### 阶段 3：确定性打分与多样性重排
+
+核心文件：[`graph_prior.py`](/d:/OneDrive/Project/GraphPrior/GraphPrior/graph_prior.py)
+
+当前 GraphPrior 保留可解释的确定性打分方式：
+
+- `element`：影响组件数 `I = 1`
+- `page`：`I = 该页面下的元素数`
+- `program`：`I = 当前已知元素总数`
+
+打分公式为：
+
+```text
+Score = I * log(T + 1)
+```
+
+其中 `T` 是该 cluster 的报告数。
+
+之后会对 cluster 代表做带多样性惩罚的重排，尽量避免排序头部被近重复问题占满。
+
+## 为什么仍然需要 GraphPrior
+
+和纯 `llmprior` 相比，GraphPrior 更强调：
+
+- 更低且更稳定的 output token
+- 中间结构可见
+- 候选来源可解释
+- 抽取行为更可复查
+
+这意味着它主动用一部分“结构化约束”来换取更低的波动和更高的可审计性。
+
+## 评估指标
+
+当前评估会输出：
+
+- `APFD`：能否更早覆盖不同 bug 组
+- `APSD`：带严重性权重的早发现能力
+- `NDCG@10`、`NDCG@20`：排序头部质量
+
+说明：
+
+- 如果数据集没有外部严重性真值，当前 `APSD` 更接近“频次代理加权指标”，不是严格的真实 severity 指标
+- 当前 GraphPrior 的主要优化目标是 `APFD / APSD + token 成本`，`NDCG` 作为辅助观察指标
 
 ## 环境要求
 
-1.  **Neo4j 数据库**：已运行并导入缺陷知识图谱数据的 Neo4j 实例。
-2.  **API Keys**:
-    *   **Google Gemini**: 访问 Gemini 模型。
-    *   **OpenAI**: 访问 GPT 模型。
+### 必需
 
-## 安装步骤
+- Python 环境和 `requirements.txt` 中的依赖
+- 所选模型的 API Key
+- 本地存在 [`KG_desc.md`](/d:/OneDrive/Project/GraphPrior/GraphPrior/KG_desc.md)
 
-1.  克隆仓库：
-    ```bash
-    git clone https://github.com/ZhuXunJason/RAGPrior
-    cd RAGPrior
-    ```
+### 可选
 
-2.  安装依赖：
-    ```bash
-    pip install -r requirements.txt
-    ```
- 
-## 使用方法
+- Neo4j，仅当你需要 `--kg-mode online` 时才需要
 
-### 1. 配置环境
-打开 `.env.example` 文件，填入实际配置信息并重命名为`.env`。
+## 安装
 
-### 2. 数据准备
-将缺陷报告 CSV 文件放置在 `reports/` 目录下（例如 `reports/app21.csv`）。
-
-### 3. 运行排序
-使用 `main.py` 运行排序流程。
-
-**基本命令 (GraphPrior 模式):**
 ```bash
-python main.py --app 21 --mode graphprior --repeat 1 --model gpt-5.2
+git clone https://github.com/ZhuXunJason/RAGPrior
+cd RAGPrior
+pip install -r requirements.txt
 ```
 
-**参数说明:**
-*   `--app <int>`: 应用 ID（对应 `reports/app{ID}.csv`）。默认值: 21。
-*   `--model <str>`: 模型名称（例如 `gemini-3-pro-preview`, `gpt-5.2`）。默认值: `gemini-3-pro-preview`。
-*   `--mode <str>`: 运行模式。
-    *   `graphprior`: GraphPrior 四阶段流程。
-    *   `llmprior`: 标准 LLM 排序。
-    *   `simple`: 简化版提示词。
-    *   `direct`: 直接排序，不生成分类树。
-*   `--repeat <int>`: 实验重复次数。默认值: 1。
-*   `--file <path>`: 指定自定义 CSV 文件路径（覆盖 `--app` 参数）。
+## 使用方法
 
-### 4. 输出结果
-*   **Responses (`response/`)**: 保存 LLM 的原始文本响应。
-*   **Results (`result/`)**: 保存解析后的最终报告排序序列。
-*   **控制台输出**: 打印运行进度及最终 APSD / NDCG 评估分数。
+### GraphPrior
+
+默认命令：
+
+```bash
+python main.py --app 2 --model qwen3.5-plus --embedding-model text-embedding-v4
+```
+
+这里默认就是：
+
+- `--mode graphprior`
+- `--kg-mode offline`
+
+如果想显式使用在线 KG：
+
+```bash
+python main.py --app 2 --model qwen3.5-plus --embedding-model text-embedding-v4 --kg-mode online
+```
+
+### LLMPrior
+
+```bash
+python main.py --app 2 --mode llmprior --model qwen3.5-plus
+```
+
+### 常用参数
+
+- `--app <int>`：应用 id，对应 `reports/app{ID}.csv`
+- `--file <path>`：自定义 CSV 文件
+- `--model <str>`：LLM 名称
+- `--embedding-model <str>`：embedding 模型
+- `--kg-mode offline|online`：KG 后端，默认 `offline`
+- `--batch-size <int>`：GraphPrior 抽取批大小
+- `--workers <int>`：GraphPrior 并发线程数
+- `--repeat <int>`：重复实验次数
+
+## 输出结果
+
+- [`response/`](/d:/OneDrive/Project/GraphPrior/GraphPrior/response)：原始 LLM 响应和 GraphPrior 调试信息
+- [`result/`](/d:/OneDrive/Project/GraphPrior/GraphPrior/result)：最终排序结果
+
+当前 GraphPrior 的 response 文件会额外包含：
+
+- 每个 batch 的 token 统计
+- 原始模型输出
+- prefill 信息
+- 每个槽位的 evidence 摘要
+- 候选数与候选来源的调试信息
 
 ## 代码结构
 
-*   **`main.py`**: 程序入口。协调 查询 -> 解析 -> 评估 的全流程。
-*   **`kg_service.py`**: 处理 Neo4j 连接、向量嵌入以及混合图谱检索逻辑。
-*   **`llm.py`**: Google Gemini API 调用接口。
-*   **`prompt.py`**: 管理提示词模板及上下文注入。
-    GraphPrior 模式的抽取 prompt 不在此文件中。
-*   **`parse.py`**: 解析 LLM 输出的层次树结构，生成线性序列。
-*   **`config.py`**: 配置加载器。
+- [`main.py`](/d:/OneDrive/Project/GraphPrior/GraphPrior/main.py)：主入口和评估流程
+- [`graph_prior.py`](/d:/OneDrive/Project/GraphPrior/GraphPrior/graph_prior.py)：GraphPrior 主流程
+- [`offline_kg.py`](/d:/OneDrive/Project/GraphPrior/GraphPrior/offline_kg.py)：离线 KG 解析与候选检索
+- [`kg_service.py`](/d:/OneDrive/Project/GraphPrior/GraphPrior/kg_service.py)：在线 / 离线 KG 分发
+- [`llm.py`](/d:/OneDrive/Project/GraphPrior/GraphPrior/llm.py)：模型调用层
+- [`report_utils.py`](/d:/OneDrive/Project/GraphPrior/GraphPrior/report_utils.py)：报告读取与评估指标
+- [`KG_desc.md`](/d:/OneDrive/Project/GraphPrior/GraphPrior/KG_desc.md)：离线 KG 的实体与关系定义
+
+## 当前局限
+
+- 某些 app 上 `Page / Element` 的解析仍然偏保守
+- 离线 KG 的效果依赖 [`KG_desc.md`](/d:/OneDrive/Project/GraphPrior/GraphPrior/KG_desc.md) 的覆盖度
+- app-local lexicon 仍然是启发式方法，可能漏掉低频表达
+- 当前打分具有可解释性，但还没有引入跨 app 学习型参数优化
+- 除抽取阶段外，不同模型族在整体排序上仍可能有差异
 
 ## 许可证
 
