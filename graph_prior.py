@@ -17,9 +17,6 @@ from kg_service import get_kg_service
 from llm import ask_gpt
 
 
-PAGE_FAILURE_KEYWORDS = [
-    "白屏", "闪退", "卡死", "无法操作", "页面不可用", "整页", "全页面", "崩溃", "crash", "freeze",
-]
 PROGRAM_FAILURE_KEYWORDS = [
     "白屏", "黑屏", "闪退", "崩溃", "停止运行", "无响应", "卡死", "crash", "freeze",
 ]
@@ -27,7 +24,7 @@ PROGRAM_FAILURE_KEYWORDS = [
 PROMPT_TEXT_LIMIT = 500
 SINGLE_EXTRACTION_MAX_TOKENS = 256
 BATCH_EXTRACTION_MAX_TOKENS = 8192
-REPRESENTATIVE_SIM_THRESHOLD = 0.90
+DESCRIPTION_DUPLICATE_THRESHOLD = 0.90
 MISSING_RETRY_BATCH_SIZE = 2
 BATCH_RETRY_COVERAGE_THRESHOLD = 0.70
 KG_EVIDENCE_TOP_K = 20
@@ -101,6 +98,7 @@ class GraphPriorPipeline:
         batch_size: int = 16,
         workers: int = 4,
         kg_mode: str = "offline",
+        duplicate_threshold: float = DESCRIPTION_DUPLICATE_THRESHOLD,
         embedding_model: Optional[str] = None,
         base_url: Optional[str] = None,
         api_key: Optional[str] = None,
@@ -109,6 +107,7 @@ class GraphPriorPipeline:
         self.batch_size = max(1, int(batch_size))
         self.workers = max(1, int(workers))
         self.kg_mode = kg_mode
+        self.duplicate_threshold = float(duplicate_threshold)
         self.embedding_model = embedding_model
         self.base_url = base_url
         self.api_key = api_key
@@ -129,8 +128,6 @@ class GraphPriorPipeline:
         }
         self._instance_counter = 0
 
-        self.severity_scopes = ["element", "page", "program"]
-
         # Token usage tracking
         self.input_tokens = 0
         self.output_tokens = 0
@@ -138,6 +135,7 @@ class GraphPriorPipeline:
         self.embedding_lock = threading.Lock()
         self.raw_responses: List[Dict[str, Any]] = []
         self._embedding_cache: Dict[str, List[float]] = {}
+        self.duplicate_report_map: Dict[int, Dict[str, Any]] = {}
 
     def _record_raw_response(
         self,
@@ -172,11 +170,6 @@ class GraphPriorPipeline:
                 }
             }
         return {}
-
-    @staticmethod
-    def _parse_report_num(report_id: str) -> int:
-        match = re.search(r"(\d+)", report_id)
-        return int(match.group(1)) if match else 0
 
     @staticmethod
     def _try_json_load(raw: str) -> Dict[str, Any]:
@@ -742,7 +735,6 @@ class GraphPriorPipeline:
             )
             for idx, name in enumerate(bug_seeds, start=1)
         ][:TOP_K_INSTANCE_CANDIDATES]
-
         kg_operation_candidates = list(kg_candidates.get("operations", []))
         kg_operation_candidates = [
             self._make_candidate(
@@ -892,10 +884,7 @@ class GraphPriorPipeline:
         for item in candidates:
             labels = self._candidate_labels(item)
             label_suffix = f" [{'|'.join(labels)}]" if labels else ""
-            suffix = ""
-            if "severity" in item and item.get("severity"):
-                suffix = f" | severity={item['severity']}"
-            lines.append(f"{item['id']}. {item['name'] if 'name' in item else item['description'][:80]}{label_suffix}{suffix}")
+            lines.append(f"{item['id']}. {item['name'] if 'name' in item else item['description'][:80]}{label_suffix}")
         return "\n".join(lines)
 
     @staticmethod
@@ -951,7 +940,7 @@ class GraphPriorPipeline:
             blocks.append("\n".join(lines))
         return "\n\n".join(blocks)
 
-    def _batch_max_tokens(self, report_count: int, retry: bool = False) -> int:
+    def _batch_max_tokens(self, report_count: int) -> int:
         budget = min(BATCH_EXTRACTION_MAX_TOKENS, SINGLE_EXTRACTION_MAX_TOKENS * max(1, report_count))
         return budget
 
@@ -1170,42 +1159,52 @@ class GraphPriorPipeline:
 
             return [list(self._embedding_cache[text]) for text in normalized_texts]
 
-    def _group_reports_for_extraction(
+    def _group_duplicate_reports_by_description(
         self,
         indexed_reports: List[Tuple[int, Dict[str, Any]]],
     ) -> Dict[int, List[Tuple[int, Dict[str, Any]]]]:
         if not indexed_reports:
             return {}
 
-        description_vectors = get_embeddings(
-            [self._normalize_prompt_text(report.get("description", "")) for _, report in indexed_reports],
-            model=self.model,
-            embedding_model=self.embedding_model,
-            base_url=self.base_url,
-            api_key=self.api_key,
-        )
+        description_texts = [
+            self._normalize_prompt_text(report.get("description", ""), limit=800)
+            for _, report in indexed_reports
+        ]
+        description_vectors = self._get_cached_embeddings(description_texts)
 
         groups: Dict[int, List[Tuple[int, Dict[str, Any]]]] = {}
         representative_positions: List[int] = []
+        duplicate_report_map: Dict[int, Dict[str, Any]] = {}
 
         for pos, (report_num, report) in enumerate(indexed_reports):
-            current_vec = description_vectors[pos].tolist()
+            current_vec = description_vectors[pos]
             matched_rep_num: Optional[int] = None
             best_sim = 0.0
 
             for rep_pos in representative_positions:
-                rep_vec = description_vectors[rep_pos].tolist()
+                rep_vec = description_vectors[rep_pos]
                 sim = self._cosine_similarity(current_vec, rep_vec)
-                if sim >= REPRESENTATIVE_SIM_THRESHOLD and sim > best_sim:
+                if sim > self.duplicate_threshold and sim > best_sim:
                     matched_rep_num = indexed_reports[rep_pos][0]
                     best_sim = sim
 
             if matched_rep_num is None:
                 representative_positions.append(pos)
                 groups[report_num] = [(report_num, report)]
+                duplicate_report_map[report_num] = {
+                    "representative_report_num": report_num,
+                    "similarity_to_representative": 1.0,
+                    "is_duplicate": False,
+                }
             else:
                 groups[matched_rep_num].append((report_num, report))
+                duplicate_report_map[report_num] = {
+                    "representative_report_num": matched_rep_num,
+                    "similarity_to_representative": best_sim,
+                    "is_duplicate": True,
+                }
 
+        self.duplicate_report_map = duplicate_report_map
         return groups
 
     def _build_priority_query_text(self, rep_row: Dict[str, Any]) -> str:
@@ -1611,7 +1610,38 @@ class GraphPriorPipeline:
 
     def phase1_extract_and_fuse(self, reports: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         indexed_reports = list(enumerate(reports, start=1))
-        grouped_reports = self._group_reports_for_extraction(indexed_reports)
+        grouped_reports = self._group_duplicate_reports_by_description(indexed_reports)
+        if grouped_reports:
+            dedup_debug = {
+                f"R_{rep_num:03d}": {
+                    "group_size": len(items),
+                    "duplicates": [
+                        {
+                            "report_num": idx,
+                            "similarity_to_representative": round(
+                                float(self.duplicate_report_map.get(idx, {}).get("similarity_to_representative", 1.0)),
+                                4,
+                            ),
+                        }
+                        for idx, _ in items[1:]
+                    ],
+                }
+                for rep_num, items in grouped_reports.items()
+            }
+            self._record_raw_response(
+                call_type="description_dedup",
+                report_ids=[f"R_{idx:03d}" for idx, _ in indexed_reports],
+                content="",
+                prompt_tokens=0,
+                output_tokens=0,
+                batch_index=0,
+                debug={
+                    "duplicate_threshold": self.duplicate_threshold,
+                    "representative_count": len(grouped_reports),
+                    "total_reports": len(indexed_reports),
+                    "groups": dedup_debug,
+                },
+            )
         representative_reports = [
             grouped_reports[rep_num][0]
             for rep_num in sorted(grouped_reports.keys())
@@ -1786,6 +1816,7 @@ def run_graph_prior(
     batch_size: int = 16,
     workers: int = 4,
     kg_mode: str = "offline",
+    duplicate_threshold: float = DESCRIPTION_DUPLICATE_THRESHOLD,
     embedding_model: Optional[str] = None,
     base_url: Optional[str] = None,
     api_key: Optional[str] = None,
@@ -1795,6 +1826,7 @@ def run_graph_prior(
         batch_size=batch_size,
         workers=workers,
         kg_mode=kg_mode,
+        duplicate_threshold=duplicate_threshold,
         embedding_model=embedding_model,
         base_url=base_url,
         api_key=api_key,

@@ -32,7 +32,7 @@ from report_utils import (
 )
 
 
-def run_query(app: int, repeat: int = 1, mode: str = "llmprior", model: str = "gemini-3-pro-preview",
+def run_query(app: int, repeat: int = 1, mode: str = "llmprior", model: str = "gemini-3.1-pro-preview",
               given_range: Optional[List[int]] = None, csv_file: Optional[str] = None,
               embedding_model: Optional[str] = None, base_url: Optional[str] = None, api_key: Optional[str] = None,
               kg_mode: str = "offline") -> None:
@@ -58,7 +58,7 @@ def run_query(app: int, repeat: int = 1, mode: str = "llmprior", model: str = "g
             f.write(f"{response}\nInput Tokens: {token_usage_p}\nOutput Tokens: {token_usage_r}")
 
 
-def run_parse(app: int, mode: str = "llmprior", repeat: int = 1, model: str = "gemini-3-pro-preview",
+def run_parse(app: int, mode: str = "llmprior", repeat: int = 1, model: str = "gemini-3.1-pro-preview",
               given_range: Optional[List[int]] = None, use_severity: bool = True, 
               csv_file: Optional[str] = None, kg_mode: str = "offline") -> None:
     """Parse LLM response to generate prioritized sequence."""
@@ -87,7 +87,7 @@ def run_parse(app: int, mode: str = "llmprior", repeat: int = 1, model: str = "g
             continue
 
 
-def run_embedding(app: int, model: str = "gemini-3-pro-preview", csv_file: Optional[str] = None,
+def run_embedding(app: int, model: str = "gemini-3.1-pro-preview", csv_file: Optional[str] = None,
                   thresholds: Optional[List[float]] = None, embedding_model: Optional[str] = None,
                   base_url: Optional[str] = None, api_key: Optional[str] = None) -> None:
     """Run embedding-based deduplication mode with multiple thresholds.
@@ -171,9 +171,10 @@ def run_embedding(app: int, model: str = "gemini-3-pro-preview", csv_file: Optio
         print("\nNo valid APSD results.")
 
 
-def run_graphprior(app: int, repeat: int = 1, model: str = "gemini-3-pro-preview", csv_file: Optional[str] = None,
+def run_graphprior(app: int, repeat: int = 1, model: str = "gemini-3.1-pro-preview", csv_file: Optional[str] = None,
                    batch_size: int = 8, workers: int = 4, embedding_model: Optional[str] = None,
-                   base_url: Optional[str] = None, api_key: Optional[str] = None, kg_mode: str = "offline") -> None:
+                   base_url: Optional[str] = None, api_key: Optional[str] = None, kg_mode: str = "offline",
+                   duplicate_threshold: float = 0.90) -> None:
     """Run GraphPrior pipeline and persist ranked sequence/result files."""
     reports = resolve_reports(app=app, csv_file=csv_file)
     if not reports:
@@ -191,6 +192,7 @@ def run_graphprior(app: int, repeat: int = 1, model: str = "gemini-3-pro-preview
             embedding_model=embedding_model,
             base_url=base_url,
             api_key=api_key,
+            duplicate_threshold=duplicate_threshold,
         )
 
         result_file = get_result_path(app=app, mode="graphprior", iteration=i, model=model)
@@ -224,7 +226,7 @@ def run_graphprior(app: int, repeat: int = 1, model: str = "gemini-3-pro-preview
         print(f"GraphPrior result saved to {result_file}")
 
 
-def run_evaluate(app: int, mode: str = "llmprior", model: str = "gemini-3-pro-preview", repeat: int = 1, 
+def run_evaluate(app: int, mode: str = "llmprior", model: str = "gemini-3.1-pro-preview", repeat: int = 1, 
                  csv_file: Optional[str] = None) -> None:
     """Evaluate APSD, APFD, NDCG, and token consumption on ranked result files."""
     apsd_values = []
@@ -308,8 +310,8 @@ def run_evaluate(app: int, mode: str = "llmprior", model: str = "gemini-3-pro-pr
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Bug Report Prioritization using LLM")
     parser.add_argument("--model", type=str, default="gemini-3.1-pro-preview", 
-                        help="Model name (default: gemini-3-pro-preview). Support Google Gemini and OpenAI models.")
-    parser.add_argument("--embedding-model", type=str, default=None,
+                        help="Model name (default: gemini-3.1-pro-preview). Support Google Gemini and OpenAI models.")
+    parser.add_argument("--embedding-model", type=str, default="gemini-embedding-2-preview",
                         help="Embedding model name. If omitted, provider-specific default is used.")
     parser.add_argument("--base-url", type=str, default=None,
                         help="OpenAI-compatible base URL for custom model endpoints.")
@@ -328,6 +330,8 @@ if __name__ == "__main__":
                         help="Batch size for GraphPrior extraction requests")
     parser.add_argument("--workers", type=int, default=2,
                         help="Number of worker threads for GraphPrior chunk processing")
+    parser.add_argument("--duplicate-threshold", type=float, default=0.8,
+                        help="Description cosine similarity threshold above which reports are treated as duplicates before candidate generation.")
     parser.add_argument("--file", type=str, default=None, 
                         help="CSV file path (default: reports/app{APP}.csv)")
     parser.add_argument("--skip-query", action="store_true", 
@@ -353,7 +357,8 @@ if __name__ == "__main__":
         # GraphPrior mode: standalone 3-phase pipeline
         run_graphprior(app=args.app, repeat=args.repeat, model=args.model, csv_file=csv_file,
                        batch_size=args.batch_size, workers=args.workers, embedding_model=args.embedding_model,
-                       base_url=base_url, api_key=args.api_key, kg_mode=args.kg_mode)
+                       base_url=base_url, api_key=args.api_key, kg_mode=args.kg_mode,
+                       duplicate_threshold=args.duplicate_threshold)
         run_evaluate(app=args.app, repeat=args.repeat, mode="graphprior", model=args.model, csv_file=csv_file)
     else:
         if not args.skip_query:
