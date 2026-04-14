@@ -35,6 +35,7 @@ from report_utils import (
 def run_query(app: int, repeat: int = 1, mode: str = "llmprior", model: str = "gemini-3.1-pro-preview",
               given_range: Optional[List[int]] = None, csv_file: Optional[str] = None,
               embedding_model: Optional[str] = None, base_url: Optional[str] = None, api_key: Optional[str] = None,
+              embedding_api_key: Optional[str] = None,
               kg_mode: str = "offline") -> None:
     """Query LLM to categorize bug reports."""
 
@@ -43,7 +44,17 @@ def run_query(app: int, repeat: int = 1, mode: str = "llmprior", model: str = "g
     print(f"APP-{app}...")
     print(f"Model: {model}")
     
-    prompt = get_prompt(app=app, mode=mode, csv_file=csv_file, model=model, embedding_model=embedding_model, base_url=base_url, api_key=api_key, kg_mode=kg_mode)
+    prompt = get_prompt(
+        app=app,
+        mode=mode,
+        csv_file=csv_file,
+        model=model,
+        embedding_model=embedding_model,
+        base_url=base_url,
+        api_key=api_key,
+        embedding_api_key=embedding_api_key,
+        kg_mode=kg_mode,
+    )
     
     for i in resolve_repeats(repeat=repeat, given_range=given_range):
         print(f"iteration-{i}...")
@@ -89,7 +100,8 @@ def run_parse(app: int, mode: str = "llmprior", repeat: int = 1, model: str = "g
 
 def run_embedding(app: int, model: str = "gemini-3.1-pro-preview", csv_file: Optional[str] = None,
                   thresholds: Optional[List[float]] = None, embedding_model: Optional[str] = None,
-                  base_url: Optional[str] = None, api_key: Optional[str] = None) -> None:
+                  base_url: Optional[str] = None, api_key: Optional[str] = None,
+                  embedding_api_key: Optional[str] = None) -> None:
     """Run embedding-based deduplication mode with multiple thresholds.
     
     Computes embeddings for all reports, evaluates APSD/NDCG at each similarity
@@ -113,6 +125,7 @@ def run_embedding(app: int, model: str = "gemini-3.1-pro-preview", csv_file: Opt
         embedding_model=embedding_model,
         base_url=base_url,
         api_key=api_key,
+        embedding_api_key=embedding_api_key,
     )
     
     ensure_report_scores(reports)
@@ -173,7 +186,8 @@ def run_embedding(app: int, model: str = "gemini-3.1-pro-preview", csv_file: Opt
 
 def run_graphprior(app: int, repeat: int = 1, model: str = "gemini-3.1-pro-preview", csv_file: Optional[str] = None,
                    batch_size: int = 8, workers: int = 4, embedding_model: Optional[str] = None,
-                   base_url: Optional[str] = None, api_key: Optional[str] = None, kg_mode: str = "offline",
+                   base_url: Optional[str] = None, api_key: Optional[str] = None,
+                   embedding_api_key: Optional[str] = None, kg_mode: str = "offline",
                    duplicate_threshold: float = 0.90) -> None:
     """Run GraphPrior pipeline and persist ranked sequence/result files."""
     reports = resolve_reports(app=app, csv_file=csv_file)
@@ -192,6 +206,7 @@ def run_graphprior(app: int, repeat: int = 1, model: str = "gemini-3.1-pro-previ
             embedding_model=embedding_model,
             base_url=base_url,
             api_key=api_key,
+            embedding_api_key=embedding_api_key,
             duplicate_threshold=duplicate_threshold,
         )
 
@@ -316,7 +331,9 @@ if __name__ == "__main__":
     parser.add_argument("--base-url", type=str, default=None,
                         help="OpenAI-compatible base URL for custom model endpoints.")
     parser.add_argument("--api-key", type=str, default=None,
-                        help="API key for OpenAI/OpenAI-compatible endpoints.")
+                        help="API key for model calls (Gemini/OpenAI is selected by --model).")
+    parser.add_argument("--embedding-api-key", type=str, default=None,
+                        help="API key for embedding calls (provider selected by --embedding-model when set, otherwise --model).")
     parser.add_argument("--kg-mode", type=str, default="offline", choices=["offline", "online"],
                         help="Knowledge graph backend. Default uses local offline KG built from KG_desc.md.")
     parser.add_argument("--app", type=int, default=1, help="App number (default: 1)")
@@ -352,19 +369,22 @@ if __name__ == "__main__":
         # Embedding mode: standalone pipeline, no LLM query/parse needed
         run_embedding(app=args.app, model=args.model, csv_file=csv_file,
                       thresholds=args.thresholds, embedding_model=args.embedding_model,
-                      base_url=base_url, api_key=args.api_key)
+                      base_url=base_url, api_key=args.api_key,
+                      embedding_api_key=args.embedding_api_key)
     elif args.mode == "graphprior":
         # GraphPrior mode: standalone 3-phase pipeline
         run_graphprior(app=args.app, repeat=args.repeat, model=args.model, csv_file=csv_file,
                        batch_size=args.batch_size, workers=args.workers, embedding_model=args.embedding_model,
-                       base_url=base_url, api_key=args.api_key, kg_mode=args.kg_mode,
+                       base_url=base_url, api_key=args.api_key,
+                       embedding_api_key=args.embedding_api_key, kg_mode=args.kg_mode,
                        duplicate_threshold=args.duplicate_threshold)
         run_evaluate(app=args.app, repeat=args.repeat, mode="graphprior", model=args.model, csv_file=csv_file)
     else:
         if not args.skip_query:
             run_query(app=args.app, repeat=args.repeat, mode=args.mode, model=args.model,
                       given_range=None, csv_file=csv_file, embedding_model=args.embedding_model,
-                      base_url=base_url, api_key=args.api_key, kg_mode=args.kg_mode)
+                      base_url=base_url, api_key=args.api_key,
+                      embedding_api_key=args.embedding_api_key, kg_mode=args.kg_mode)
         
         if not args.skip_parse:
             run_parse(app=args.app, repeat=args.repeat, mode=args.mode, 

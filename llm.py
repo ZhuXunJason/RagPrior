@@ -10,7 +10,12 @@ from openai import OpenAI
 
 from config import GOOGLE_API_KEY, OPENAI_API_KEY, BASE_URL
 
-google_client = genai.Client(api_key=GOOGLE_API_KEY)
+
+def _build_gemini_client(api_key: Optional[str] = None) -> Optional[genai.Client]:
+    effective_api_key = api_key or GOOGLE_API_KEY
+    if not effective_api_key:
+        return None
+    return genai.Client(api_key=effective_api_key)
 
 
 def _build_openai_client(api_key: Optional[str] = None, base_url: Optional[str] = None) -> Optional[OpenAI]:
@@ -41,7 +46,13 @@ def ask_gpt(
     model_lower = model.lower()
 
     if "gemini" in model_lower:
-        return ask_gemini(prompt, model, max_token, request_options=request_options)
+        return ask_gemini(
+            prompt,
+            model,
+            max_token,
+            api_key=api_key,
+            request_options=request_options,
+        )
     if "gpt" in model_lower:
         return ask_openai(
             prompt,
@@ -69,16 +80,22 @@ def ask_gemini(
     prompt: str,
     model: str,
     max_token: int,
+    api_key: Optional[str] = None,
     request_options: Optional[Dict[str, Any]] = None,
 ) -> Tuple[str, int, int]:
     try:
+        gemini_client = _build_gemini_client(api_key=api_key)
+        if not gemini_client:
+            print("Error: GOOGLE_API_KEY not set.")
+            return "", 0, 0
+
         config_kwargs: Dict[str, Any] = {
             "max_output_tokens": max_token,
             "temperature": 0.0,
         }
         if request_options:
             config_kwargs.update(request_options.get("gemini_config", {}))
-        response = google_client.models.generate_content(
+        response = gemini_client.models.generate_content(
             model=model,
             contents={'text': prompt},
             config=types.GenerateContentConfig(**config_kwargs),

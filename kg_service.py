@@ -12,7 +12,7 @@ from neo4j import GraphDatabase
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_community.embeddings import OpenAIEmbeddings, DashScopeEmbeddings
 
-from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_AUTH, GOOGLE_API_KEY, OPENAI_API_KEY, KG_MODE, KG_DESC_PATH
+from config import NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD, NEO4J_AUTH, GOOGLE_API_KEY, OPENAI_API_KEY, EMBEDDING_API_KEY, KG_MODE, KG_DESC_PATH
 from offline_kg import OfflineKGService
 
 if GOOGLE_API_KEY:
@@ -27,6 +27,7 @@ class KGService:
         embedding_model: Optional[str] = None,
         base_url: Optional[str] = None,
         api_key: Optional[str] = None,
+        embedding_api_key: Optional[str] = None,
     ):
         if not NEO4J_URI:
             raise ValueError("NEO4J_URI is not configured.")
@@ -35,10 +36,27 @@ class KGService:
         self.vector_index_name = "bug_text_index"
 
         model_lower = (model_name or "").lower()
-        if "qwen" in model_lower:
+        embedding_model_lower = (embedding_model or "").lower()
+        effective_embedding_api_key = embedding_api_key or EMBEDDING_API_KEY or api_key
+
+        if "gemini" in embedding_model_lower or (not embedding_model_lower and "gemini" in model_lower):
+            selected_embedding_model = embedding_model or "gemini-embedding-001"
+            print(f"Initializing KGService with Gemini Embeddings ({selected_embedding_model})")
+            effective_google_key = effective_embedding_api_key or GOOGLE_API_KEY
+            if effective_google_key:
+                os.environ["GOOGLE_API_KEY"] = effective_google_key
+            self.embeddings = GoogleGenerativeAIEmbeddings(
+                model=selected_embedding_model,
+                google_api_key=effective_google_key,
+            )
+        elif "text-embedding-v4" in embedding_model_lower or (not embedding_model_lower and "qwen" in model_lower):
             selected_embedding_model = embedding_model or "text-embedding-v4"
             print(f"Initializing KGService with DashScope Embeddings ({selected_embedding_model}) for model {model_name}")
-            effective_dashscope_key = api_key or os.getenv("DASHSCOPE_API_KEY") or OPENAI_API_KEY
+            effective_dashscope_key = (
+                effective_embedding_api_key
+                or os.getenv("DASHSCOPE_API_KEY")
+                or OPENAI_API_KEY
+            )
             if effective_dashscope_key:
                 os.environ["DASHSCOPE_API_KEY"] = effective_dashscope_key
             self.embeddings = DashScopeEmbeddings(
@@ -50,13 +68,19 @@ class KGService:
             print(f"Initializing KGService with OpenAI-compatible Embeddings ({selected_embedding_model}) for model {model_name}")
             self.embeddings = OpenAIEmbeddings(
                 model=selected_embedding_model,
-                api_key=api_key or OPENAI_API_KEY,
+                api_key=effective_embedding_api_key or OPENAI_API_KEY,
                 base_url=base_url,
             )
         else:
             selected_embedding_model = embedding_model or "gemini-embedding-001"
             print(f"Initializing KGService with Gemini Embeddings ({selected_embedding_model})")
-            self.embeddings = GoogleGenerativeAIEmbeddings(model=selected_embedding_model)
+            effective_google_key = effective_embedding_api_key or GOOGLE_API_KEY
+            if effective_google_key:
+                os.environ["GOOGLE_API_KEY"] = effective_google_key
+            self.embeddings = GoogleGenerativeAIEmbeddings(
+                model=selected_embedding_model,
+                google_api_key=effective_google_key,
+            )
 
         # Determine embedding dimension and map to a dimension-specific index name.
         try:
@@ -583,19 +607,20 @@ class KGService:
 
 # Singleton instance for easy import
 kg_service: Optional[KGService] = None
-kg_service_config: Optional[Tuple[Optional[str], Optional[str], Optional[str], Optional[str], Optional[str]]] = None
+kg_service_config: Optional[Tuple[Optional[str], Optional[str], Optional[str], Optional[str], Optional[str], Optional[str]]] = None
 
 def get_kg_service(
     model_name: str = "gemini",
     embedding_model: Optional[str] = None,
     base_url: Optional[str] = None,
     api_key: Optional[str] = None,
+    embedding_api_key: Optional[str] = None,
     kg_mode: Optional[str] = None,
 ) -> Optional[KGService]:
     """Get or create the KGService singleton."""
     global kg_service, kg_service_config
     resolved_mode = (kg_mode or KG_MODE or "offline").lower()
-    current_config = (model_name, embedding_model, base_url, api_key, resolved_mode)
+    current_config = (model_name, embedding_model, base_url, api_key, embedding_api_key, resolved_mode)
 
     if kg_service is None or kg_service_config != current_config:
         if kg_service is not None and hasattr(kg_service, "close"):
@@ -609,6 +634,7 @@ def get_kg_service(
                     embedding_model=embedding_model,
                     base_url=base_url,
                     api_key=api_key,
+                    embedding_api_key=embedding_api_key,
                 )
             kg_service_config = current_config
         except Exception as e:

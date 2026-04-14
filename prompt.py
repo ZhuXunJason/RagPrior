@@ -127,7 +127,7 @@ def load_reports(app: int) -> List[Dict[str, Any]]:
     return load_reports_from_file(csv_path)
 
 
-def load_reports_str(app: Optional[int] = None, use_rag: bool = False, csv_file: Optional[str] = None, model: str = "gemini", embedding_model: Optional[str] = None, base_url: Optional[str] = None, api_key: Optional[str] = None, kg_mode: Optional[str] = None) -> str:
+def load_reports_str(app: Optional[int] = None, use_rag: bool = False, csv_file: Optional[str] = None, model: str = "gemini", embedding_model: Optional[str] = None, base_url: Optional[str] = None, api_key: Optional[str] = None, embedding_api_key: Optional[str] = None, kg_mode: Optional[str] = None) -> str:
     """Load reports as a string for LLM prompt.
     
     In RAG mode, each report is augmented with knowledge context from the KG.
@@ -147,6 +147,7 @@ def load_reports_str(app: Optional[int] = None, use_rag: bool = False, csv_file:
             embedding_model=embedding_model,
             base_url=base_url,
             api_key=api_key,
+            embedding_api_key=embedding_api_key,
             kg_mode=kg_mode,
         )
     
@@ -166,7 +167,7 @@ def load_reports_str(app: Optional[int] = None, use_rag: bool = False, csv_file:
     return "\n".join(lines)
 
 
-def get_prompt(app: Optional[int] = None, mode: str = "llmprior", csv_file: Optional[str] = None, model: str = "gemini", embedding_model: Optional[str] = None, base_url: Optional[str] = None, api_key: Optional[str] = None, kg_mode: Optional[str] = None) -> str:
+def get_prompt(app: Optional[int] = None, mode: str = "llmprior", csv_file: Optional[str] = None, model: str = "gemini", embedding_model: Optional[str] = None, base_url: Optional[str] = None, api_key: Optional[str] = None, embedding_api_key: Optional[str] = None, kg_mode: Optional[str] = None) -> str:
     """Generate the full prompt for non-GraphPrior LLM modes.
 
     GraphPrior's extraction prompt lives in graph_prior.py and does not use this path.
@@ -185,4 +186,4 @@ def get_prompt(app: Optional[int] = None, mode: str = "llmprior", csv_file: Opti
         prompt_template = PROMPT_SIMPLE
     else:
         raise Exception(f"Invalid mode: {mode}")
-    return prompt_template.replace("#####", load_reports_str(app, use_rag=use_rag, csv_file=csv_file, model=model, embedding_model=embedding_model, base_url=base_url, api_key=api_key, kg_mode=kg_mode))
+    return prompt_template.replace("#####", load_reports_str(app, use_rag=use_rag, csv_file=csv_file, model=model, embedding_model=embedding_model, base_url=base_url, api_key=api_key, embedding_api_key=embedding_api_key, kg_mode=kg_mode))

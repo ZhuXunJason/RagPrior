@@ -14,9 +14,14 @@ from openai import OpenAI
 from config import GOOGLE_API_KEY, OPENAI_API_KEY
 from report_utils import compute_apsd_from_sequence
 
-# Initialize Google client
-google_client = genai.Client(api_key=GOOGLE_API_KEY)
 batch = 100
+
+
+def _build_gemini_client(api_key: Optional[str] = None) -> genai.Client:
+    effective_api_key = api_key or GOOGLE_API_KEY
+    if not effective_api_key:
+        raise ValueError("GOOGLE_API_KEY is not set for Gemini embeddings.")
+    return genai.Client(api_key=effective_api_key)
 
 
 def get_embeddings(
@@ -25,6 +30,7 @@ def get_embeddings(
     embedding_model: Optional[str] = None,
     base_url: Optional[str] = None,
     api_key: Optional[str] = None,
+    embedding_api_key: Optional[str] = None,
 ) -> np.ndarray:
     """
     Compute embeddings for a list of texts.
@@ -39,10 +45,20 @@ def get_embeddings(
     Returns:
         np.ndarray of shape (len(texts), embedding_dim)
     """
-    model_lower = model.lower()
-    if "gemini" in model_lower:
+    model_lower = (model or "").lower()
+    embedding_model_lower = (embedding_model or "").lower()
+
+    use_gemini_embedding = "gemini" in embedding_model_lower or (
+        not embedding_model_lower and "gemini" in model_lower
+    )
+
+    if use_gemini_embedding:
         selected_embedding_model = embedding_model or "gemini-embedding-001"
-        return _get_gemini_embeddings(texts, embedding_model=selected_embedding_model)
+        return _get_gemini_embeddings(
+            texts,
+            embedding_model=selected_embedding_model,
+            api_key=embedding_api_key,
+        )
 
     if "gpt" in model_lower:
         selected_embedding_model = embedding_model or "text-embedding-3-large"
@@ -50,7 +66,7 @@ def get_embeddings(
             texts,
             embedding_model=selected_embedding_model,
             base_url=base_url,
-            api_key=api_key,
+            api_key=embedding_api_key or api_key,
         )
 
     # Custom model: call embedding model on OpenAI-compatible endpoint.
@@ -61,15 +77,20 @@ def get_embeddings(
         texts,
         embedding_model=selected_embedding_model,
         base_url=base_url,
-        api_key=api_key,
+        api_key=embedding_api_key or api_key,
     )
 
 
-def _get_gemini_embeddings(texts: List[str], embedding_model: str) -> np.ndarray:
+def _get_gemini_embeddings(
+    texts: List[str],
+    embedding_model: str,
+    api_key: Optional[str] = None,
+) -> np.ndarray:
     """Get embeddings using Google Gemini embedding model."""
     if not texts:
         return np.array([])
 
+    google_client = _build_gemini_client(api_key=api_key)
     all_vectors: List[List[float]] = []
     for i in range(0, len(texts), batch):
         chunk = texts[i : i + batch]
@@ -192,6 +213,7 @@ def run_embedding_mode(
     embedding_model: Optional[str] = None,
     base_url: Optional[str] = None,
     api_key: Optional[str] = None,
+    embedding_api_key: Optional[str] = None,
 ) -> Tuple[np.ndarray, Dict[float, List[int]]]:
     """
     Run embedding-based deduplication for multiple thresholds.
@@ -218,6 +240,7 @@ def run_embedding_mode(
         embedding_model=embedding_model,
         base_url=base_url,
         api_key=api_key,
+        embedding_api_key=embedding_api_key,
     )
     print(f"Embedding shape: {embeddings.shape}")
     

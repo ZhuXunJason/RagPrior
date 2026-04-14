@@ -102,6 +102,7 @@ class GraphPriorPipeline:
         embedding_model: Optional[str] = None,
         base_url: Optional[str] = None,
         api_key: Optional[str] = None,
+        embedding_api_key: Optional[str] = None,
     ):
         self.model = model
         self.batch_size = max(1, int(batch_size))
@@ -111,11 +112,13 @@ class GraphPriorPipeline:
         self.embedding_model = embedding_model
         self.base_url = base_url
         self.api_key = api_key
+        self.embedding_api_key = embedding_api_key
         self.kg_service = get_kg_service(
             model_name=model,
             embedding_model=embedding_model,
             base_url=base_url,
             api_key=api_key,
+            embedding_api_key=embedding_api_key,
             kg_mode=kg_mode,
         )
         self.graph = nx.MultiDiGraph()
@@ -1149,6 +1152,7 @@ class GraphPriorPipeline:
                     embedding_model=self.embedding_model,
                     base_url=self.base_url,
                     api_key=self.api_key,
+                    embedding_api_key=self.embedding_api_key,
                 )
                 if len(vectors) != len(ordered_missing):
                     raise RuntimeError(
@@ -1820,6 +1824,7 @@ def run_graph_prior(
     embedding_model: Optional[str] = None,
     base_url: Optional[str] = None,
     api_key: Optional[str] = None,
+    embedding_api_key: Optional[str] = None,
 ) -> Tuple[List[int], Dict[int, float], int, int, List[Dict[str, Any]]]:
     pipeline = GraphPriorPipeline(
         model=model,
@@ -1830,5 +1835,6 @@ def run_graph_prior(
         embedding_model=embedding_model,
         base_url=base_url,
         api_key=api_key,
+        embedding_api_key=embedding_api_key,
     )
     return pipeline.run(reports)

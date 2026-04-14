@@ -21,6 +21,7 @@ if not GOOGLE_API_KEY:
     print("Warning: GOOGLE_API_KEY not found in .env file or environment variables.")
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+EMBEDDING_API_KEY = os.getenv("EMBEDDING_API_KEY")
 BASE_URL = os.getenv("BASE_URL", "https://api.openai.com/v1")
 KG_MODE = os.getenv("KG_MODE", "offline")
 
