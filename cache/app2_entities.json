@@ -1,0 +1,2477 @@
+[
+  {
+    "index": "1247",
+    "entities": {
+      "operations": [
+        "点击",
+        "保存"
+      ],
+      "symptoms": [
+        "跳转异常"
+      ],
+      "specific_pages": [
+        "保存文件页面"
+      ],
+      "specific_elements": [
+        "加号"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1252",
+    "entities": {
+      "operations": [
+        "点击",
+        "选择",
+        "删除"
+      ],
+      "symptoms": [
+        "无法识别"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "删除按钮"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "1253",
+    "entities": {
+      "operations": [
+        "点击",
+        "选择",
+        "删除"
+      ],
+      "symptoms": [
+        "无法删除"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "管理账簿",
+        "新建的账簿"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "1254",
+    "entities": {
+      "operations": [
+        "点击",
+        "加载"
+      ],
+      "symptoms": [
+        "无法识别",
+        "加载失败"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1301",
+    "entities": {
+      "operations": [
+        "点击",
+        "加载"
+      ],
+      "symptoms": [
+        "加载失败",
+        "不显示"
+      ],
+      "specific_pages": [
+        "帮助"
+      ],
+      "specific_elements": [],
+      "page_type": "数据展示类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1302",
+    "entities": {
+      "operations": [
+        "打开",
+        "加载"
+      ],
+      "symptoms": [
+        "加载失败",
+        "无响应",
+        "白屏"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1258",
+    "entities": {
+      "operations": [
+        "点击",
+        "选择",
+        "删除"
+      ],
+      "symptoms": [
+        "无法删除"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "账簿3"
+      ],
+      "page_type": "操作事务类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "1309",
+    "entities": {
+      "operations": [
+        "点击",
+        "选择",
+        "删除"
+      ],
+      "symptoms": [
+        "无法点击"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "删除按钮"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "1403",
+    "entities": {
+      "operations": [
+        "点击",
+        "删除"
+      ],
+      "symptoms": [
+        "无法进行删除操作"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "管理账簿",
+        "更多的下拉框"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "1251",
+    "entities": {
+      "operations": [
+        "点击",
+        "切换"
+      ],
+      "symptoms": [
+        "不生效"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "科目"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1259",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "无法取消"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "科目",
+        "文件"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1262",
+    "entities": {
+      "operations": [
+        "点击",
+        "选择"
+      ],
+      "symptoms": [
+        "无法显示"
+      ],
+      "specific_pages": [
+        "收藏"
+      ],
+      "specific_elements": [
+        "科目"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1263",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "不生效"
+      ],
+      "specific_pages": [
+        "收藏"
+      ],
+      "specific_elements": [
+        "星标"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1265",
+    "entities": {
+      "operations": [
+        "点击",
+        "切换"
+      ],
+      "symptoms": [
+        "不显示"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1270",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "不显示"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "星星",
+        "收藏"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1286",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "缺失"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "星标",
+        "收藏"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1290",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "不显示"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "星号",
+        "收藏"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1295",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "不生效"
+      ],
+      "specific_pages": [
+        "所有",
+        "收藏页面"
+      ],
+      "specific_elements": [
+        "星标收藏",
+        "收藏者权益"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1298",
+    "entities": {
+      "operations": [
+        "点击",
+        "查看",
+        "进入"
+      ],
+      "symptoms": [
+        "无法及时更新"
+      ],
+      "specific_pages": [
+        "收藏界面"
+      ],
+      "specific_elements": [
+        "五角星收藏",
+        "左上角菜单栏"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1299",
+    "entities": {
+      "operations": [
+        "点击",
+        "查看",
+        "进入"
+      ],
+      "symptoms": [
+        "无法连接",
+        "不生效"
+      ],
+      "specific_pages": [
+        "收藏界面"
+      ],
+      "specific_elements": [
+        "五角星",
+        "菜单栏"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1306",
+    "entities": {
+      "operations": [
+        "点击",
+        "切换"
+      ],
+      "symptoms": [
+        "未调用",
+        "不生效",
+        "缺失"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "收藏按钮"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1310",
+    "entities": {
+      "operations": [
+        "取消收藏",
+        "切换"
+      ],
+      "symptoms": [
+        "不生效"
+      ],
+      "specific_pages": [
+        "收藏界面"
+      ],
+      "specific_elements": [
+        "收藏按钮"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1311",
+    "entities": {
+      "operations": [
+        "进入",
+        "点击",
+        "切换"
+      ],
+      "symptoms": [
+        "缺失",
+        "不显示"
+      ],
+      "specific_pages": [
+        "科目页面",
+        "搜藏栏目"
+      ],
+      "specific_elements": [
+        "收藏"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1321",
+    "entities": {
+      "operations": [
+        "点击",
+        "收藏"
+      ],
+      "symptoms": [
+        "不显示"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "科目",
+        "所有",
+        "收藏"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1322",
+    "entities": {
+      "operations": [
+        "点击",
+        "收藏"
+      ],
+      "symptoms": [
+        "未调用",
+        "未生效"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "目录"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1349",
+    "entities": {
+      "operations": [
+        "进入",
+        "添加",
+        "点击"
+      ],
+      "symptoms": [
+        "无法显示"
+      ],
+      "specific_pages": [
+        "收藏页面"
+      ],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1360",
+    "entities": {
+      "operations": [
+        "点击",
+        "收藏",
+        "取消星标",
+        "刷新"
+      ],
+      "symptoms": [
+        "未调用",
+        "不生效"
+      ],
+      "specific_pages": [
+        "收藏"
+      ],
+      "specific_elements": [
+        "星标",
+        "所有",
+        "右上角"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1362",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "不显示"
+      ],
+      "specific_pages": [
+        "收藏界面"
+      ],
+      "specific_elements": [
+        "星星"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1366",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "不显示"
+      ],
+      "specific_pages": [
+        "收藏页面"
+      ],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1386",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "耗时过长"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "星形标志",
+        "收藏"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1387",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "未调用",
+        "不生效"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "星形标志"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1390",
+    "entities": {
+      "operations": [
+        "点击",
+        "进入"
+      ],
+      "symptoms": [
+        "不显示",
+        "缺失"
+      ],
+      "specific_pages": [
+        "收藏页面"
+      ],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1406",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "缺失",
+        "不显示"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "收藏列表"
+      ],
+      "page_type": "数据展示类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1277",
+    "entities": {
+      "operations": [
+        "点击",
+        "修改",
+        "保存"
+      ],
+      "symptoms": [
+        "停止运行"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "交易记录"
+      ],
+      "page_type": "操作事务类页面",
+      "module": "订单与交易模块"
+    }
+  },
+  {
+    "index": "1327",
+    "entities": {
+      "operations": [
+        "点击",
+        "保存"
+      ],
+      "symptoms": [
+        "无响应"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "操作事务类页面",
+      "module": "订单与交易模块"
+    }
+  },
+  {
+    "index": "1249",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [],
+      "specific_pages": [],
+      "specific_elements": [
+        "管理账簿"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "1250",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [],
+      "specific_pages": [],
+      "specific_elements": [
+        "管理账簿"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "1260",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [],
+      "specific_pages": [],
+      "specific_elements": [
+        "账簿"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "1264",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "空白"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "账簿的名字"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "1268",
+    "entities": {
+      "operations": [
+        "点击",
+        "修改"
+      ],
+      "symptoms": [
+        "重叠",
+        "无响应"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "账簿名称"
+      ],
+      "page_type": "操作事务类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "1324",
+    "entities": {
+      "operations": [
+        "点击",
+        "重命名"
+      ],
+      "symptoms": [
+        "用户体验不好"
+      ],
+      "specific_pages": [
+        "管理账簿"
+      ],
+      "specific_elements": [
+        "更多按钮"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "1325",
+    "entities": {
+      "operations": [
+        "重命名",
+        "点击"
+      ],
+      "symptoms": [
+        "空白",
+        "缺失",
+        "提示"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "账簿名称",
+        "管理账簿"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "1348",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "空白"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "管理账簿",
+        "账簿名称"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "1353",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [],
+      "specific_pages": [],
+      "specific_elements": [
+        "管理账簿"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "1368",
+    "entities": {
+      "operations": [
+        "点击",
+        "重命名",
+        "删除"
+      ],
+      "symptoms": [
+        "缺失"
+      ],
+      "specific_pages": [
+        "账簿管理"
+      ],
+      "specific_elements": [
+        "账簿名字"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1389",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [],
+      "specific_pages": [],
+      "specific_elements": [
+        "管理账簿",
+        "账簿名"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "1266",
+    "entities": {
+      "operations": [
+        "点击",
+        "保存"
+      ],
+      "symptoms": [
+        "缺失",
+        "未给用户反馈信息"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "账簿名称"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1297",
+    "entities": {
+      "operations": [
+        "点击",
+        "输入",
+        "保存"
+      ],
+      "symptoms": [
+        "提示"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "科目名称"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1278",
+    "entities": {
+      "operations": [
+        "点击",
+        "加载"
+      ],
+      "symptoms": [
+        "无法连接",
+        "加载失败"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "联系我们"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "网络与通信模块"
+    }
+  },
+  {
+    "index": "1289",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "无法连接"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "帮助"
+      ],
+      "page_type": "系统状态类页面",
+      "module": "网络与通信模块"
+    }
+  },
+  {
+    "index": "1307",
+    "entities": {
+      "operations": [
+        "点击",
+        "加载"
+      ],
+      "symptoms": [
+        "无法连接",
+        "加载失败",
+        "无响应"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "帮助"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "网络与通信模块"
+    }
+  },
+  {
+    "index": "1276",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "勾选或取消勾选失败"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "显示菜单",
+        "显示图例"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1288",
+    "entities": {
+      "operations": [
+        "点击",
+        "进入",
+        "选择"
+      ],
+      "symptoms": [
+        "不生效"
+      ],
+      "specific_pages": [
+        "资产负债表",
+        "汇总表"
+      ],
+      "specific_elements": [
+        "选项按钮",
+        "图例"
+      ],
+      "page_type": "数据展示类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1323",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "无法选取"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "下拉选项",
+        "图例"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1354",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "无效"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "图例"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1355",
+    "entities": {
+      "operations": [
+        "进入",
+        "点击"
+      ],
+      "symptoms": [
+        "无响应",
+        "无法进行相关操作",
+        "点击按钮无效"
+      ],
+      "specific_pages": [
+        "汇总表页面"
+      ],
+      "specific_elements": [
+        "右上角的扩展按钮",
+        "图例"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1367",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "无法识别"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "报表",
+        "汇总图",
+        "三个点",
+        "图例"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1370",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "无法识别"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "图标",
+        "图例"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1373",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "无法勾选"
+      ],
+      "specific_pages": [
+        "汇总表"
+      ],
+      "specific_elements": [
+        "图例",
+        "显示设置条件"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1396",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "无法识别"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "图例"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1400",
+    "entities": {
+      "operations": [
+        "点击",
+        "选择"
+      ],
+      "symptoms": [
+        "未调用",
+        "功能未实现"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "右上角的对勾"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1292",
+    "entities": {
+      "operations": [
+        "进入"
+      ],
+      "symptoms": [
+        "缺失"
+      ],
+      "specific_pages": [
+        "定时任务页面"
+      ],
+      "specific_elements": [
+        "控件"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1312",
+    "entities": {
+      "operations": [
+        "点击",
+        "修改"
+      ],
+      "symptoms": [
+        "缺失"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "右上角“+”号"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "订单与交易模块"
+    }
+  },
+  {
+    "index": "1271",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "停止运行"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "在Play Store上推荐"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1285",
+    "entities": {
+      "operations": [
+        "进入",
+        "点击"
+      ],
+      "symptoms": [
+        "不正常停止",
+        "崩溃"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "在Play Store上推荐"
+      ],
+      "page_type": "系统状态类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1315",
+    "entities": {
+      "operations": [
+        "进入",
+        "点击",
+        "确认"
+      ],
+      "symptoms": [
+        "停止运行",
+        "返回异常"
+      ],
+      "specific_pages": [
+        "科目界面"
+      ],
+      "specific_elements": [
+        "Play Store上推荐"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1402",
+    "entities": {
+      "operations": [
+        "点击",
+        "选择"
+      ],
+      "symptoms": [
+        "停止运行"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "系统状态类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1267",
+    "entities": {
+      "operations": [
+        "点击",
+        "输入",
+        "保存"
+      ],
+      "symptoms": [
+        "停止运行"
+      ],
+      "specific_pages": [
+        "科目页面"
+      ],
+      "specific_elements": [
+        "科目名称",
+        "+号"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1320",
+    "entities": {
+      "operations": [
+        "进入",
+        "输入",
+        "点击",
+        "保存"
+      ],
+      "symptoms": [
+        "崩溃",
+        "退出"
+      ],
+      "specific_pages": [
+        "创建科目页面"
+      ],
+      "specific_elements": [
+        "科目名称"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1303",
+    "entities": {
+      "operations": [
+        "点击",
+        "修改",
+        "保存"
+      ],
+      "symptoms": [
+        "停止运行"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "操作事务类页面",
+      "module": "订单与交易模块"
+    }
+  },
+  {
+    "index": "1304",
+    "entities": {
+      "operations": [
+        "点击",
+        "修改",
+        "保存"
+      ],
+      "symptoms": [
+        "停止运行"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "操作事务类页面",
+      "module": "订单与交易模块"
+    }
+  },
+  {
+    "index": "1305",
+    "entities": {
+      "operations": [
+        "点击",
+        "修改",
+        "保存"
+      ],
+      "symptoms": [
+        "停止运行"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "操作事务类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1328",
+    "entities": {
+      "operations": [
+        "修改",
+        "添加",
+        "保存"
+      ],
+      "symptoms": [
+        "无响应",
+        "停止运行"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "操作事务类页面",
+      "module": "订单与交易模块"
+    }
+  },
+  {
+    "index": "1308",
+    "entities": {
+      "operations": [],
+      "symptoms": [],
+      "specific_pages": [],
+      "specific_elements": [
+        "通用",
+        "界面",
+        "常规界面"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1314",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "显示不全"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "通用",
+        "常规"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1279",
+    "entities": {
+      "operations": [
+        "点击",
+        "选择"
+      ],
+      "symptoms": [
+        "缺失"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "净值"
+      ],
+      "page_type": "",
+      "module": ""
+    }
+  },
+  {
+    "index": "1287",
+    "entities": {
+      "operations": [
+        "点击",
+        "修改",
+        "设定",
+        "保存"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "交易金额"
+      ],
+      "page_type": "操作事务类页面",
+      "module": "订单与交易模块"
+    }
+  },
+  {
+    "index": "1346",
+    "entities": {
+      "operations": [
+        "点击",
+        "修改"
+      ],
+      "symptoms": [
+        "不显示",
+        "空白"
+      ],
+      "specific_pages": [
+        "最近页面"
+      ],
+      "specific_elements": [
+        "科目"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1350",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "缺失",
+        "不显示"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "科目"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1380",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "缺失",
+        "空白"
+      ],
+      "specific_pages": [
+        "最近的科目页面"
+      ],
+      "specific_elements": [
+        "新建科目"
+      ],
+      "page_type": "数据展示类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1369",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "无效"
+      ],
+      "specific_pages": [
+        "最近的"
+      ],
+      "specific_elements": [
+        "加号"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1371",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "残留"
+      ],
+      "specific_pages": [
+        "通用"
+      ],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1372",
+    "entities": {
+      "operations": [
+        "点击",
+        "进入"
+      ],
+      "symptoms": [
+        "残留"
+      ],
+      "specific_pages": [
+        "通用"
+      ],
+      "specific_elements": [
+        "滚动条"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1374",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "布局缺陷"
+      ],
+      "specific_pages": [
+        "通用"
+      ],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1375",
+    "entities": {
+      "operations": [],
+      "symptoms": [
+        "错位",
+        "不美观"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "常规"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1376",
+    "entities": {
+      "operations": [],
+      "symptoms": [],
+      "specific_pages": [],
+      "specific_elements": [
+        "通用界面"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1388",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "多余"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1392",
+    "entities": {
+      "operations": [],
+      "symptoms": [
+        "布局上的问题",
+        "影响美观"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "通用"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1393",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "不美观"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "系统状态类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1377",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [],
+      "specific_pages": [],
+      "specific_elements": [
+        "常规"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1379",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "缺失",
+        "不显示"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "报表界面"
+      ],
+      "page_type": "数据展示类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1384",
+    "entities": {
+      "operations": [],
+      "symptoms": [
+        "无响应",
+        "缺失"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "报表",
+        "饼图"
+      ],
+      "page_type": "数据展示类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1395",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "未实现",
+        "不显示"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "饼图"
+      ],
+      "page_type": "数据展示类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1398",
+    "entities": {
+      "operations": [
+        "查看"
+      ],
+      "symptoms": [
+        "缺失",
+        "不显示"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "报表"
+      ],
+      "page_type": "数据展示类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1363",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "不显示",
+        "缺失"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "定时任务",
+        "交易"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "订单与交易模块"
+    }
+  },
+  {
+    "index": "1382",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "无显示"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "定时计划",
+        "交易",
+        "定时任务"
+      ],
+      "page_type": "操作事务类页面",
+      "module": "订单与交易模块"
+    }
+  },
+  {
+    "index": "1391",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "不显示"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "定时任务",
+        "定时备份"
+      ],
+      "page_type": "数据展示类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1347",
+    "entities": {
+      "operations": [
+        "搜索"
+      ],
+      "symptoms": [
+        "未调用",
+        "不生效",
+        "缺失",
+        "不显示"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "搜索与推荐模块"
+    }
+  },
+  {
+    "index": "1385",
+    "entities": {
+      "operations": [
+        "保存",
+        "搜索"
+      ],
+      "symptoms": [
+        "缺失"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "子科目名称"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1381",
+    "entities": {
+      "operations": [
+        "输入"
+      ],
+      "symptoms": [
+        "停止运行",
+        "崩溃"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "操作事务类页面",
+      "module": "订单与交易模块"
+    }
+  },
+  {
+    "index": "1246",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "无响应",
+        "停止运行"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "平均线"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1248",
+    "entities": {
+      "operations": [
+        "进入",
+        "点击",
+        "输入",
+        "保存"
+      ],
+      "symptoms": [
+        "提示",
+        "无法创建"
+      ],
+      "specific_pages": [
+        "下载页面"
+      ],
+      "specific_elements": [
+        "带加号按钮"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1257",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "无响应"
+      ],
+      "specific_pages": [
+        "管理账簿"
+      ],
+      "specific_elements": [
+        "账簿2"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "1261",
+    "entities": {
+      "operations": [
+        "加载"
+      ],
+      "symptoms": [
+        "加载失败",
+        "无响应"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "联系我们"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "网络与通信模块"
+    }
+  },
+  {
+    "index": "1269",
+    "entities": {
+      "operations": [
+        "点击",
+        "查看"
+      ],
+      "symptoms": [
+        "位置错误"
+      ],
+      "specific_pages": [
+        "帮助与反馈"
+      ],
+      "specific_elements": [
+        "输入框",
+        "下划线"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1272",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "不显示"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "更多选项按钮",
+        "图例"
+      ],
+      "page_type": "数据展示类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1273",
+    "entities": {
+      "operations": [
+        "点击",
+        "输入",
+        "搜索"
+      ],
+      "symptoms": [
+        "显示所有"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "搜索栏"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "搜索与推荐模块"
+    }
+  },
+  {
+    "index": "1274",
+    "entities": {
+      "operations": [
+        "点击",
+        "输入"
+      ],
+      "symptoms": [
+        "停止运行",
+        "提示"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "搜索栏"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "搜索与推荐模块"
+    }
+  },
+  {
+    "index": "1280",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "重叠"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "管理账簿"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "1281",
+    "entities": {
+      "operations": [
+        "进入",
+        "选择"
+      ],
+      "symptoms": [
+        "不一致"
+      ],
+      "specific_pages": [
+        "报表界面"
+      ],
+      "specific_elements": [
+        "净值",
+        "总资产：",
+        "总负债："
+      ],
+      "page_type": "数据展示类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1283",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "不显示"
+      ],
+      "specific_pages": [
+        "交易"
+      ],
+      "specific_elements": [
+        "定时任务的名称"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "订单与交易模块"
+    }
+  },
+  {
+    "index": "1284",
+    "entities": {
+      "operations": [
+        "导出",
+        "填写",
+        "保存"
+      ],
+      "symptoms": [
+        "不正常退出"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "",
+      "module": ""
+    }
+  },
+  {
+    "index": "1291",
+    "entities": {
+      "operations": [
+        "进入",
+        "点击"
+      ],
+      "symptoms": [],
+      "specific_pages": [
+        "创建科目页面"
+      ],
+      "specific_elements": [
+        "占位科目"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1293",
+    "entities": {
+      "operations": [
+        "点击",
+        "保存",
+        "进入"
+      ],
+      "symptoms": [
+        "停止运行"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "人寿保险",
+        "健康保险"
+      ],
+      "page_type": "操作事务类页面",
+      "module": "订单与交易模块"
+    }
+  },
+  {
+    "index": "1294",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "无响应",
+        "停止运行"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "平均线"
+      ],
+      "page_type": "数据展示类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1300",
+    "entities": {
+      "operations": [
+        "点击",
+        "创建"
+      ],
+      "symptoms": [
+        "缺失",
+        "不显示"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "加号",
+        "选项"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1313",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "错位"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "现金流",
+        "现金流折线图"
+      ],
+      "page_type": "数据展示类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1316",
+    "entities": {
+      "operations": [
+        "点击",
+        "新建"
+      ],
+      "symptoms": [
+        "缺失"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1317",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "停止运行"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "柱状图"
+      ],
+      "page_type": "数据展示类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1318",
+    "entities": {
+      "operations": [
+        "点击",
+        "打开"
+      ],
+      "symptoms": [
+        "异常"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "",
+      "module": ""
+    }
+  },
+  {
+    "index": "1319",
+    "entities": {
+      "operations": [
+        "点击",
+        "输入",
+        "保存"
+      ],
+      "symptoms": [
+        "停止运行"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "操作事务类页面",
+      "module": "订单与交易模块"
+    }
+  },
+  {
+    "index": "1326",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "缺失",
+        "不显示"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "新建按钮"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "订单与交易模块"
+    }
+  },
+  {
+    "index": "1345",
+    "entities": {
+      "operations": [
+        "点击",
+        "保存",
+        "导出"
+      ],
+      "symptoms": [
+        "无法保存",
+        "无法导出"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "操作事务类页面",
+      "module": "订单与交易模块"
+    }
+  },
+  {
+    "index": "1351",
+    "entities": {
+      "operations": [
+        "点击",
+        "加载"
+      ],
+      "symptoms": [
+        "缓慢"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "网络与通信模块"
+    }
+  },
+  {
+    "index": "1356",
+    "entities": {
+      "operations": [
+        "点击",
+        "导出"
+      ],
+      "symptoms": [
+        "不显示"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "定时任务",
+        "定时备份"
+      ],
+      "page_type": "操作事务类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "1357",
+    "entities": {
+      "operations": [
+        "创建",
+        "收藏",
+        "进入"
+      ],
+      "symptoms": [],
+      "specific_pages": [
+        "收藏模块"
+      ],
+      "specific_elements": [
+        "科目"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1359",
+    "entities": {
+      "operations": [
+        "打开"
+      ],
+      "symptoms": [
+        "耗时过长",
+        "不显示"
+      ],
+      "specific_pages": [
+        "帮助页面"
+      ],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "网络与通信模块"
+    }
+  },
+  {
+    "index": "1364",
+    "entities": {
+      "operations": [
+        "点击",
+        "修改",
+        "选择",
+        "保存"
+      ],
+      "symptoms": [
+        "无法识别",
+        "不生效"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "费用",
+        "时间"
+      ],
+      "page_type": "操作事务类页面",
+      "module": "订单与交易模块"
+    }
+  },
+  {
+    "index": "1365",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "位置错误"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "负债信用卡",
+        "交易",
+        "日期选择"
+      ],
+      "page_type": "数据展示类页面",
+      "module": "订单与交易模块"
+    }
+  },
+  {
+    "index": "1383",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "缺失",
+        "不显示"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "饼图"
+      ],
+      "page_type": "数据展示类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "1394",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "错位"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "Afi"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "订单与交易模块"
+    }
+  },
+  {
+    "index": "1401",
+    "entities": {
+      "operations": [
+        "点击",
+        "导出",
+        "填写"
+      ],
+      "symptoms": [
+        "功能失效"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "操作事务类页面",
+      "module": "订单与交易模块"
+    }
+  },
+  {
+    "index": "1404",
+    "entities": {
+      "operations": [
+        "点击",
+        "导出"
+      ],
+      "symptoms": [
+        "无法连接"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "文件格式"
+      ],
+      "page_type": "操作事务类页面",
+      "module": "订单与交易模块"
+    }
+  },
+  {
+    "index": "1405",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "崩溃",
+        "退出"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "playstore"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "搜索与推荐模块"
+    }
+  }
+]

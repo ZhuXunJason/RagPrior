@@ -1,0 +1,3126 @@
+[
+  {
+    "index": "12",
+    "entities": {
+      "operations": [
+        "修改",
+        "保存"
+      ],
+      "symptoms": [
+        "有未知错误",
+        "修改保存失败"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "13",
+    "entities": {
+      "operations": [
+        "编辑",
+        "输入",
+        "点击",
+        "保存"
+      ],
+      "symptoms": [
+        "提示",
+        "保存失败"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "14",
+    "entities": {
+      "operations": [
+        "编辑",
+        "输入",
+        "点击",
+        "保存"
+      ],
+      "symptoms": [
+        "保存失败",
+        "提示保存失败"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "7",
+    "entities": {
+      "operations": [
+        "登录",
+        "点击",
+        "进入",
+        "选择"
+      ],
+      "symptoms": [
+        "错别字"
+      ],
+      "specific_pages": [
+        "首页",
+        "GIF图片选择页面"
+      ],
+      "specific_elements": [
+        "个人界面",
+        "发布趣图",
+        "贴一张GIF图片",
+        "从相测中选择"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "18",
+    "entities": {
+      "operations": [
+        "点击",
+        "选择",
+        "进入"
+      ],
+      "symptoms": [
+        "错别字",
+        "影响用户体验"
+      ],
+      "specific_pages": [
+        "草稿箱",
+        "发布趣图的界面"
+      ],
+      "specific_elements": [
+        "编辑按钮",
+        "贴上一张GIF图片",
+        "从相测中选择"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "32",
+    "entities": {
+      "operations": [
+        "点击",
+        "选择"
+      ],
+      "symptoms": [],
+      "specific_pages": [],
+      "specific_elements": [
+        "从相测中选择",
+        "从相册中选择"
+      ],
+      "page_type": "",
+      "module": ""
+    }
+  },
+  {
+    "index": "39",
+    "entities": {
+      "operations": [
+        "点击",
+        "选择"
+      ],
+      "symptoms": [
+        "报错"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "相册"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "65",
+    "entities": {
+      "operations": [
+        "登录",
+        "点击",
+        "选择"
+      ],
+      "symptoms": [
+        "错别字"
+      ],
+      "specific_pages": [
+        "趣享APP主界面",
+        "个人信息界面"
+      ],
+      "specific_elements": [
+        "趣图",
+        "图片",
+        "相册"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "93",
+    "entities": {
+      "operations": [
+        "登录",
+        "进入",
+        "选择",
+        "点击"
+      ],
+      "symptoms": [
+        "错别字"
+      ],
+      "specific_pages": [
+        "主界面",
+        "个人界面"
+      ],
+      "specific_elements": [
+        "发布趣图",
+        "贴上一张GIF图片",
+        "从相测中选择"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "98",
+    "entities": {
+      "operations": [
+        "点击",
+        "选择"
+      ],
+      "symptoms": [
+        "缺失"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "从相测中选择",
+        "从相册中选择"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "103",
+    "entities": {
+      "operations": [
+        "点击",
+        "选择"
+      ],
+      "symptoms": [
+        "错位"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "相册"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "114",
+    "entities": {
+      "operations": [
+        "打开",
+        "点击",
+        "选择"
+      ],
+      "symptoms": [
+        "缺失"
+      ],
+      "specific_pages": [
+        "主页面"
+      ],
+      "specific_elements": [
+        "发布图标",
+        "右上角图标"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "124",
+    "entities": {
+      "operations": [
+        "登录",
+        "点击",
+        "进入",
+        "选择"
+      ],
+      "symptoms": [
+        "错别字"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "菜单",
+        "GIF图片",
+        "GIF相册",
+        "相测中选择"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "129",
+    "entities": {
+      "operations": [
+        "打开",
+        "点击",
+        "选择",
+        "进入"
+      ],
+      "symptoms": [
+        "册写错成了测"
+      ],
+      "specific_pages": [
+        "个人界面页面",
+        "GIF相册页面"
+      ],
+      "specific_elements": [
+        "发布趣图",
+        "贴上一张GIF图片",
+        "更多",
+        "从相册中选择"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "133",
+    "entities": {
+      "operations": [
+        "点击",
+        "选择"
+      ],
+      "symptoms": [
+        "错位"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "相册"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "19",
+    "entities": {
+      "operations": [
+        "点击",
+        "选择",
+        "查看"
+      ],
+      "symptoms": [
+        "影响用户体验"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "用户斜逸",
+        "用户协议"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "40",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "报错"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "用户协议"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "46",
+    "entities": {
+      "operations": [
+        "登录",
+        "进入",
+        "点击"
+      ],
+      "symptoms": [
+        "错别字"
+      ],
+      "specific_pages": [
+        "主界面",
+        "设置页面"
+      ],
+      "specific_elements": [
+        "设置按钮",
+        "用户斜逸"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "52",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "显示为",
+        "缺失"
+      ],
+      "specific_pages": [
+        "主界面"
+      ],
+      "specific_elements": [
+        "设置",
+        "用户斜逸",
+        "用户协议"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "73",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "错别字"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "菜单栏",
+        "设置",
+        "用户斜逸"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "78",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "文字错误"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "菜单栏",
+        "设置",
+        "用户斜逸"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "88",
+    "entities": {
+      "operations": [
+        "登录",
+        "进入",
+        "点击"
+      ],
+      "symptoms": [
+        "错位"
+      ],
+      "specific_pages": [
+        "个人界面",
+        "设置模块"
+      ],
+      "specific_elements": [
+        "用户协议"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "101",
+    "entities": {
+      "operations": [
+        "登录",
+        "打开",
+        "点击",
+        "进入",
+        "浏览"
+      ],
+      "symptoms": [
+        "错别字"
+      ],
+      "specific_pages": [
+        "个人界面",
+        "设置模块页面"
+      ],
+      "specific_elements": [
+        "用户协议",
+        "用户斜逸"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "107",
+    "entities": {
+      "operations": [
+        "登录",
+        "进入",
+        "点击"
+      ],
+      "symptoms": [],
+      "specific_pages": [
+        "个人界面",
+        "设置模块页面"
+      ],
+      "specific_elements": [
+        "用户协议",
+        "用户斜逸"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "110",
+    "entities": {
+      "operations": [
+        "点击",
+        "进入"
+      ],
+      "symptoms": [
+        "错位"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "用户协议"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "118",
+    "entities": {
+      "operations": [
+        "进入",
+        "查看",
+        "点击"
+      ],
+      "symptoms": [],
+      "specific_pages": [
+        "设置页面"
+      ],
+      "specific_elements": [
+        "用户斜逸",
+        "用户协议"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "125",
+    "entities": {
+      "operations": [
+        "进入",
+        "点击"
+      ],
+      "symptoms": [
+        "错别字"
+      ],
+      "specific_pages": [
+        "设置",
+        "用户斜逸"
+      ],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "148",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "文字错误"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "用户协议"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "158",
+    "entities": {
+      "operations": [
+        "进入",
+        "点击"
+      ],
+      "symptoms": [
+        "出错"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "用户协议"
+      ],
+      "page_type": "系统状态类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "17",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "闪退"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "编辑个人简介"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "28",
+    "entities": {
+      "operations": [
+        "登录",
+        "输入",
+        "点击",
+        "编辑"
+      ],
+      "symptoms": [
+        "退出"
+      ],
+      "specific_pages": [
+        "主界面"
+      ],
+      "specific_elements": [
+        "菜单按钮",
+        "菜单导航栏",
+        "个人简介"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "34",
+    "entities": {
+      "operations": [
+        "打开",
+        "点击"
+      ],
+      "symptoms": [
+        "退出"
+      ],
+      "specific_pages": [
+        "个人界面"
+      ],
+      "specific_elements": [
+        "编辑个人简介"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "38",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "弹出"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "45",
+    "entities": {
+      "operations": [
+        "登录",
+        "进入",
+        "点击"
+      ],
+      "symptoms": [
+        "崩溃",
+        "退出"
+      ],
+      "specific_pages": [
+        "个人界面"
+      ],
+      "specific_elements": [
+        "编辑个人简介"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "55",
+    "entities": {
+      "operations": [
+        "登录",
+        "打开",
+        "点击"
+      ],
+      "symptoms": [
+        "闪退",
+        "返回异常"
+      ],
+      "specific_pages": [
+        "个人界面"
+      ],
+      "specific_elements": [
+        "编辑个人简介"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "56",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "崩溃",
+        "退出"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "个人简介"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "61",
+    "entities": {
+      "operations": [
+        "进入",
+        "点击"
+      ],
+      "symptoms": [
+        "闪退"
+      ],
+      "specific_pages": [
+        "个人界面"
+      ],
+      "specific_elements": [
+        "编辑个人简介"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "63",
+    "entities": {
+      "operations": [
+        "进入",
+        "点击"
+      ],
+      "symptoms": [
+        "异常退出"
+      ],
+      "specific_pages": [
+        "设置页面"
+      ],
+      "specific_elements": [
+        "个人简介"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "64",
+    "entities": {
+      "operations": [
+        "登录",
+        "点击",
+        "编辑"
+      ],
+      "symptoms": [
+        "闪退"
+      ],
+      "specific_pages": [
+        "个人信息界面"
+      ],
+      "specific_elements": [
+        "个人简介"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "70",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "闪退"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "个人简介"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "77",
+    "entities": {
+      "operations": [
+        "进入",
+        "点击"
+      ],
+      "symptoms": [
+        "崩溃"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "个人界面",
+        "编辑个人简介"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "79",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [],
+      "specific_pages": [],
+      "specific_elements": [
+        "菜单栏",
+        "编辑个人简介"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "85",
+    "entities": {
+      "operations": [
+        "进入",
+        "点击"
+      ],
+      "symptoms": [
+        "崩溃"
+      ],
+      "specific_pages": [
+        "编辑个人简介"
+      ],
+      "specific_elements": [
+        "更多选项"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "90",
+    "entities": {
+      "operations": [
+        "进入",
+        "点击"
+      ],
+      "symptoms": [
+        "停止运行"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "个人界面",
+        "个人简介"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "96",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "退出",
+        "停止运行"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "个人简介"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "104",
+    "entities": {
+      "operations": [
+        "登录",
+        "进入",
+        "选择",
+        "编辑"
+      ],
+      "symptoms": [
+        "退出",
+        "崩溃"
+      ],
+      "specific_pages": [
+        "个人界面"
+      ],
+      "specific_elements": [
+        "个人简介"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "108",
+    "entities": {
+      "operations": [
+        "进入",
+        "点击",
+        "编辑"
+      ],
+      "symptoms": [
+        "退出",
+        "停止运行"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "编辑个人的简介"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "116",
+    "entities": {
+      "operations": [
+        "登录",
+        "打开",
+        "点击",
+        "编辑"
+      ],
+      "symptoms": [
+        "崩溃"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "侧边栏",
+        "个人简介"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "120",
+    "entities": {
+      "operations": [
+        "点击",
+        "进入",
+        "编辑"
+      ],
+      "symptoms": [
+        "停止运行",
+        "崩溃",
+        "退出"
+      ],
+      "specific_pages": [
+        "首页",
+        "个人界面"
+      ],
+      "specific_elements": [
+        "左上角图标",
+        "个人简介"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "122",
+    "entities": {
+      "operations": [
+        "进入",
+        "点击"
+      ],
+      "symptoms": [
+        "崩溃"
+      ],
+      "specific_pages": [
+        "编辑个人简介"
+      ],
+      "specific_elements": [
+        "更多选项"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "132",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "崩溃",
+        "退出"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "个人简介"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "138",
+    "entities": {
+      "operations": [
+        "打开",
+        "点击",
+        "编辑"
+      ],
+      "symptoms": [
+        "闪退"
+      ],
+      "specific_pages": [
+        "个人列表页"
+      ],
+      "specific_elements": [
+        "个人简介"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "144",
+    "entities": {
+      "operations": [
+        "进入",
+        "点击"
+      ],
+      "symptoms": [
+        "崩溃"
+      ],
+      "specific_pages": [
+        "个人界面"
+      ],
+      "specific_elements": [
+        "编辑个人简介"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "156",
+    "entities": {
+      "operations": [
+        "登录",
+        "进入",
+        "点击",
+        "编辑"
+      ],
+      "symptoms": [
+        "闪退"
+      ],
+      "specific_pages": [
+        "个人界面"
+      ],
+      "specific_elements": [
+        "个人简介"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "8",
+    "entities": {
+      "operations": [
+        "进入",
+        "点击"
+      ],
+      "symptoms": [
+        "错位"
+      ],
+      "specific_pages": [
+        "首页",
+        "趣图"
+      ],
+      "specific_elements": [
+        "写评轮",
+        "评论"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "24",
+    "entities": {
+      "operations": [
+        "进入",
+        "查看",
+        "点击"
+      ],
+      "symptoms": [
+        "错别字"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "写评轮",
+        "提示语"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "54",
+    "entities": {
+      "operations": [
+        "登录",
+        "进入",
+        "点击"
+      ],
+      "symptoms": [
+        "显示为"
+      ],
+      "specific_pages": [
+        "主界面",
+        "动态界面"
+      ],
+      "specific_elements": [
+        "世界",
+        "写评论",
+        "写评轮"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "57",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "提示",
+        "模糊"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "写评轮",
+        "写评论"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "86",
+    "entities": {
+      "operations": [
+        "登录",
+        "选择",
+        "点击"
+      ],
+      "symptoms": [
+        "提示"
+      ],
+      "specific_pages": [
+        "趣图模块"
+      ],
+      "specific_elements": [
+        "评论框",
+        "提示词"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "112",
+    "entities": {
+      "operations": [
+        "进入",
+        "选择",
+        "点击",
+        "输入"
+      ],
+      "symptoms": [
+        "错别字"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "142",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "错别字"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "",
+      "module": ""
+    }
+  },
+  {
+    "index": "143",
+    "entities": {
+      "operations": [
+        "进入",
+        "查看",
+        "评论",
+        "点击"
+      ],
+      "symptoms": [
+        "提示",
+        "字错误"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "155",
+    "entities": {
+      "operations": [
+        "进入",
+        "点击"
+      ],
+      "symptoms": [
+        "显示为"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "写评论",
+        "写评轮"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "3",
+    "entities": {
+      "operations": [
+        "进入",
+        "点击",
+        "查看",
+        "分享",
+        "选择"
+      ],
+      "symptoms": [
+        "弹出"
+      ],
+      "specific_pages": [
+        "首页",
+        "好友选择页面"
+      ],
+      "specific_elements": [
+        "趣图",
+        "QQ空间"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "网络与通信模块"
+    }
+  },
+  {
+    "index": "30",
+    "entities": {
+      "operations": [
+        "进入",
+        "点击",
+        "分享"
+      ],
+      "symptoms": [
+        "不支持"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "趣图",
+        "QQ空间"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "51",
+    "entities": {
+      "operations": [
+        "选择",
+        "点击"
+      ],
+      "symptoms": [
+        "无法分享"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "趣享GIF应用",
+        "qq转发界面"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "网络与通信模块"
+    }
+  },
+  {
+    "index": "74",
+    "entities": {
+      "operations": [
+        "点击",
+        "选择",
+        "打开"
+      ],
+      "symptoms": [
+        "未调用",
+        "跳转异常"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "QQ空间",
+        "QQ好友"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "网络与通信模块"
+    }
+  },
+  {
+    "index": "4",
+    "entities": {
+      "operations": [
+        "进入",
+        "点击",
+        "输入",
+        "发送"
+      ],
+      "symptoms": [
+        "提示",
+        "发表评论失败"
+      ],
+      "specific_pages": [
+        "首页"
+      ],
+      "specific_elements": [
+        "评论"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "20",
+    "entities": {
+      "operations": [
+        "注册",
+        "登录",
+        "查看",
+        "单击",
+        "滑至",
+        "点击",
+        "输入",
+        "评论",
+        "发送"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "写评论",
+        "评论"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "23",
+    "entities": {
+      "operations": [
+        "进入",
+        "查看"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "31",
+    "entities": {
+      "operations": [
+        "进入",
+        "点击",
+        "查看",
+        "输入",
+        "发送"
+      ],
+      "symptoms": [
+        "提示",
+        "发表评论失败"
+      ],
+      "specific_pages": [
+        "主界面",
+        "查看趣图界面"
+      ],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "41",
+    "entities": {
+      "operations": [
+        "点击",
+        "提交"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "43",
+    "entities": {
+      "operations": [
+        "输入",
+        "点击"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "58",
+    "entities": {
+      "operations": [
+        "输入",
+        "点击"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "评论区"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "66",
+    "entities": {
+      "operations": [
+        "登录",
+        "点击",
+        "输入",
+        "发送"
+      ],
+      "symptoms": [
+        "提示",
+        "发表评论失败"
+      ],
+      "specific_pages": [
+        "趣享APP主界面"
+      ],
+      "specific_elements": [
+        "评论按钮"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "68",
+    "entities": {
+      "operations": [
+        "选择",
+        "点击",
+        "编辑",
+        "发送",
+        "查看"
+      ],
+      "symptoms": [
+        "评论失败"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "评论按钮"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "71",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "提示",
+        "发表失败"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "81",
+    "entities": {
+      "operations": [
+        "点击",
+        "输入",
+        "发送"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [
+        "趣图页面"
+      ],
+      "specific_elements": [
+        "评论功能",
+        "评论栏"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "87",
+    "entities": {
+      "operations": [
+        "登录",
+        "点击",
+        "输入",
+        "发送"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "评论功能"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "92",
+    "entities": {
+      "operations": [
+        "登录",
+        "进入",
+        "点击",
+        "选择",
+        "发送"
+      ],
+      "symptoms": [
+        "提示",
+        "发表评论失败",
+        "缺失"
+      ],
+      "specific_pages": [
+        "主界面"
+      ],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "99",
+    "entities": {
+      "operations": [
+        "登录",
+        "点击",
+        "进入",
+        "输入",
+        "发送"
+      ],
+      "symptoms": [
+        "发表评论失败"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "评论栏"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "106",
+    "entities": {
+      "operations": [
+        "登录",
+        "点击",
+        "输入",
+        "发送"
+      ],
+      "symptoms": [
+        "提示",
+        "报错",
+        "发表评论失败"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "评论功能"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "109",
+    "entities": {
+      "operations": [
+        "点击",
+        "输入",
+        "发送"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [
+        "评论页面"
+      ],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "117",
+    "entities": {
+      "operations": [
+        "登录",
+        "查看",
+        "点击",
+        "输入",
+        "发送"
+      ],
+      "symptoms": [
+        "提示",
+        "发表失败",
+        "看不到发送的评论"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "评论输入框"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "123",
+    "entities": {
+      "operations": [
+        "进入",
+        "点击",
+        "输入",
+        "发送"
+      ],
+      "symptoms": [
+        "显示",
+        "失败"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "评论区"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "130",
+    "entities": {
+      "operations": [
+        "打开",
+        "点击",
+        "输入",
+        "发送"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [
+        "个人界面",
+        "个人主页"
+      ],
+      "specific_elements": [
+        "发布",
+        "评论输入框"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "139",
+    "entities": {
+      "operations": [
+        "登录",
+        "点击",
+        "评论",
+        "发布",
+        "发送"
+      ],
+      "symptoms": [
+        "提示",
+        "发表评论失败"
+      ],
+      "specific_pages": [
+        "主界面",
+        "趣图"
+      ],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "140",
+    "entities": {
+      "operations": [
+        "登录",
+        "点击",
+        "评论",
+        "发布",
+        "发送"
+      ],
+      "symptoms": [
+        "提示",
+        "报错",
+        "发表评论失败"
+      ],
+      "specific_pages": [
+        "主界面世界",
+        "趣图"
+      ],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "141",
+    "entities": {
+      "operations": [
+        "提交",
+        "输入",
+        "点击"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "149",
+    "entities": {
+      "operations": [
+        "点击",
+        "选择",
+        "输入",
+        "发送"
+      ],
+      "symptoms": [
+        "提示"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "世界",
+        "评论"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "151",
+    "entities": {
+      "operations": [
+        "点击",
+        "发送"
+      ],
+      "symptoms": [
+        "提示",
+        "评论失败"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "10",
+    "entities": {
+      "operations": [
+        "进入",
+        "点击",
+        "输入",
+        "发送"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [
+        "首页",
+        "趣图"
+      ],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "49",
+    "entities": {
+      "operations": [
+        "登录",
+        "点击",
+        "发送"
+      ],
+      "symptoms": [
+        "未知错误",
+        "提示"
+      ],
+      "specific_pages": [
+        "关注界面"
+      ],
+      "specific_elements": [
+        "评论"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "60",
+    "entities": {
+      "operations": [
+        "输入",
+        "点击"
+      ],
+      "symptoms": [
+        "提示",
+        "报错",
+        "未知错误"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "147",
+    "entities": {
+      "operations": [
+        "输入"
+      ],
+      "symptoms": [
+        "未知错误"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "6",
+    "entities": {
+      "operations": [
+        "进入",
+        "点击"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [
+        "首页",
+        "个人设置",
+        "设置"
+      ],
+      "specific_elements": [
+        "清理缓存"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "35",
+    "entities": {
+      "operations": [
+        "打开",
+        "点击"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "设置功能模块",
+        "清理缓存"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "42",
+    "entities": {
+      "operations": [
+        "清理"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [
+        "设置"
+      ],
+      "specific_elements": [],
+      "page_type": "系统状态类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "48",
+    "entities": {
+      "operations": [
+        "登录",
+        "进入",
+        "点击"
+      ],
+      "symptoms": [
+        "提示",
+        "清理缓存失败"
+      ],
+      "specific_pages": [
+        "个人页面",
+        "设置界面"
+      ],
+      "specific_elements": [
+        "设置",
+        "缓存清理"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "89",
+    "entities": {
+      "operations": [
+        "登录",
+        "进入",
+        "点击"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [
+        "个人界面",
+        "设置模块"
+      ],
+      "specific_elements": [
+        "清理缓存"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "94",
+    "entities": {
+      "operations": [
+        "登录",
+        "进入",
+        "点击",
+        "选择"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [
+        "主界面",
+        "个人界面"
+      ],
+      "specific_elements": [
+        "设置",
+        "清理缓存"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "97",
+    "entities": {
+      "operations": [
+        "进入",
+        "点击"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [
+        "设置页面"
+      ],
+      "specific_elements": [
+        "清理缓存"
+      ],
+      "page_type": "系统状态类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "100",
+    "entities": {
+      "operations": [
+        "登录",
+        "打开",
+        "点击",
+        "进入",
+        "清除",
+        "清理"
+      ],
+      "symptoms": [
+        "报错",
+        "缓存清理失败"
+      ],
+      "specific_pages": [
+        "个人界面",
+        "设置模块页面"
+      ],
+      "specific_elements": [
+        "设置",
+        "清除缓存"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "111",
+    "entities": {
+      "operations": [
+        "登录",
+        "进入",
+        "点击",
+        "选择"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [
+        "主界面",
+        "个人界面"
+      ],
+      "specific_elements": [
+        "设置",
+        "清理缓存"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "126",
+    "entities": {
+      "operations": [
+        "进入",
+        "点击"
+      ],
+      "symptoms": [
+        "提示",
+        "清理缓存失败"
+      ],
+      "specific_pages": [
+        "设置"
+      ],
+      "specific_elements": [
+        "更多选项",
+        "清理缓存"
+      ],
+      "page_type": "操作事务类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "150",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "清理缓存"
+      ],
+      "page_type": "操作事务类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "153",
+    "entities": {
+      "operations": [
+        "进入",
+        "点击"
+      ],
+      "symptoms": [
+        "显示",
+        "报错"
+      ],
+      "specific_pages": [
+        "设置界面"
+      ],
+      "specific_elements": [
+        "清理缓存"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "157",
+    "entities": {
+      "operations": [
+        "登录",
+        "进入",
+        "点击",
+        "清除"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [
+        "设置常规模块"
+      ],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
+    }
+  },
+  {
+    "index": "0",
+    "entities": {
+      "operations": [
+        "进入",
+        "输入",
+        "点击"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [
+        "登录界面"
+      ],
+      "specific_elements": [
+        "手机号",
+        "验证码"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "16",
+    "entities": {
+      "operations": [
+        "打开",
+        "输入",
+        "点击",
+        "观察"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "手机号"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "26",
+    "entities": {
+      "operations": [
+        "进入",
+        "输入",
+        "点击"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [
+        "登录界面"
+      ],
+      "specific_elements": [
+        "手机号",
+        "验证码"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "27",
+    "entities": {
+      "operations": [
+        "进入",
+        "输入",
+        "点击"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [
+        "登录界面"
+      ],
+      "specific_elements": [
+        "手机号",
+        "验证码"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "33",
+    "entities": {
+      "operations": [
+        "进入",
+        "输入",
+        "点击"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [
+        "登录界面"
+      ],
+      "specific_elements": [
+        "手机号"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "47",
+    "entities": {
+      "operations": [
+        "打开",
+        "进入",
+        "输入",
+        "点击"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [
+        "登陆界面"
+      ],
+      "specific_elements": [
+        "手机号输入位置",
+        "验证码"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "53",
+    "entities": {
+      "operations": [
+        "进入",
+        "输入",
+        "点击"
+      ],
+      "symptoms": [
+        "提示"
+      ],
+      "specific_pages": [
+        "登录页面"
+      ],
+      "specific_elements": [
+        "手机号",
+        "获取验证码"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "59",
+    "entities": {
+      "operations": [
+        "输入",
+        "点击"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "手机号",
+        "验证码"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "76",
+    "entities": {
+      "operations": [
+        "进入",
+        "输入",
+        "点击"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [
+        "登录界面"
+      ],
+      "specific_elements": [
+        "手机号",
+        "验证码"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "95",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "获取验证码"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "113",
+    "entities": {
+      "operations": [
+        "输入",
+        "点击"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "网络与通信模块"
+    }
+  },
+  {
+    "index": "119",
+    "entities": {
+      "operations": [
+        "输入"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "手机号",
+        "验证码"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "网络与通信模块"
+    }
+  },
+  {
+    "index": "127",
+    "entities": {
+      "operations": [
+        "输入",
+        "点击"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "手机号",
+        "验证码"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "网络与通信模块"
+    }
+  },
+  {
+    "index": "131",
+    "entities": {
+      "operations": [
+        "输入",
+        "点击"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "验证码"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "134",
+    "entities": {
+      "operations": [
+        "输入",
+        "点击"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "手机号",
+        "验证码"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "146",
+    "entities": {
+      "operations": [
+        "进入",
+        "输入",
+        "点击"
+      ],
+      "symptoms": [
+        "提示"
+      ],
+      "specific_pages": [
+        "登录页面"
+      ],
+      "specific_elements": [
+        "手机号",
+        "获取验证码"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "1",
+    "entities": {
+      "operations": [
+        "进入",
+        "输入",
+        "点击"
+      ],
+      "symptoms": [
+        "无响应",
+        "提示",
+        "缺失"
+      ],
+      "specific_pages": [
+        "登录页面"
+      ],
+      "specific_elements": [
+        "手机号",
+        "验证码"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "37",
+    "entities": {
+      "operations": [
+        "输入",
+        "点击"
+      ],
+      "symptoms": [
+        "未调用",
+        "不生效"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "手机号",
+        "验证码"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "网络与通信模块"
+    }
+  },
+  {
+    "index": "62",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "无响应",
+        "提示"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "获取验证码"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "69",
+    "entities": {
+      "operations": [
+        "点击",
+        "输入"
+      ],
+      "symptoms": [
+        "无法识别"
+      ],
+      "specific_pages": [
+        "登入界面"
+      ],
+      "specific_elements": [
+        "电话",
+        "验证码"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "80",
+    "entities": {
+      "operations": [
+        "点击",
+        "输入"
+      ],
+      "symptoms": [
+        "未调用",
+        "无响应",
+        "提示"
+      ],
+      "specific_pages": [
+        "登录界面"
+      ],
+      "specific_elements": [
+        "获取验证码",
+        "手机号码"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "网络与通信模块"
+    }
+  },
+  {
+    "index": "102",
+    "entities": {
+      "operations": [
+        "点击",
+        "输入"
+      ],
+      "symptoms": [
+        "未调用",
+        "无响应",
+        "提示"
+      ],
+      "specific_pages": [
+        "登录界面"
+      ],
+      "specific_elements": [
+        "获取验证码按钮"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "115",
+    "entities": {
+      "operations": [
+        "输入",
+        "点击"
+      ],
+      "symptoms": [
+        "缺失"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "验证码按钮"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "128",
+    "entities": {
+      "operations": [
+        "输入",
+        "点击"
+      ],
+      "symptoms": [
+        "无反馈",
+        "无法识别"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "网络与通信模块"
+    }
+  },
+  {
+    "index": "135",
+    "entities": {
+      "operations": [
+        "输入",
+        "点击"
+      ],
+      "symptoms": [
+        "未提示",
+        "无响应"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "145",
+    "entities": {
+      "operations": [
+        "打开",
+        "输入",
+        "点击"
+      ],
+      "symptoms": [
+        "无响应",
+        "提示",
+        "缺失"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "手机号一栏",
+        "获取验证码"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "11",
+    "entities": {
+      "operations": [
+        "查看"
+      ],
+      "symptoms": [],
+      "specific_pages": [
+        "主界面"
+      ],
+      "specific_elements": [
+        "趣图"
+      ],
+      "page_type": "数据展示类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "21",
+    "entities": {
+      "operations": [
+        "登录",
+        "点击"
+      ],
+      "symptoms": [
+        "缺失"
+      ],
+      "specific_pages": [
+        "世界页面",
+        "关注页面"
+      ],
+      "specific_elements": [],
+      "page_type": "数据展示类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "22",
+    "entities": {
+      "operations": [
+        "登录",
+        "进入",
+        "点击",
+        "返回"
+      ],
+      "symptoms": [
+        "缺失",
+        "无响应"
+      ],
+      "specific_pages": [
+        "世界页面",
+        "详情页面",
+        "关注页面"
+      ],
+      "specific_elements": [
+        "动态图",
+        "关注"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "44",
+    "entities": {
+      "operations": [
+        "登录",
+        "进入",
+        "点击",
+        "返回"
+      ],
+      "symptoms": [
+        "无响应",
+        "缺失"
+      ],
+      "specific_pages": [
+        "世界页面",
+        "详情页面",
+        "关注页面"
+      ],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "121",
+    "entities": {
+      "operations": [],
+      "symptoms": [],
+      "specific_pages": [
+        "关注页面"
+      ],
+      "specific_elements": [
+        "内容"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "75",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "不显示"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "网络与通信模块"
+    }
+  },
+  {
+    "index": "82",
+    "entities": {
+      "operations": [
+        "选择",
+        "点击"
+      ],
+      "symptoms": [
+        "跳转异常",
+        "无响应"
+      ],
+      "specific_pages": [
+        "趣享GIFapp"
+      ],
+      "specific_elements": [
+        "微信聊天窗口"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "网络与通信模块"
+    }
+  },
+  {
+    "index": "2",
+    "entities": {
+      "operations": [
+        "点击",
+        "编辑"
+      ],
+      "symptoms": [
+        "缺失",
+        "影响用户体验"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "评论",
+        "举报"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "9",
+    "entities": {
+      "operations": [
+        "输入",
+        "点击",
+        "登录"
+      ],
+      "symptoms": [
+        "提示"
+      ],
+      "specific_pages": [
+        "登录界面"
+      ],
+      "specific_elements": [
+        "手机号",
+        "验证码"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "15",
+    "entities": {
+      "operations": [
+        "点击",
+        "保存",
+        "输入"
+      ],
+      "symptoms": [
+        "提示"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "昵称"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "67",
+    "entities": {
+      "operations": [
+        "登录",
+        "选择"
+      ],
+      "symptoms": [
+        "无法调取"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "GIF",
+        "相册"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "72",
+    "entities": {
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "提示",
+        "报错"
+      ],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "91",
+    "entities": {
+      "operations": [
+        "输入"
+      ],
+      "symptoms": [
+        "无法收取"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "手机号",
+        "验证码"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "网络与通信模块"
+    }
+  },
+  {
+    "index": "105",
+    "entities": {
+      "operations": [
+        "登录",
+        "进入",
+        "点击"
+      ],
+      "symptoms": [
+        "无响应"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "评论",
+        "按钮"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "136",
+    "entities": {
+      "operations": [
+        "打开",
+        "输入",
+        "连续点击",
+        "获取"
+      ],
+      "symptoms": [
+        "锁定",
+        "耗时过长"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "手机号",
+        "验证码"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "137",
+    "entities": {
+      "operations": [
+        "输入",
+        "连续点击",
+        "点击"
+      ],
+      "symptoms": [
+        "按钮失效",
+        "无法点击"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "手机号",
+        "验证码",
+        "登录"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "152",
+    "entities": {
+      "operations": [
+        "打开",
+        "进入",
+        "输入",
+        "点击"
+      ],
+      "symptoms": [
+        "提示"
+      ],
+      "specific_pages": [
+        "登录界面"
+      ],
+      "specific_elements": [
+        "手机号",
+        "验证码"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  },
+  {
+    "index": "159",
+    "entities": {
+      "operations": [
+        "输入",
+        "点击",
+        "登录"
+      ],
+      "symptoms": [
+        "提示"
+      ],
+      "specific_pages": [
+        "个人界面"
+      ],
+      "specific_elements": [
+        "手机号",
+        "验证码"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
+    }
+  }
+]

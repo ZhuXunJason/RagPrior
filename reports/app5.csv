@@ -1,0 +1,13 @@
+1329,点击忘记密码 登陆界面的返回键不能返回 界面的“忘记密码”和“立即注册”功能实现不了,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531187238038/1531187238038_Screenshot_2018-07-10-09-46-32.png,1
+1333,打开app 进入首页 打开“我”的选项 点击立即注册 无法完成注册用户。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531190358215/1531190358215_1.3.png,1
+1336,"点击首页右下角的“我” 点击页面上方的“马上登录” 点击“快速注册"" 没有任何反应。",http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531190058059/1531190058059_Screenshot_2018-07-10-10-33-28.png,1
+1330,点击“我” 界面的所有控件都不能运行,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531187381628/1531187381628_Screenshot_2018-07-10-09-49-11.png,2
+1334,点击我 点击金币商城 没有反应，没有任何提示。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531188707368/1531188707368_MuMu20180710101103.png,2
+1337,点击首页中的”我“  点击”夜间模式“ 屏幕没有任何反应。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531189883581/1531189883581_Screenshot_2018-07-10-10-14-22.png,2
+1344,进入“IP家园”  点击手机屏幕右下角“我”  进入“我”页面  点击“金币商城”  无法点击，未实现其功能。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531191854547/1531191854547_Screenshot_20180710-110333.jpg,2
+1332,进入首页 点击排行榜 下方所出现的内容与其他选项相同,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531191596928/1531191596928_Screenshot_2018-07-10-10-59-19.png,3
+1339,点击排行榜  下方所出现的内容与其他栏目相同。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531189863233/1531189863233_Screenshot_2018-07-10-09-53-16.png,3
+1343,打开APP 进入首页 点击辣品 上面最新选项进行切换所出来的内容都一样。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531190691731/1531190691731_Screenshot_2018-07-10-10-43-39.png,3
+1331,点击辣品 右上角的搜索无法点开运用,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531187590172/1531187590172_Screenshot_2018-07-10-09-52-55.png,3
+1335,打开APP 进入首页 点击“辣品” 进到页面后，右上角搜索功能运行不了。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531190031767/1531190031767_Screenshot_2018-07-10-10-33-32.png,3
+1340,点击首页 点击”辣品“  上方的搜素键都无法使用。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531189837606/1531189837606_Screenshot_2018-07-10-10-28-46.png,3

@@ -1,0 +1,26 @@
+1593,在搜索界面输入“123” 点击漫画 界面不提示搜索不到，直接显示默认内容,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1556348430731/1556348430731_Screenshot_2019-04-27-14-58-05.png,2
+1621,在搜索栏内输入一长串字符 点击漫画 点击搜索 发现搜索功能对输入的字符串没有长度限制，并且会搜索到无关内容（对搜索内容格式没有要求）。 ,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1556355679757/1556355679757_%E6%90%9C%E7%B4%A25.PNG,2
+1622,在搜索栏内输入小说名称 点击漫画 不应该搜索出于输入无关的内容,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1556356070560/1556356070560_1195428929.jpg,2
+1589,点击书城 点击小说 点击人气榜单 点击男生热销榜 没有数据显示。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1556347124077/1556347124077_%E4%BA%BA%E6%B0%94%E6%8E%92%E8%A1%8C.jpg,1
+1597,点击小说榜单 选择男生热销榜 没有排行的小说，榜单无法显示数据,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1556349008320/1556349008320_Screenshot_2019-04-27-15-09-47.png,1
+1604,点击小说榜单 点击男生热销榜 只有各种人气排行的分类，而没有具体的书籍显示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1556350792693/1556350792693_%E6%88%AA%E5%B1%8F_20190427_153445.jpg,1
+1609,点击小说榜单 点击女生热销榜 不管是什么榜单最终都是一片空白,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1556351923185/1556351923185_%E4%BA%BA%E6%B0%94%E6%8E%92%E8%A1%8C.png,1
+1612,点击小说榜单 点击男生热销榜 界面内只显示导航栏，但没有内容。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1556352470358/1556352470358_%E6%A6%9C%E5%8D%95.PNG,1
+1613,点击小说榜单 点击男生热销榜 只加载了相应的框架，而没有具体的内容。经过多次试验，很大不会显示内容,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1556352735152/1556352735152_20190427161011.png,1
+1615,点击小说榜单 点击男生热销榜 没有内容,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1556353072805/1556353072805_5F1E4B27815B84BBA134170936A007DC.jpg,1
+1616,点击小说榜单 点击新书榜 打开小说人气排行后，小说榜单无数据显示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1556353716634/1556353716634_57FF8D36CE9CEABB1C0BE03271537A30.jpg,1
+1617,点击小说榜单 点击男生热销榜 大概率没有数据显示。极小几率显示正常,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1556354097268/1556354097268_3.jpg,1
+1623,进入小说人气排行 进入小说榜单页面 点击新书榜 出现的榜单内容都为空。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1556356378688/1556356378688_bug_7.jpg,1
+1592,输入搜索内容，如：斗罗大陆 点击搜索按钮 点击小说 无搜索结果显示时，没有提示框显示。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1556347748459/1556347748459_%E6%90%9C%E7%B4%A2.jpg,2
+1624,进入搜索框 输入名称 选择小说 点击搜索 无任何提示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1556356741443/1556356741443_Screenshot_2019-04-27-17-15-23-58.png,2
+1591,选择某一个话题关注 点击关注 必须重新刷新一次，所关注的东西才可以展现出来,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1556347521621/1556347521621_%E5%85%B3%E6%B3%A82.png,4
+1610,点击圈子 点击关注 关注了两个话题但去“关注”界面查看没显示，刷新后才能看见,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1556351949570/1556351949570_Screenshot_2019-04-27-15-38-24.png,4
+1595,点击分类 点击全部 选择人气 漫画按照“人气”排行出错，预期结果：按照“人气”数量，从高到低展示全漫画，实际结果：按照“人气”最高的漫画，没有排到第一位，“人气”较低的漫画排在前面,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1556348655484/1556348655484_Screenshot_2019-04-27-14-52-11.png,3
+1606,点击分类 点击人气 选择恋爱 排序错误，第一二名人气21.08亿，而第三名21.48亿,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1556350971409/1556350971409_%E6%81%8B%E7%88%B1%E6%A6%9C%E5%8D%95.png,3
+1607,点击分类 选择热血 点击人气 第二名21.08亿，第三名21.47亿，与实际不符,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1556351162608/1556351162608_%E7%83%AD%E8%A1%80%E5%88%86%E7%B1%BB.png,3
+1608,进入分类界面 点击全部 点击人气 排序出现明显错误，第二名第三名均为21.08亿，而第四名第五名均为21.48亿，排序出现错误,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1556351403627/1556351403627_%E5%85%A8%E9%83%A8%E5%88%86%E7%B1%BB.png,3
+1618,进入书城本周推荐更多页面 点击人气 出现的漫画排名没有完全按照人气从高到低或从低到高排序。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1556354658318/1556354658318_bug_4.jpg,3
+1619,进入书城分类页面 点击人气 漫画排名出现错误，为按人气从高到低或从低到高排序。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1556355340899/1556355340899_bug_5.jpg,3
+1596,在输入框中输入“女神” 点击搜索 无搜索结果显示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1556348847552/1556348847552_Screenshot_2019-04-27-15-05-12.png,2
+1625,进入“书城”的“小说”界面 点击“小说” 输入小说名称 点击搜索 未能被成功检索,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1556356827383/1556356827383_%E6%88%AA%E5%B1%8F_20190427_171600.jpg,2
+1620,进入书城 点击灵剑尊 点击漫画 点击搜索 推荐的搜索出现无关数据,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1556355468567/1556355468567_Screenshot_2019-04-27-16-57-25-103_com.android.co.png,2

@@ -1,0 +1,152 @@
+12,1.修改个人简介 2.修改背景图或个人简介 3.点击保存 提示“有未知错误”，且修改保存失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565423822602/1565423822602_15.jpg,4
+13,1.编辑个人简介 2.输入60个字的个人简介 3.点击保存 不应该提示保存失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565424401065/1565424401065_16.jpg,4
+14,1.编辑个人简介 2.输入59个字的个人简介 3.点击保存 不应该保存失败且提示保存失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565424608494/1565424608494_17.jpg,4
+7,"1.登录成功后进入首页 2.点击左上角的个人界面 3.点击发布趣图 4.点击""贴一张GIF图片"" 5.进入GIF图片选择页面 6.点击右上角""..."" 7.点击""从相测中选择"" 8.错别字，相测 应为 相册",http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565405992320/1565405992320_%E7%9B%B8%E5%86%8C%E9%94%99%E5%88%AB%E5%AD%97.png,1
+18,1、点击菜单 2、选择草稿箱 3、点击右下角的编辑按钮，进入发布趣图的界面 4、点击“贴上一张GIF图片” 5、点击从相测中选择 “从相测中选择”有错别字，影响用户体验。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565402088854/1565402088854_4.png,1
+32,点击“从相测中选择” 有错别字，应为“从相册中选择”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565405597649/1565405597649_Screenshot_20190810_105049.jpg,1
+39,点击“从相测中选择” 实际应为“从相册中选择” 错误提示“您的相册已满，建议及时清理”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565409954439/1565409954439_DB45C824D0DB036903158FCCEF6A75A0.jpg,1
+65,1.登录进入到趣享APP主界面 2.点击个人信息界面显示菜单 3.点击发布趣图 4.点击贴上图片 5.点击从相测中选择 错别字，应为从相册中选择,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565445749343/1565445749343_20ec2644a30d371d99f623e5d3b6619.png,1
+93,1.正常登录账号 2.进入主界面，选择个人界面进入 3.点击发布趣图 4.点击“贴上一张GIF图片” 5.点击“从相测中选择” 出现错别字,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1568949307367/1568949307367_1568949292%281%29.png,1
+98,点击“从相测中选择” 界面应显示“从相册中选择”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1568708691235/1568708691235_%E9%94%99%E5%88%AB%E5%AD%97.png,1
+103,点击从相测中选择 错将相册写成了“相测”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1568862680169/1568862680169_QQ%E5%9B%BE%E7%89%8720190919111106.jpg,1
+114,"1.打开趣享App 2.注册登录 3.在主页面点击发布图标 4.点击右上角图标 5.点击“”从相测中选择“ 6.本应为“从相册中选择”但变成""从相测中选择""",http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1569657421862/1569657421862_Screenshot_2019-09-28-15-53-03.png,1
+124,1、正常登录APP 2、点击左上角菜单进入发布趣图 3、点击中央“贴上一张GIF图片” 4、进入GIF相册 5、点击从相测中选择 5、从“相测中选择”的“测”字出现错别字,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1570955266297/1570955266297_BUG2.PNG,1
+129,1、打开个人界面页面； 2、点击打开“发布趣图”功能模块； 2、点击“贴上一张GIF图片”功能框，进入GIF相册页面； 3、点击右上角“更多”按钮； 4、点击从相测中选择 “从相册中选择”的相册的册写错成了测,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1571720857527/1571720857527_%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20191022130530.png,1
+133,点击从相测中选择 有错别字，相册写成了“相测”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1571661017003/1571661017003_1.png,1
+19,1、点击菜单 2、选择设置 3、查看各项设置 4、点击“用户斜逸” 应该为“用户协议”，影响用户体验。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565403225943/1565403225943_6.png,2
+40,点击设置 点击用户斜逸 错误将用户协议写成了用户斜逸,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565410351068/1565410351068_DB45C824D0DB036903158FCCEF6A75A0.jpg,2
+46,1.登陆趣享app 2、进入主界面  3.右滑进入个人界面。 4.点击设置按钮，应用跳转至设置页面。 5.点击“用户斜逸” 出现错别字，应为用户协议。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565439678858/1565439678858_%E8%AE%BE%E7%BD%AE.png,2
+52,登录 在主界面下点击设置 点击用户斜逸 应为“用户协议”，系统显示为“用户斜逸”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565415284311/1565415284311_1.png,2
+73,点击菜单栏 点击设置 点击用户斜逸 有错别字，应该为用户协议,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565527134429/1565527134429_%E6%8D%95%E8%8E%B7666.PNG,2
+78,点击菜单栏 点击设置 点击用户斜逸 出现文字错误,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565531003591/1565531003591_Screenshot_20190811_212909_com.quxianggif.opensou.jpg,2
+88,1、正常登录APP 2、进入个人界面 3、点击设置进入设置模块 4、点击用户斜逸 4、发现“用户协议”错写成“用户斜逸”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1568457244202/1568457244202_QQ%E5%9B%BE%E7%89%8720190914183352.png,2
+101,1、正常登录APP。 2、打开个人界面。 3、点击设置进入设置模块页面。 4、点击用户斜逸 5、浏览其他模块过程中发现了错别字，“用户协议”写成“用户斜逸”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1568827290315/1568827290315_cuobiezi.png,2
+107,1、正常登录APP； 2、进入个人界面； 3、点击设置进入设置模块页面； 4、点击用户斜逸 5、设置模块页面的“用户协议”写成“用户斜逸”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1568970408462/1568970408462_%5B8U3SUCN%7DD8VI%7B%4059R6T7GH.png,2
+110,点击设置 进入其子页面 点击用户斜逸 发现用户协议中的协议错写成“斜逸”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1569382492674/1569382492674_%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190925113439.png,2
+118,1.进入设置页面 2.查看设置页面 3.点击用户斜逸 4.发现用户协议变为“用户斜逸”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1570459771078/1570459771078_%E7%94%A8%E6%88%B7.jpg,2
+125,1、进入APP 2、点击左上角的更多选项 3、点击设置 4、点击用户斜逸 4、用户斜逸中出现错别字,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1571578105498/1571578105498_Screenshot_2019-10-20-21-21-48.png,2
+148,点击用户斜逸 用户协议的文字错误，不应该为“用户斜逸”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1565402964748/1565402964748_%E7%94%A8%E6%88%B7.jpg,2
+158,1.正常进入app 2.进入设置模块 3.点击用户斜逸 3.app用户协议文字出错,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1565514308345/1565514308345_1565514290%281%29.jpg,2
+17,1、点击菜单 2、点击编辑个人简介 3、应用直接闪退，影响用户体验,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565400506663/1565400506663_2.png,3
+28,1、登录成功，输入完昵称后进入主界面； 2、点击菜单按钮，显示菜单导航栏； 3、点击编辑个人简介； 4、软件不正常退出到手机桌面。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565405553981/1565405553981_QQ%E5%9B%BE%E7%89%8720190810105107.jpg,3
+34,1.打开个人界面 2.点击编辑个人简介 直接退出app,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565414330672/1565414330672_9489FFF41903B460BA385603378BB06C.jpg,3
+38,点击编辑个人简介 被强行弹出该应用到手机桌面,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565409007122/1565409007122_DB45C824D0DB036903158FCCEF6A75A0.jpg,3
+45,1.正常登陆进入趣享GIFapp 2.右滑进入个人界面 3.点击编辑个人简介 应用异常退出。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565435590987/1565435590987_%E4%B8%AA%E4%BA%BA%E7%95%8C%E9%9D%A2.png,3
+55,1、正确登陆APP 2、打开个人界面 3、点击“编辑个人简介” 4、点击后会发生闪退，回到安卓手机主页面,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565417038943/1565417038943_Screenshot_2019-08-10-14-02-10-07.png,3
+56,点击编辑个人简介 应用程序不正常退出,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565415959460/1565415959460_%E7%BC%96%E8%BE%91%E4%B8%AA%E4%BA%BA%E8%B5%84%E6%96%99.jpg,3
+61,进入个人界面 点击“编辑个人简介” 趣享GIF开源版APP闪退,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565422582889/1565422582889_%E4%B8%AA%E4%BA%BA%E7%AE%80%E4%BB%8B1.jpg,3
+63,1.进入设置页面 2.点击编辑个人简介 预期结果：出现编辑框，实际结果：异常退出,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565433639995/1565433639995_%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190810184029.jpg,3
+64,1.登录进入到趣享APP主界面 2.点击个人信息界面显示菜单 3.点击编辑个人简介 应用发生闪退,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565445075883/1565445075883_35791a44f8b58c7e5855405dd0f5144.jpg,3
+70,点击左上侧菜单键 点击编辑个人简介 应用出现闪退,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565506105572/1565506105572_%E6%8D%95%E8%8E%B7111.PNG,3
+77,1.进入个人界面 2.点击编辑个人简介 直接闪退，共有2个编辑入口全部闪退,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565512940906/1565512940906_Screenshot_20190811_164136_com.quxianggif.opensou.jpg,3
+79,点击菜单栏 点击编辑个人简介 返回桌面,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565531291640/1565531291640_Screenshot_20190811_212853_com.quxianggif.opensou.jpg,3
+85,1、进入APP 2、点击左上角的更多选项 3、点击“编辑个人简介” 4、程序崩溃,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1568368206346/1568368206346_%E7%BC%96%E8%BE%91%E4%B8%AA%E4%BA%BA%E7%AE%80%E4%BB%8BBUG.PNG,3
+90,1.进入个人界面 2.点击编辑个人简介 提示应用停止运行,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1568945291648/1568945291648_1568945275%281%29.png,3
+96,点击编写个人简介 程序不正常退出，提示“很抱歉，趣享gif开源版已停止运行”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1568708367010/1568708367010_03.png,3
+104,1.正常登陆系统 2.进入个人界面 3.选中编辑个人简介 4.程序不正常退出,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1570683538851/1570683538851_qq_pic_merged_1570683441356.jpg,3
+108,进入个人界面 点击“编辑个人的简介” 软件不正常退出，并且提示该软件已经停止运行,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1569328444266/1569328444266_%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190924203346.png,3
+116,1.正常登录APP 2.点击左上角按钮打开侧边栏 3.点击编辑个人简介 4.程序发生崩溃,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1570339541392/1570339541392_%E4%B8%AA%E4%BA%BA%E7%AE%80%E4%BB%8B.jpg,3
+120,进入首页 点击左上角图标进入个人界面 点击编辑个人简介 应用出现：很抱歉，“趣享GIF开源版”已停止运行。的提示并强制退出APP返回手机界面。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1570581414718/1570581414718_%E4%B8%AA%E4%BA%BA%E9%A1%B5%E9%9D%A2%E7%82%B9%E5%87%BB%E7%BC%96%E8%BE%91%E5%BC%BA%E9%80%80.png,3
+122,1、进入APP 2、点击左上角的更多选项 3、点击“编辑个人简介” 4、程序崩溃,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1570683502675/1570683502675_QQ%E6%88%AA%E5%9B%BE20191010125752.png,3
+132,点击编辑个人简介 app强制退出,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1571711389899/1571711389899_A5BA4B87639F588D3CC46AED8DC1C62F.jpg,3
+138,1.打开App 2.点击个人列表页 3.点击编辑个人简介 应用闪退,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1571881563309/1571881563309_%E4%B8%AA%E4%BA%BA%E7%AE%80%E4%BB%8B%E7%BC%96%E8%BE%91.PNG,3
+144,"1,进入个人界面 2，点击编辑个人简介 直接闪退",http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1565400619082/1565400619082_%E9%97%AA%E9%80%80.jpg,3
+156,"1,正常登陆app 2，进入个人界面 3.点击编辑个人简介 4.app闪退",http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1565513193800/1565513193800_1565513173%281%29.jpg,3
+8,"1.进入首页 2.进入任意趣图 3.点击写评轮 4.写评论错别字，错为""写评轮""",http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565406226290/1565406226290_%E5%86%99%E8%AF%84%E8%AE%BA.png,4
+24,1.进入查看趣图 2.点击写评轮 3.评论中的提示语有错别字，“写评轮”应该为“写评论”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565404070678/1565404070678_QHY%7BIIQ3C8RR1KW%24YNI4SRB.png,4
+54,1登陆APP 2.进入主界面 3.点击主界面的世界 4.点击第一条动态，进入该动态界面 5.点击写评轮 6.界面“写评论”显示为“写评轮”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565419901994/1565419901994_4%E8%AF%84%E8%AE%BA%E5%AD%97%E9%94%99%E8%AF%AF.png,4
+57,点击写评轮 对发布内容进行评论时，提示文字应该是“写评论”，而实际却是“写评轮”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565417864911/1565417864911_%E5%86%99%E8%AF%84%E8%AE%BA.jpg,4
+86,1、正常登录APP 2、选择一张趣图进入趣图模块 3、点击评论功能 4、点击写评轮 4、弹出的评论框中的提示词有误，应是“评论”而不是“评轮”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1568452053822/1568452053822_%E8%AF%84%E8%BD%AE.png,4
+112,进入一张趣图 选择评论 点击写评轮 输入提示存在错别字,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1569465366933/1569465366933_3.JPG,4
+142,点击写评轮 存在错别字,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1571898426113/1571898426113_3.png,4
+143,1.进入查看趣图 2.进行评论 3.点击写评轮 提示字错误,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1565399601493/1565399601493_%E8%AF%84%E8%AE%BA.jpg,4
+155,1.正常进入app 2.进入世界模块图片 3.点击写评轮 3.界面“写评论”显示为“写评轮”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1565510183825/1565510183825_1565510160%281%29.jpg,4
+3,"1.进入首页 2.点击任意趣图进行查看 3.点击分享 4.点击分享到QQ空间 5.弹出的是好友选择页面，而不是""是否分享到QQ空间""的页面",http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565402404590/1565402404590_%E5%88%86%E4%BA%AB%E5%B9%B6%E4%B8%8D%E6%98%AF%E5%88%B0qq%E7%A9%BA%E9%97%B4%E8%80%8C%E6%98%AF%E5%A5%BD%E5%8F%8B.png,5
+30,1、进入主界面； 2、点击所发布的趣图； 3、点击分享 4.点击分享到QQ空间； 5、发现实际不能分享到空间，只能分享给qq好友。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565409234294/1565409234294_QQ%E5%9B%BE%E7%89%8720190810114821.jpg,5
+51,1.选择任意动图进行查看 2.点击分享 3.选择QQ空间 3.趣享GIF应用调起qq转发界面，只能选择好友和群聊进行发送，无法分享至QQ空间,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565493879161/1565493879161_qqq.png,5
+74,点击分享 选择QQ空间 并未打开QQ空间而是直接打开QQ好友,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565527734768/1565527734768_2.PNG,5
+4,1.进入首页 2.点击任意趣图进行查看 3.点击评论 4.输入任意内容 5.点击发送 6.提示发表评论失败，但实际上已经成功发表,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565402865294/1565402865294_%E5%8F%91%E8%A1%A8%E8%AF%84%E8%AE%BA%E5%A4%B1%E8%B4%A5.png,4
+20,1.正常注册 2.登录系统 3.查看趣图 4单击进入某个具体的趣图界面 5.滑至界面底端 6.点击“写评论”输入框 7.对贴子进行评论 8.点击发送 9.评论已成功发送但提示“发表评论失败”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565403592231/1565403592231_3%E8%AF%84%E8%AE%BA.png,4
+23,1，进行发布评论后，提示：发表评论失败 2，进入查看全部评论，提示发表评论失败的评论不应该出现在列表当中,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565403697162/1565403697162_3ZH1W2O%5DI13K%24EJ%28WF7O41W.png,4
+31,1、进入主界面； 2、点击趣图； 3、进入查看趣图界面； 4、输入评论文字 5、点击发送 6、提示发表评论失败，但是实际已经发表,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565410909300/1565410909300_QQ%E5%9B%BE%E7%89%8720190810120933.jpg,4
+41,点击发送 发布成功却提示发表评论失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565413041234/1565413041234_DB45C824D0DB036903158FCCEF6A75A0.jpg,4
+43,进入世界模块 输入评论内容 点击发送 直接提示发表评论失败。即使发表成功也提示发表评论失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565508086449/1565508086449_QQ%E5%9B%BE%E7%89%8720190811151520.png,4
+58,输入发布内容 点击发送 提示评论失败，而评论却显示在评论区,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565418046432/1565418046432_%E8%AF%84%E8%AE%BA%E5%8F%91%E8%A1%A8%E5%A4%B1%E8%B4%A5.jpg,4
+66,1.登录进入到趣享APP主界面 2.点击任意一个趣图进行查看 3.点击评论按钮 4.输入评论内容 5.点击发送 应用提示发表评论失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565447393643/1565447393643_3fe816a23247175eb3354c52cc19acc.jpg,4
+68,1、选择趣图 2、点击评论按钮 3、编辑评论 4、点击发送 5、系统显示评论失败，查看全部评论已有刚才评论,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565492794272/1565492794272_Screenshot_2019-08-11-11-05-31-29.png,4
+71,点击热帖 点击写评论 点击发送 出现提示发表失败但是却发表成功,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565524516423/1565524516423_%E5%9B%BE%E7%89%872.png,4
+81,在app中点击进入任意趣图页面 点击评论功能 输入评论内容 点击发送 评论栏中已成功显示自己发送的评论，而系统则提示发表评论失败！,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1568392484389/1568392484389_2.png,4
+87,1、正常登录APP 2、点击趣图进入趣图模块 3、点击评论功能 4、输入评论内容 5、点击发送 6、系统提示“发表评论失败”，但是评论里却有内容,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1568453612386/1568453612386_1.png,4
+92,1.成功登录账号 2.进入主界面，点击“世界” 3.选择任意内容点击进入 4.点击发送 5.成功发送后，提示“发表评论失败”，并且发表时间没有对应。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1568947076734/1568947076734_1568947053%281%29.png,4
+99,1、正常登录APP。 2、点击主界面下任一一张趣图。 3、进入所点击趣图的详情页面。 4、点击评论。5、在评论栏里输入：娱乐。 6、点击发送 7、在热门评论里能看到发表的评论内容，系统却显示发表评论失败；,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1568828573817/1568828573817_pinglun.png,4
+106,1、正常登录APP 2、点击趣图进入趣图模块 3、点击评论功能 4、输入评论内容 5、点击发送 6、系统提示“发表评论失败”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1568951173130/1568951173130_1XL~JI%5B%7DTZIGW%24%5DK6%29Z1F64.png,4
+109,点击评论 输入内容 点击发送 提示发送评论失败，但是在评论页面下能够看到自己刚刚发送失败的评论内容,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1569332362286/1569332362286_%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190924213817.png,4
+117,1.正常登录APP 2.查看任一趣图 3.点击写评论输入框，输入内容 4.点击发送 5.提示发表评论失败，这里分两种情况： 第一种是当没有评论时，虽然提示发表失败，但是能看到发送的评论； 第二种情况是当已经有评论时，提示发表失败，且看不到发送的评论，需要返回主界面再重新查看趣图才能看到发表的评论,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1570342089618/1570342089618_keai.jpg,4
+123,1进入主界面 2点击趣图 3在评论区输入文字 4点击发送 显示评论失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1570685928709/1570685928709_Screenshot_20191010-133746.jpg,4
+130,1、打开个人界面页面； 2、点击打开“个人主页”功能模块； 3、点击打开“发布”功能模块； 4、对已发布的内容点击评论。 5、在底部评论输入框输入评论文案； 6、点击发送； 7、发送成功，但是出现“发送评论失败”的提示。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1571731514950/1571731514950_%E6%90%9C%E7%8B%97%E6%88%AA%E5%9B%BE20191022160208.png,4
+139,1.登录App 2.点击主界面世界 3.点击趣图 4.进行评论 5.发布评论 6.点击发送 应用提示发表评论失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1571882861864/1571882861864_2.PNG,4
+140,1.登录App 2.点击主界面世界 3.点击趣图 4.进行评论 5.发布评论 6.点击发送 应用提示发表评论失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1571883386572/1571883386572_2.PNG,4
+141,1、评论成功提交一次 2、再次输入评论 3、点击发送 提示评论失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1571901393173/1571901393173_4.png,4
+149,1.点击【世界】模块。 2.选中一个作品，点击进入。 3.点击【评论】，在横线上输入过长的内容。 4.点击【发送】。 5.提示“评论失败”，但信息仍发表成功。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1565403064173/1565403064173_bug_5.png,4
+151,1.点击图片 2.评论“好” 3.点击发送 4.提示评论失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1565405954308/1565405954308_1.jpg,4
+10,"1.进入首页 2.进入任意趣图 3.点击评论 4.输入任意内容直到无法再输入为止 5.点击发送 6.提示发生未知错误 经尝试，当字符数超过294时，会出现""发生未知错误""的结果",http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565435923819/1565435923819_%E6%9C%AA%E7%9F%A5%E9%94%99%E8%AF%AF5.png,4
+49,1.登陆趣享app。 2.点击关注跳转至关注界面。 3.点击评论对关注内容进行评论。4.点击发送。 5.评论输入字数达到上线，点击登陆提示“未知错误”，应提示评论字数超过上限。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565445645940/1565445645940_%E5%8F%91%E5%B8%83%E5%AD%97%E6%95%B0.png,4
+60,输入超出字数限制的评论 点击发送 提示发生未知错误,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565532002051/1565532002051_8.jpg,4
+147,输入350个字符 点击发送 无提示字数最多多少个，出现未知错误,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1565402322118/1565402322118_6.PNG,4
+6,1.进入首页 2.点击左上角个人设置 3.点击设置 4.点击清理缓存 5.提示缓存清理失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565405250876/1565405250876_%E7%BC%93%E5%AD%98%E6%B8%85%E7%90%86%E6%88%90%E5%8A%9F.png,6
+35,1.打开个人界面 2.点击设置功能模块 3.点击清理缓存 提示缓存清理失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565418137825/1565418137825_68691AD23A547FA62515F8D495B3452F.jpg,6
+42,在设置中清理缓存----清理成功却提示清理缓存失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565413592344/1565413592344_QQ%E5%9B%BE%E7%89%8720190810130603.jpg,6
+48,1.正常登陆趣享app。 2.在主界面右滑进入个人页面。 3.点击设置，跳转至设置界面。 4.点击缓存清理。 5.应用提示“清理缓存失败”。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565442755789/1565442755789_%E6%B8%85%E7%90%86%E7%BC%93%E5%AD%98%E5%A4%B1%E8%B4%A5.png,6
+89,1、正常登录APP 2、进入个人界面 3、点击设置进入设置模块 4、点击清理缓存 5、系统提示“缓存清理失败”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1568513544085/1568513544085_%E7%BC%93%E5%AD%98%E6%B8%85%E7%90%86%E5%A4%B1%E8%B4%A5.png,6
+94,"1.成功登录账号 2.进入主界面 3.进入个人界面 4.点击设置 5.选择清理缓存 5.系统提示""缓存清理失败""",http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1568966983462/1568966983462_1568966970.png,6
+97,进入设置页面 点击清理缓存 提示“缓存清理失败”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1568710630866/1568710630866_04.png,6
+100,1、正常登录APP。2、打开个人界面。 3、点击设置进入设置模块页面。 4、点击清除缓存。5、清理缓存后系统显示“缓存清理失败”。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1568826425078/1568826425078_huancun.png,6
+111,"1.成功登录账号 2.进入主界面 3.进入个人界面 4.点击设置 5.选择清理缓存 6.系统提示""缓存清理失败""",http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1569463500763/1569463500763_1.jpg,6
+126,1、进入APP 2、点击左上角的更多选项 3、点击设置 4、点击清理缓存 5、提示清理缓存失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1571578524276/1571578524276_Screenshot_2019-10-20-21-29-18.png,6
+150,1.点击清理缓存 2.提示缓存清理失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1565405480208/1565405480208_1.jpg,6
+153,进入设置界面 点击清理缓存 实际已经清理缓存，显示缓存清理失败。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1565433314630/1565433314630_4.png,6
+157,1.正常登陆app 2.进入设置常规模块 3.点击清除缓存 4.成功清除缓存却显示缓存清理失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1565513768078/1565513768078_1565513752%281%29.jpg,6
+0,"1.进入登录界面 2.输入错误的手机号，如""123456"" 3.点击获取验证码 4.直接提示验证码错误",http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565399130093/1565399130093_%E9%94%99%E8%AF%AF%E6%89%8B%E6%9C%BA%E5%8F%B72.png,7
+16,1、打开趣享GIF 2、输入手机号为1878269757 3.点击获取验证码 4.输入手机号为187826975777 5.点击获取验证码 6、观察app提示信息，发现当手机号格式错误的时候，提示信息有误。应该提示“手机号格式不对”，而不是“验证码错误”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565400101325/1565400101325_1.png,7
+26,"1.进入登录界面 2.输入错误的手机号，如""123456"" 3.点击获取验证码 4.直接提示验证码错误",http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565403325655/1565403325655_%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190810101442.jpg,7
+27,"1.进入登录界面 2.输入错误的手机号，如""123456"" 3.点击获取验证码 4.直接提示验证码错误",http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565403325655/1565403325655_%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190810101442.jpg,7
+33,"1.进入登录界面 2.输入错误的手机号，如""123456789"" 3.点击获取验证码 4.直接提示验证码错误",http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565405160741/1565405160741_4D2107D2256298865808A90A431E8601.jpg,7
+47,1.打开趣享app进入登陆界面。 2.在手机号输入位置输入123456789。 3.点击获取验证码。 4.应用出现提示“验证码错误”，应提示手机号码异常 （注： 其他异常号码如 10086等 也具有相同异常发生）,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565441084575/1565441084575_%E7%99%BB%E9%99%86%E6%B5%8B%E8%AF%95.png,7
+53,1.进入登录页面。 2.在手机号一栏输入错误的手机号。 3.点击【获取验证码】。 4.提示验证码错误。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565416269491/1565416269491_2.png,7
+59,输入不正确的手机号 点击获取验证码 提示验证码错误,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565420388781/1565420388781_%E9%AA%8C%E8%AF%81%E7%A0%81.jpg,7
+76,"1.进入登录界面 2.输入错误的手机号，如""123456"" 3.点击获取验证码 4.直接提示验证码错误",http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565511694576/1565511694576_Screenshot_20190811_161906_com.quxianggif.opensou.jpg,7
+95,手机号填写少于11位有效数字 点击【获取验证码】 提示“验证码错误”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1568693765260/1568693765260_01.png,7
+113,1.输入了9位和11位手机号 2.点击获取验证码 3.提示为验证码错误,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1569654711536/1569654711536_Screenshot_2019-09-28-15-11-22.png,7
+119,输入手机号少一位 点击获取验证码 提示为验证码错误，应该提示手机格式错误,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1570522588618/1570522588618_%E7%99%BB%E5%BD%95%E6%8F%90%E7%A4%BA%E9%94%99%E8%AF%AF.png,7
+127,输入任意错误格式的手机号如11111111111111111111 点击获取验证码 提示为验证码错误，应该提示手机号码格式错误，却提示验证码错误,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1571302411947/1571302411947_%E6%89%B9%E6%B3%A8%202019-10-17%20164129_LI.jpg,7
+131,输入不正确的手机位数 点击获取验证码 提示验证码错误,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1571651387583/1571651387583_D4C897CD9C864A37CBAEB655E35A845F.jpg,7
+134,1.随意输入一个错误的手机号：11000021 2.点击获取验证码 3.此时会提示验证码错误,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1571809591259/1571809591259_%E9%AA%8C%E8%AF%81%E7%A0%81%E9%94%99%E8%AF%AF.png,7
+146,1.进入登录页面。 2.在手机号一栏输入错误的手机号。 3.点击【获取验证码】。 4.提示验证码错误。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1565401233203/1565401233203_bug_2.jpg,7
+1,"1.进入登录页面 2.输入正确的手机号 3.点击获取验证码 4.手机确实能收到验证码，但是app点击获取的时候，无任何提示，在""获取验证码""后面，也没有下次再次发送的倒计时",http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565399545308/1565399545308_%E8%8E%B7%E5%8F%96%E9%AA%8C%E8%AF%81%E7%A0%81%E4%B9%8B%E5%90%8E%E6%B2%A1%E6%9C%89%E6%97%B6%E9%97%B4.png,7
+37,输入正确的手机号 点击获取验证码 无任何验证码发送成功提示信息,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565408459171/1565408459171_DB45C824D0DB036903158FCCEF6A75A0.jpg,7
+62,1.点击【获取验证码】 预期结果：提示发送成功，实际结果：无任何提示信息,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565432850055/1565432850055_%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20190810182716.jpg,7
+69,点击登入界面 输入电话 点击获取验证码 不能提示是否成功。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565504610046/1565504610046_%E6%8D%95%E8%8E%B7.PNG,7
+80,进入登录界面 点击“获取验证码” 当用户输入手机号码并点击此按钮后，没有任何的发送验证码成功的提示，也没有多少秒后可以重发验证码的提示。点击后此按钮没有任何效果，给用户验证码没有发送成功的错觉。 ,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1568341977175/1568341977175_Screenshot_2019-09-13-10-30-12.png,7
+102,进入登录界面 点击“获取验证码”按钮 当用户输入手机号码并点击此按钮后，没有任何的发送验证码成功的提示，也没有多少秒后可以重发验证码的提示。点击后此按钮没有任何效果，给用户验证码没有发送成功的错觉。 ,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1568861352995/1568861352995_QQ%E5%9B%BE%E7%89%8720190919104858.jpg,7
+115,1.输入正确格式的手机号 2.点击获取验证码 3.虽然点击完后对按钮做了不可点击限制，但是没有明显的反馈，比如倒计时、按钮字体颜色变化等更加明显的反馈,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1570332618116/1570332618116_QQ%E5%9B%BE%E7%89%8720191006112757.jpg,7
+128,输入错误的手机号码 点击了获取验证码 重新填写正确的手机号码 点击获取验证码 无反馈，也收不到验证码,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1571302896375/1571302896375_%E6%89%B9%E6%B3%A8%202019-10-17%20164129.png,7
+135,1.输入正确的手机号：18723356202 2.点击获取验证码 3.点击后，界面未提示任何信息,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1571809973058/1571809973058_%E9%AA%8C%E8%AF%81%E7%A0%81_%E7%99%BB%E5%BD%95.png,7
+145,1.成功打开APP。 2.在手机号一栏输入正确的手机号。 3.点击【获取验证码】。 4.无发送成功提示，也无倒计时提示。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1565400760810/1565400760810_bug_1.png,7
+11,在主界面中，查看已关注的用户的趣图，同时也有自己本身所发布的趣图,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565404694245/1565404694245_8.jpg,8
+21,1、成功登录app，默认进入世界页面 2、点击关注 3、关注页面会展示用户自己的动态，应只展示已关注用户的动态,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565406055197/1565406055197_D%28P6_7~KPWC%60HIHH1%7DQVM_Y.png,8
+22,1、成功登录应用，默认进入世界页面 2、点击任意动态图，进入详情页面 3、点击关注 4、返回世界页面，点击进入关注页面，页面无任何信息,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565409008940/1565409008940_EL%25%603J%5BIEC%28SK%5BLI~49BOAV.png,8
+44,1、成功登录应用 2、默认进入世界页面 3、点击任意动态图 4、进入详情页面 5、点击关注 6、返回世界页面 7、点击关注 页面无任何信息,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565427223322/1565427223322_1.1.jpg,8
+121,点击关注 自己发布的内容不应该出现在关注页面中,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1570588396375/1570588396375_%E5%8F%91%E5%B8%83%E5%86%85%E5%AE%B9%E5%88%86%E7%B1%BB%E6%9C%89%E8%AF%AF.png,8
+75,点击分享 点击微信 分享后不出现是否返回原界面提示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565527934683/1565527934683_2.PNG,5
+82,选择分享 点击微信 把趣图分享到微信无论成功分享还是中途取消分享后都没有跳转回趣享GIFapp当前所在的趣图页面，只会停留在微信聊天窗口中，需要手动返回到趣享app,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1568395755707/1568395755707_5.png,5
+2,"1.点击任意趣图 2.进行评论 3.点击自己的评论编辑 4.出现""举报"" 5.没有修改的字样，且在自己的评论编辑下，出现举报功能，影响用户体验",http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565401982117/1565401982117_%E4%B8%BE%E6%8A%A5%E8%87%AA%E5%B7%B1%E8%AF%84%E8%AE%BA.png,4
+9,"1.进入登录界面 2.输入手机号，当天登录过一定次数的手机号 3.点击获取验证码 4.提示""该手机号已超出当日短信请求最大次数，请明天再试"" 在只能使用手机号，和验证码的登录情况下，这种情况严重影响了用户体验",http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565433388875/1565433388875_%E8%AF%B7%E6%B1%82%E6%AC%A1%E6%95%B00.png,7
+15,1.编辑简介 2.昵称不输入任何内容 3.点击保存 保存失败且应该提示“昵称不能为空”，而不是提示“昵称长度过短”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565425404404/1565425404404_18.jpg,4
+67,1、用户正常登录 2、用户选择发布趣图功能 3、用户选择“贴一张GIF”图片 4、用户选择从相测中选择 5、软件无法调取手机相册,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565490234225/1565490234225_%E6%8D%95%E8%8E%B72.PNG,1
+72,点击热帖 点击写评论 点击发送 应用提示发表评论失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1565524754576/1565524754576_%E5%9B%BE%E7%89%878.png,4
+91,1.输入用户手机号 2.点击获取验证码 手机偶尔无法收取验证码,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1568944760752/1568944760752_1568944731.png,7
+105,1、正常登录APP 2、点击趣图进入趣图模块 3、点击评论 4、点击按钮后无任何反应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1568949728077/1568949728077_V002U~%7B6%7B~V%25%5B%24CPB1CXDED.png,4
+136,1.打开趣享app 2.输入正确的手机号：18723356202 3.任意输入一个6位数的验证码：010101 4.连续点击登录三次 5.再次点击获取验证码 此时会发现手机号被锁定，10分钟后才能重新登录。我认为10分钟严重影响了用户的体验，时间过长,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1571810786163/1571810786163_%E8%BF%9E%E7%BB%AD%E7%99%BB%E5%BD%95%E5%A4%B1%E8%B4%A5%EF%BC%8C%E7%AD%89%E5%BE%8510%E5%88%86%E9%92%9F.png,7
+137,1.输入正确的手机号：18723356202 2.随意输入错误的6位数验证码：010101 3.连续点击登录超过3次 4.再次点击获取验证码 5.按钮失效，无法点击,http://mooctest-site.oss-cn-shanghai.aliyuncs.com//app/1571811619299/1571811619299_%E8%BF%9E%E7%BB%AD%E7%82%B9%E5%87%BB%EF%BC%8C%E8%8E%B7%E5%8F%96%E9%AA%8C%E8%AF%81%E7%A0%81%E6%8C%89%E9%92%AE%E5%A4%B1%E6%95%88.png,7
+152,打开APP进入登录界面 随意输入一串数字作为手机号 点击登录 得到提示信息“手机号和验证码不能为空”，而非“验证码为空”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1565415897082/1565415897082_2.jpg,7
+159,1.进入个人界面 2.输入手机号 3.点击登录 4.提示信息“手机号和验证码不能为空”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1565515310177/1565515310177_1565515292%281%29.jpg,7
