@@ -18,7 +18,7 @@ from prompt import get_prompt
 from llm import ask_gpt
 from parse import parse
 from embedding import run_embedding_mode, compute_apsd, deduplicate_reports
-from graph_prior import run_graph_prior
+from graph_prior import run_graph_prior, DESCRIPTION_DUPLICATE_THRESHOLD
 from report_utils import (
     resolve_repeats,
     get_response_path,
@@ -188,7 +188,7 @@ def run_graphprior(app: int, repeat: int = 1, model: str = "gemini-3.1-pro-previ
                    batch_size: int = 8, workers: int = 4, embedding_model: Optional[str] = None,
                    base_url: Optional[str] = None, api_key: Optional[str] = None,
                    embedding_api_key: Optional[str] = None, kg_mode: str = "offline",
-                   duplicate_threshold: float = 0.90) -> None:
+                   duplicate_threshold: float = DESCRIPTION_DUPLICATE_THRESHOLD) -> None:
     """Run GraphPrior pipeline and persist ranked sequence/result files."""
     reports = resolve_reports(app=app, csv_file=csv_file)
     if not reports:
@@ -219,7 +219,7 @@ def run_graphprior(app: int, repeat: int = 1, model: str = "gemini-3.1-pro-previ
 
         response_file = get_response_path(app=app, mode="graphprior", iteration=i, model=model)
         with open(response_file, "w", encoding="utf-8") as f:
-            f.write("GraphPrior executed with 3 phases: extraction/alignment & clustering, component-based severity scoring, diversity ranking.\n")
+            f.write("GraphPrior executed with 3 phases: description dedup & linking, ontology feature extraction, coverage ranking.\n")
             f.write(f"Sequence length: {len(sequence)}\n")
             f.write(f"Input Tokens: {p_tokens}\nOutput Tokens: {r_tokens}\n")
             if raw_responses:
@@ -243,7 +243,7 @@ def run_graphprior(app: int, repeat: int = 1, model: str = "gemini-3.1-pro-previ
 
 def run_evaluate(app: int, mode: str = "llmprior", model: str = "gemini-3.1-pro-preview", repeat: int = 1, 
                  csv_file: Optional[str] = None) -> None:
-    """Evaluate APSD, APFD, NDCG, and token consumption on ranked result files."""
+    """Evaluate metrics and token consumption on ranked result files."""
     apsd_values = []
     apfd_values = []
     ndcg10_values = []
@@ -266,26 +266,36 @@ def run_evaluate(app: int, mode: str = "llmprior", model: str = "gemini-3.1-pro-
                 lines = f.readlines()
 
                 sequence = extract_sequence_from_lines(lines)
-                apsd = compute_apsd_from_sequence(sequence=sequence, reports=reports)
                 apfd = compute_apfd_from_sequence(sequence=sequence, reports=reports)
-                ndcg10 = compute_ndcg_from_sequence(sequence=sequence, reports=reports, top_k=10)
-                ndcg20 = compute_ndcg_from_sequence(sequence=sequence, reports=reports, top_k=20)
+                
+                apsd = None
+                ndcg10 = None
+                ndcg20 = None
+                if mode != "graphprior":
+                    apsd = compute_apsd_from_sequence(sequence=sequence, reports=reports)
+                    ndcg10 = compute_ndcg_from_sequence(sequence=sequence, reports=reports, top_k=10)
+                    ndcg20 = compute_ndcg_from_sequence(sequence=sequence, reports=reports, top_k=20)
 
-                if apsd is None:
-                    print(f"Warning: Iteration {i} has invalid sequence for APSD. Skipping this run.")
+                if apfd is None:
+                    print(f"Warning: Iteration {i} has invalid sequence for APFD. Skipping this run.")
                     continue
 
-                ndcg10_str = f"{ndcg10:.4f}" if ndcg10 is not None else "N/A"
-                ndcg20_str = f"{ndcg20:.4f}" if ndcg20 is not None else "N/A"
-                apfd_str = f"{apfd:.4f}" if apfd is not None else "N/A"
-                print(f"Iteration {i}: APSD = {apsd:.4f}, APFD = {apfd_str}, NDCG@10 = {ndcg10_str}, NDCG@20 = {ndcg20_str}")
-                apsd_values.append(apsd)
-                if apfd is not None:
-                    apfd_values.append(apfd)
-                if ndcg10 is not None:
-                    ndcg10_values.append(ndcg10)
-                if ndcg20 is not None:
-                    ndcg20_values.append(ndcg20)
+                if mode == "graphprior":
+                    print(f"Iteration {i}: APFD = {apfd:.4f}")
+                else:
+                    if apsd is None:
+                        print(f"Warning: Iteration {i} has invalid sequence for APSD. Skipping this run.")
+                        continue
+                    ndcg10_str = f"{ndcg10:.4f}" if ndcg10 is not None else "N/A"
+                    ndcg20_str = f"{ndcg20:.4f}" if ndcg20 is not None else "N/A"
+                    print(f"Iteration {i}: APSD = {apsd:.4f}, APFD = {apfd:.4f}, NDCG@10 = {ndcg10_str}, NDCG@20 = {ndcg20_str}")
+                    apsd_values.append(apsd)
+                    if ndcg10 is not None:
+                        ndcg10_values.append(ndcg10)
+                    if ndcg20 is not None:
+                        ndcg20_values.append(ndcg20)
+                
+                apfd_values.append(apfd)
                 
         except FileNotFoundError:
             print(f"Result file for {app}-{mode}-{i}-{model} not found.")
@@ -303,14 +313,14 @@ def run_evaluate(app: int, mode: str = "llmprior", model: str = "gemini-3.1-pro-
         except FileNotFoundError:
             pass
     
-    if apsd_values:
-        print(f"Mean APSD Value: {np.round(np.mean(apsd_values), 4)}")
-        if apfd_values:
-            print(f"Mean APFD Value: {np.round(np.mean(apfd_values), 4)}")
-        if ndcg10_values:
+    if apfd_values:
+        if mode != "graphprior" and apsd_values:
+            print(f"Mean APSD Value: {np.round(np.mean(apsd_values), 4)}")
+        print(f"Mean APFD Value: {np.round(np.mean(apfd_values), 4)}")
+        if mode != "graphprior" and ndcg10_values:
             print(f"Mean NDCG@10 Value: {np.round(np.mean(ndcg10_values), 4)}")
-        if ndcg20_values:
             print(f"Mean NDCG@20 Value: {np.round(np.mean(ndcg20_values), 4)}")
+            
         if input_tokens_values:
             print(f"Mean Input Tokens: {np.round(np.mean(input_tokens_values), 1)}")
         if output_tokens_values:
@@ -320,8 +330,7 @@ def run_evaluate(app: int, mode: str = "llmprior", model: str = "gemini-3.1-pro-
             print(f"Mean Total Tokens: {np.round(np.mean(total_tokens), 1)}")
     else:
         print("No valid results to evaluate.")
-
-
+        
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Bug Report Prioritization using LLM")
     parser.add_argument("--model", type=str, default="gemini-3.1-pro-preview", 
@@ -347,7 +356,7 @@ if __name__ == "__main__":
                         help="Batch size for GraphPrior extraction requests")
     parser.add_argument("--workers", type=int, default=2,
                         help="Number of worker threads for GraphPrior chunk processing")
-    parser.add_argument("--duplicate-threshold", type=float, default=0.8,
+    parser.add_argument("--duplicate-threshold", type=float, default=DESCRIPTION_DUPLICATE_THRESHOLD,
                         help="Description cosine similarity threshold above which reports are treated as duplicates before candidate generation.")
     parser.add_argument("--file", type=str, default=None, 
                         help="CSV file path (default: reports/app{APP}.csv)")

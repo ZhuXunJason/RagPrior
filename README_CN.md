@@ -9,8 +9,6 @@
 
 ## 当前 GraphPrior 的真实实现
 
-当前版本已经不是早期的“自由字段抽取 + Neo4j 默认依赖”方案，而是下面这条主链路：
-
 - 默认使用离线 KG，来源是 [`KG_desc.md`](/d:/OneDrive/Project/GraphPrior/GraphPrior/KG_desc.md)
 - 使用 KG 驱动的本地 mention 抽取与 KG 关系增强候选生成
 - 在调用 LLM 之前先做确定性 prefill

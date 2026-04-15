@@ -14,6 +14,8 @@ import networkx as nx
 
 from embedding import get_embeddings
 from kg_service import get_kg_service
+from coverage_ranker import CoverageGroup, rank_groups
+from kg_ontology import build_ontology_features
 from llm import ask_gpt
 
 
@@ -24,7 +26,7 @@ PROGRAM_FAILURE_KEYWORDS = [
 PROMPT_TEXT_LIMIT = 500
 SINGLE_EXTRACTION_MAX_TOKENS = 256
 BATCH_EXTRACTION_MAX_TOKENS = 8192
-DESCRIPTION_DUPLICATE_THRESHOLD = 0.90
+DESCRIPTION_DUPLICATE_THRESHOLD = 0.8
 MISSING_RETRY_BATCH_SIZE = 2
 BATCH_RETRY_COVERAGE_THRESHOLD = 0.70
 KG_EVIDENCE_TOP_K = 20
@@ -122,7 +124,10 @@ class GraphPriorPipeline:
             kg_mode=kg_mode,
         )
         self.graph = nx.MultiDiGraph()
+        # Keep legacy attribute for backward-compatible helper methods that are no longer
+        # part of the main APFD-only path.
         self.clusters: List[Dict[str, Any]] = []
+        self.groups: List[CoverageGroup] = []
         self._instance_store: Dict[str, List[Dict[str, Any]]] = {
             "Operation": [],
             "Page": [],
@@ -690,12 +695,19 @@ class GraphPriorPipeline:
             "bug_evidence": {},
         }
         if self.kg_service and hasattr(self.kg_service, "retrieve_link_candidates"):
-            kg_candidates = self.kg_service.retrieve_link_candidates(
-                normalized_description,
-                top_k_op=TOP_K_OPERATION_CANDIDATES,
-                top_k_history=0,
-                top_k_instance=TOP_K_INSTANCE_CANDIDATES,
-            )
+            try:
+                kg_candidates = self.kg_service.retrieve_link_candidates(
+                    normalized_description,
+                    top_k_op=TOP_K_OPERATION_CANDIDATES,
+                    top_k_history=0,
+                    top_k_instance=TOP_K_INSTANCE_CANDIDATES,
+                )
+            except TypeError:
+                kg_candidates = self.kg_service.retrieve_link_candidates(
+                    normalized_description,
+                    top_k_op=TOP_K_OPERATION_CANDIDATES,
+                    top_k_history=0,
+                )
 
         operation_seeds = self._extract_operation_mentions(normalized_description) or ["点击"]
         page_seeds = self._extract_page_instances(normalized_description)
@@ -1612,9 +1624,43 @@ class GraphPriorPipeline:
             )
         return prepared
 
-    def phase1_extract_and_fuse(self, reports: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def _select_group_representative(self, items: List[Tuple[int, Dict[str, Any]]]) -> Tuple[int, Dict[str, Any]]:
+        """Select representative report from group based on average cosine similarity to other members."""
+        if len(items) == 1:
+            return items[0]
+            
+        texts = [self._normalize_prompt_text(rep.get("description", ""), limit=800) for _, rep in items]
+        embeddings = self._get_cached_embeddings(texts)
+        
+        n = len(items)
+        best_idx = 0
+        best_avg_sim = -1.0
+        best_rep_num = float('inf')
+        
+        for i in range(n):
+            sim_sum = 0.0
+            for j in range(n):
+                if i != j:
+                    sim_sum += self._cosine_similarity(embeddings[i], embeddings[j])
+            avg_sim = sim_sum / (n - 1)
+            
+            rep_num = items[i][0]
+            if avg_sim > best_avg_sim:
+                best_avg_sim = avg_sim
+                best_idx = i
+                best_rep_num = rep_num
+            elif avg_sim == best_avg_sim:
+                if rep_num < best_rep_num:
+                    best_avg_sim = avg_sim
+                    best_idx = i
+                    best_rep_num = rep_num
+                    
+        return items[best_idx]
+
+    def _build_groups_from_description_dedup(self, reports: List[Dict[str, Any]]) -> None:
         indexed_reports = list(enumerate(reports, start=1))
         grouped_reports = self._group_duplicate_reports_by_description(indexed_reports)
+        
         if grouped_reports:
             dedup_debug = {
                 f"R_{rep_num:03d}": {
@@ -1646,12 +1692,22 @@ class GraphPriorPipeline:
                     "groups": dedup_debug,
                 },
             )
-        representative_reports = [
-            grouped_reports[rep_num][0]
-            for rep_num in sorted(grouped_reports.keys())
-        ]
-        batch_size = self.batch_size
 
+        refined_grouped_reports: Dict[int, List[Tuple[int, Dict[str, Any]]]] = {}
+        for _, items in grouped_reports.items():
+            rep = self._select_group_representative(items)
+            rep_num = int(rep[0])
+            # Ensure the selected representative is the first item so chunk preparation
+            # and per-group linking are aligned with the new representative key.
+            reordered_items = [rep] + [item for item in items if int(item[0]) != rep_num]
+            refined_grouped_reports[rep_num] = reordered_items
+            
+        representative_reports = [
+            refined_grouped_reports[rep_num][0]
+            for rep_num in sorted(refined_grouped_reports.keys())
+        ]
+        
+        batch_size = self.batch_size
         chunks: List[List[Tuple[int, Dict[str, Any]]]] = [
             representative_reports[start:start + batch_size]
             for start in range(0, len(representative_reports), batch_size)
@@ -1661,18 +1717,20 @@ class GraphPriorPipeline:
         if self.workers > 1 and len(chunks) > 1:
             with ThreadPoolExecutor(max_workers=self.workers) as executor:
                 futures = [
-                    executor.submit(self._prepare_chunk, batch_index, chunk, grouped_reports)
+                    executor.submit(self._prepare_chunk, batch_index, chunk, refined_grouped_reports)
                     for batch_index, chunk in enumerate(chunks, start=1)
                 ]
                 for future in as_completed(futures):
                     prepared_all.extend(future.result())
         else:
             for batch_index, chunk in enumerate(chunks, start=1):
-                prepared_all.extend(self._prepare_chunk(batch_index, chunk, grouped_reports))
+                prepared_all.extend(self._prepare_chunk(batch_index, chunk, refined_grouped_reports))
 
-        extracted_rows: List[Dict[str, Any]] = []
         prepared_all.sort(key=lambda x: int(x["report_num"]))
-
+        
+        member_map = {}
+        ext_map = {}
+        desc_map = {}
         for item in prepared_all:
             idx = int(item["report_num"])
             report_id = str(item["report_id"])
@@ -1683,7 +1741,7 @@ class GraphPriorPipeline:
             page_text = ext["Page"]
             elem_text = ext["Element"]
             bug_text = ext["Bug"]
-            severity_scope = ext["Severity_Scope"]
+            severity_scope = ext.get("Severity_Scope", "element")
 
             v_op = item["v_op"]
             v_pg = item["v_pg"]
@@ -1694,8 +1752,6 @@ class GraphPriorPipeline:
             page_eid = self._match_or_create_instance_dimension("Page", page_text, v_pg, threshold=INSTANCE_MATCH_THRESHOLD)
             elem_eid = self._match_or_create_instance_dimension("Element", elem_text, v_el, threshold=INSTANCE_MATCH_THRESHOLD)
             bug_eid = self._match_or_create_instance_dimension("Bug", bug_text, v_bg, threshold=INSTANCE_MATCH_THRESHOLD)
-
-            signature = (op_eid, page_eid, elem_eid, bug_eid)
             
             report_node = f"Report:{report_id}"
             self.graph.add_node(
@@ -1713,100 +1769,100 @@ class GraphPriorPipeline:
             self.graph.add_edge(report_node, bug_eid, rel="MANIFESTS_AS")
             self.graph.add_edge(elem_eid, page_eid, rel="LOCATED_ON")
 
-            row_data = {
-                **ext,
-                "report_num": idx,
-                "operation_eid": op_eid,
-                "page_eid": page_eid,
-                "element_eid": elem_eid,
-                "bug_eid": bug_eid,
-                "signature": signature,
-                "description": description,
-            }
-            extracted_rows.append(row_data)
-
-            cluster_found = False
-            for cluster in self.clusters:
-                if cluster["signature"] == signature:
-                    cluster["dups"].append(row_data)
-                    cluster_found = True
+            for rep_num, items in refined_grouped_reports.items():
+                if any(it[0] == idx for it in items):
+                    if rep_num not in member_map:
+                        member_map[rep_num] = []
+                    if idx != rep_num:
+                        member_map[rep_num].append(idx)
+                    if idx == rep_num:
+                        ext_map[rep_num] = ext
+                        desc_map[rep_num] = description
                     break
+                    
+        for group_id, rep_num in enumerate(sorted(refined_grouped_reports.keys()), start=1):
+            members = sorted(member_map.get(rep_num, []))
+            ext = ext_map.get(rep_num, {})
+            desc = desc_map.get(rep_num, "")
             
-            if not cluster_found:
-                self.clusters.append({
-                    "signature": signature,
-                    "rep": row_data,
-                    "dups": [],
-                    "severity_scope": severity_scope,
-                })
-
-        return extracted_rows
-
-    def phase2_topology_scoring(self) -> Dict[int, float]:
-        kg_score_map = self._kg_priority_scoring()
-        if kg_score_map is not None:
-            return kg_score_map
-
+            ontology_features = build_ontology_features(
+                operation=ext.get("Operation", ""),
+                page=ext.get("Page", ""),
+                element=ext.get("Element", ""),
+                bug=ext.get("Bug", ""),
+                description=desc
+            )
+            
+            group = CoverageGroup(
+                group_id=group_id,
+                representative_report_num=rep_num,
+                member_report_nums=members,
+                ontology_features=ontology_features
+            )
+            self.groups.append(group)
+            
+    def _rank_groups_by_coverage(self) -> Tuple[List[CoverageGroup], Dict[int, float]]:
+        ranked = rank_groups(self.groups)
+        
         score_map: Dict[int, float] = {}
+        for rank_idx, group in enumerate(ranked, start=1):
+            score = float(len(ranked) - rank_idx + 1)
+            score_map[group.representative_report_num] = score
+            for mem in group.member_report_nums:
+                score_map[mem] = score
+                
+        return ranked, score_map
 
-        # 1. 统计所有的组件数 I (Program 级影响) 以及具体页面的组件映射
-        # 注意: _instance_store["Element"] 中保存了本次处理的所有元素，这里我们利用图边获取更准确的从属关系
-        total_elements = len(self._instance_store.get("Element", []))
-        
-        page_to_elements = {}
-        for u, v, data in self.graph.edges(data=True):
-            if data.get("rel") == "LOCATED_ON":
-                # u: element_eid, v: page_eid
-                page_to_elements.setdefault(v, set()).add(u)
-
-        # 2. 依次计算每个簇的分数
-        for cluster in self.clusters:
-            rep_row = cluster["rep"]
-            rep_num = int(rep_row["report_num"])
-            severity_scope = cluster.get("severity_scope", "element")
-            t = 1 + len(cluster.get("dups", []))  # T: 报告出现次数
-
-            # 确定影响组件数 I
-            i_val = 1
-            if severity_scope == "program":
-                i_val = max(1, total_elements)
-            elif severity_scope == "page":
-                page_eid = rep_row.get("page_eid")
-                i_val = max(1, len(page_to_elements.get(page_eid, set())))
-            
-            # 计算得分 score = I * log(T + 1)
-            final_score = float(i_val * math.log(t + 1))
-            cluster["cluster_score"] = final_score
-            
-            # 记录簇代表与其所有重复报告的分数
-            score_map[rep_num] = final_score
-            for dup in cluster.get("dups", []):
-                score_map[int(dup["report_num"])] = final_score
-
-            # 将分数写回图谱报告节点
-            report_node = f"Report:{rep_row['Report_ID']}"
-            if self.graph.has_node(report_node):
-                self.graph.nodes[report_node]["severity_score"] = final_score
-
-        return score_map
-
-    def run(self, reports: List[Dict[str, Any]]) -> Tuple[List[int], Dict[int, float], int, int, List[Dict[str, Any]]]:
-        self.phase1_extract_and_fuse(reports)
-        score_map = self.phase2_topology_scoring()
-
-        # Sort cluster representatives with diversity-aware reranking.
-        sorted_clusters = self._rank_clusters_with_diversity(self.clusters)
-        
+    def _expand_group_sequence(self, sorted_groups: List[CoverageGroup]) -> List[int]:
         round1 = []
         round2 = []
 
-        for cluster in sorted_clusters:
-            round1.append(int(cluster["rep"]["report_num"]))
-            # Duplicates are also sorted locally (though they share the same score here logic-wise)
-            for dup in cluster.get("dups", []):
-                round2.append(int(dup["report_num"]))
+        for group in sorted_groups:
+            round1.append(group.representative_report_num)
+            for mem in group.member_report_nums:
+                round2.append(mem)
 
-        sequence = round1 + round2
+        return round1 + round2
+
+    def run(self, reports: List[Dict[str, Any]]) -> Tuple[List[int], Dict[int, float], int, int, List[Dict[str, Any]]]:
+        self._build_groups_from_description_dedup(reports)
+        sorted_groups, score_map = self._rank_groups_by_coverage()
+        sequence = self._expand_group_sequence(sorted_groups)
+
+        from coverage_ranker import flatten_features, compute_group_idf, marginal_gain
+        idf_map = compute_group_idf(self.groups)
+        covered = set()
+        
+        group_debug = []
+        for group in sorted_groups:
+            gain = marginal_gain(group, covered, idf_map)
+            covered.update(flatten_features(group))
+            
+            group_debug.append({
+                "group_id": group.group_id,
+                "representative": group.representative_report_num,
+                "members": group.member_report_nums,
+                "ontology_features": {
+                    "operation_families": list(group.ontology_features.operation_families),
+                    "symptom_families": list(group.ontology_features.symptom_families),
+                    "page_types": list(group.ontology_features.page_types),
+                    "modules": list(group.ontology_features.modules),
+                    "element_types": list(group.ontology_features.element_types),
+                },
+                "marginal_gain": round(gain, 4),
+                "rank_score": score_map[group.representative_report_num]
+            })
+
+        self._record_raw_response(
+            call_type="coverage_ranking",
+            report_ids=[],
+            content="Coverage ranking completed.",
+            prompt_tokens=0,
+            output_tokens=0,
+            batch_index=0,
+            debug={"groups": group_debug},
+        )
+
         raw_responses = sorted(
             self.raw_responses,
             key=lambda item: (int(item.get("batch_index", -1)), 0 if item.get("call_type") == "batch" else 1),

@@ -60,31 +60,32 @@ def extract_report_num_from_line(line: str) -> Optional[int]:
 
 
 def extract_sequence_from_lines(lines: List[str]) -> List[int]:
-    """Extract unique ordered report numbers from result lines."""
+    """Extract ordered report numbers from result lines."""
     sequence: List[int] = []
-    seen = set()
 
     for line in lines:
         report_num = extract_report_num_from_line(line)
-        if report_num is None or report_num in seen:
-            continue
-        seen.add(report_num)
-        sequence.append(report_num)
+        if report_num is not None:
+            sequence.append(report_num)
 
     return sequence
+
+
+def validate_full_permutation(sequence: List[int], total_reports: int) -> bool:
+    """Check if the extracted sequence is a valid full permutation of {1..total_reports}."""
+    if len(sequence) != total_reports:
+        return False
+    if set(sequence) != set(range(1, total_reports + 1)):
+        return False
+    return True
 
 
 def compute_apfd_from_sequence(sequence: List[int], reports: List[Dict[str, Any]]) -> Optional[float]:
     """
     Compute APFD (Average Percentage of Faults Detected).
-    APFD = 1 - (sum(TF_i)) / (n * m) + 1 / (2n)
-    
-    TF_i: first occurrence position of each unique bug type
-    n: total number of reports
-    m: number of unique bug types
     """
     total = len(reports)
-    if total == 0:
+    if total == 0 or not validate_full_permutation(sequence, total):
         return None
 
     bug_score = _build_bug_score_map(reports)
