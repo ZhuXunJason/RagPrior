@@ -1,9 +1,9 @@
 import os
 from typing import Tuple
 
-from openai import OpenAI
+from config import create_openai_client
 
-OPENAI_CLIENT = OpenAI()
+OPENAI_CLIENT = create_openai_client()
 
 
 def ask_gpt(prompt: str, max_token: int = 4096) -> Tuple[str, int, int]:

@@ -20,8 +20,18 @@ from __future__ import annotations
 from typing import List, Optional
 
 import numpy as np
-from openai import OpenAI
 
+from config import (
+    create_openai_client,
+    get_duplicate_threshold,
+    get_embedding_model,
+    get_google_api_key,
+)
+from kg.dedup import (
+    deduplicate_reports_by_embedding,
+    expand_ranked_sequence,
+    select_representative_reports,
+)
 from kg.graph import BugKnowledgeGraph
 from kg.extractor import extract_all
 from kg.classifier import classify_all, llm_fallback_classify
@@ -32,13 +42,13 @@ from llm import ask_gpt
 from parse import extract_report_num
 from main import REPORTS_MSG
 
-_CLIENT = OpenAI()
+_CLIENT = create_openai_client()
 
 # ──────────────────────────────────────────────────────────────────────────────
 # 工具：解析编号列表（与 parse_v3 逻辑等价，直接内联避免依赖 mode 参数）
 # ──────────────────────────────────────────────────────────────────────────────
 
-def _parse_numbered_list(s: str) -> str:
+def _parse_numbered_sequence(s: str) -> List[int]:
     """
     解析 LLM 输出的编号列表：
       1. Report 5
@@ -59,7 +69,7 @@ def _parse_numbered_list(s: str) -> str:
         # 兜底：尝试任意含 "Report" 的行
         start = 0
 
-    seq = []
+    seq: List[int] = []
     for line in lines[start:]:
         if "Report" not in line:
             continue
@@ -69,7 +79,54 @@ def _parse_numbered_list(s: str) -> str:
                 seq.append(n)
         except Exception:
             continue
+    return seq
+
+
+def _format_result_sequence(seq: List[int]) -> str:
     return "\n".join(f"Report {n}:" for n in seq)
+
+
+def _default_severity() -> dict:
+    return {
+        "label": "中",
+        "priority": 0.0,
+        "elem_crit": 0,
+    }
+
+
+def _assign_default_severity(reports: List[dict]) -> None:
+    """Fill neutral severity so downstream prompt/sort logic remains stable."""
+    for r in reports:
+        sev = r.get("severity")
+        if not isinstance(sev, dict):
+            r["severity"] = _default_severity()
+            continue
+        if "label" not in sev:
+            sev["label"] = "中"
+        if "priority" not in sev:
+            sev["priority"] = 0.0
+        if "elem_crit" not in sev:
+            sev["elem_crit"] = 0
+
+
+def _map_subset_to_original(
+    subset_sequence: List[int],
+    representative_nums: List[int],
+) -> List[int]:
+    """Map report numbers in compressed prompt space back to original report numbers."""
+    mapped: List[int] = []
+    for n in subset_sequence:
+        idx = n - 1
+        if 0 <= idx < len(representative_nums):
+            original_num = representative_nums[idx]
+            if original_num not in mapped:
+                mapped.append(original_num)
+
+    # Keep robust behavior if LLM drops some compressed reports in output.
+    for n in representative_nums:
+        if n not in mapped:
+            mapped.append(n)
+    return mapped
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -109,6 +166,23 @@ def _kg_greedy_sort(reports: List[dict], kg: BugKnowledgeGraph) -> str:
     return "\n".join(f"Report {n}:" for n in seq)
 
 
+def _severity_desc_sequence(reports: List[dict]) -> List[int]:
+    """
+    Sort by severity priority descending.
+    Tie-breakers: KG score desc, then original order.
+    """
+    order = sorted(
+        enumerate(reports),
+        key=lambda x: (
+            x[1].get("severity", {}).get("priority", 0.0),
+            x[1].get("kg_class", {}).get("score", 0.0),
+            -(x[0] + 1),
+        ),
+        reverse=True,
+    )
+    return [i + 1 for i, _ in order]
+
+
 # ──────────────────────────────────────────────────────────────────────────────
 # 主函数
 # ──────────────────────────────────────────────────────────────────────────────
@@ -119,6 +193,10 @@ def run_pipeline(
     mode: str = "kg",
     given_range: Optional[List[int]] = None,
     force_refresh: bool = False,
+    dedup_threshold: Optional[float] = None,
+    embedding_model: Optional[str] = None,
+    skip_severity_calculation: bool = False,
+    use_severity_sort: bool = False,
 ) -> None:
     """
     完整四阶段流水线。
@@ -130,10 +208,43 @@ def run_pipeline(
         given_range:   指定重复编号列表，None 则 1..repeat
         force_refresh: 重新执行 Phase 1 实体提取（忽略缓存）
     """
+    if skip_severity_calculation and use_severity_sort:
+        raise ValueError(
+            "skip_severity_calculation 和 use_severity_sort 不能同时为 True。"
+        )
+
     print(f"\n=== APP-{app} [{mode}] ===")
 
+    reports_all = load_reports(app=app)
+    reports = reports_all
+    dedup_result = None
+
+    # ── Phase 0：Embedding 预聚类（仅 kg 模式）────────────────────────────────
+    if mode == "kg":
+        eff_threshold = dedup_threshold if dedup_threshold is not None else get_duplicate_threshold()
+        eff_model = embedding_model or get_embedding_model()
+
+        try:
+            dedup_result = deduplicate_reports_by_embedding(
+                reports_all,
+                threshold=eff_threshold,
+                model=eff_model,
+                api_key=get_google_api_key(),
+            )
+            reports = select_representative_reports(reports_all, dedup_result)
+            print(
+                "[dedup] "
+                f"model={dedup_result.model} "
+                f"threshold={dedup_result.threshold} "
+                f"representatives={len(dedup_result.representatives)}/{dedup_result.total_reports}"
+            )
+        except Exception as e:
+            # If embedding step fails, keep pipeline available with original reports.
+            print(f"[dedup] disabled due to error: {type(e).__name__}: {e}")
+            dedup_result = None
+            reports = reports_all
+
     # ── Phase 1：实体提取 ──────────────────────────────────────────────────────
-    reports = load_reports(app=app)
     reports = extract_all(reports, app=app, force_refresh=force_refresh)
 
     # ── Phase 2：KG 扩充 + 图匹配分类 ─────────────────────────────────────────
@@ -145,13 +256,40 @@ def run_pipeline(
     print(f"[graph]  {kg.summary()}")
 
     # ── Phase 3：分类后严重性推导 ──────────────────────────────────────────────
-    severities = compute_all_severities(reports, kg)
-    for bt, (lbl, score) in sorted(severities.items(), key=lambda x: -x[1][1]):
-        count = sum(1 for r in reports if r.get("kg_class", {}).get("bug_type") == bt)
-        print(f"  {bt:12s} → {lbl}({score:.2f})  [{count} reports]")
+    if skip_severity_calculation:
+        _assign_default_severity(reports)
+        print("[severity] skipped. All reports use neutral severity (priority=0.0).")
+    else:
+        severities = compute_all_severities(reports, kg)
+        for bt, (lbl, score) in sorted(severities.items(), key=lambda x: -x[1][1]):
+            count = sum(1 for r in reports if r.get("kg_class", {}).get("bug_type") == bt)
+            print(f"  {bt:12s} → {lbl}({score:.2f})  [{count} reports]")
 
     # ── Phase 4：LLM 排序 / KG 贪心排序 ───────────────────────────────────────
     repeats = given_range or list(range(1, repeat + 1))
+
+    if use_severity_sort:
+        subset_sequence = _severity_desc_sequence(reports)
+
+        if dedup_result is not None:
+            representative_sequence = _map_subset_to_original(
+                subset_sequence,
+                dedup_result.representatives,
+            )
+            final_sequence = expand_ranked_sequence(
+                representative_sequence,
+                dedup_result,
+                total_reports=len(reports_all),
+            )
+        else:
+            final_sequence = subset_sequence
+
+        result_str = _format_result_sequence(final_sequence)
+        for i in repeats:
+            with open(f"result/{app}-{mode}-{i}.txt", encoding="utf-8", mode="w") as f:
+                f.write(result_str)
+        print("[severity-sort] Done.")
+        return
 
     if mode == "kg-only":
         result_str = _kg_greedy_sort(reports, kg)
@@ -170,7 +308,23 @@ def run_pipeline(
             f.write(f"{response}\n{token_p}\n{token_r}")
         # 立即解析，写 result
         try:
-            result = _parse_numbered_list(response)
+            subset_sequence = _parse_numbered_sequence(response)
+
+            # If pre-clustering is active, expand compressed ranking back to all reports.
+            if dedup_result is not None:
+                representative_sequence = _map_subset_to_original(
+                    subset_sequence,
+                    dedup_result.representatives,
+                )
+                final_sequence = expand_ranked_sequence(
+                    representative_sequence,
+                    dedup_result,
+                    total_reports=len(reports_all),
+                )
+            else:
+                final_sequence = subset_sequence
+
+            result = _format_result_sequence(final_sequence)
             with open(f"result/{app}-{mode}-{i}.txt", encoding="utf-8", mode="w") as f:
                 f.write(result)
         except Exception as e:
@@ -238,8 +392,16 @@ def run_evaluate(
 
 if __name__ == "__main__":
     APP    = 7      # 应用编号（对应 REPORTS_MSG 下标）
-    REPEAT = 8       # 重复次数（建议 ≥3 以稳定均值）
+    REPEAT = 5       # 重复次数（建议 ≥3 以稳定均值）
     MODE   = "kg"    # "kg" | "kg-only"
+    SKIP_SEVERITY = True
+    USE_SEVERITY_SORT = False
 
-    run_pipeline(app=APP, repeat=REPEAT, mode=MODE)
+    run_pipeline(
+        app=APP,
+        repeat=REPEAT,
+        mode=MODE,
+        skip_severity_calculation=SKIP_SEVERITY,
+        use_severity_sort=USE_SEVERITY_SORT,
+    )
     run_evaluate(app=APP, repeat=REPEAT, mode=MODE, print_each=True)

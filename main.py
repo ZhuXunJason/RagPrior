@@ -105,7 +105,7 @@ def run_evaluate(app: int, mode: str = "default", repeat: int = 1, print_each: b
 
 
 if __name__ == "__main__":
-    APP = 17            # set app number
+    APP = 7            # set app number
     REPEAT = 1          # set repeat times
     MODE = "default"    # set mode: "default" -> LLMPrior, "simple" -> SimpleLLMPrior, "direct" -> DirectLLMPrior
     run_query(app=APP, repeat=REPEAT, mode=MODE, given_range=None)

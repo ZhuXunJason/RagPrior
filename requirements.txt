@@ -1,3 +1,5 @@
 openai>=1.30.0
 numpy>=1.26.1
 networkx>=3.3
+python-dotenv>=1.0.1
+google-genai>=0.7.0

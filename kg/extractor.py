@@ -19,14 +19,14 @@ import os
 import re
 from typing import Any, Dict, List
 
-from openai import OpenAI
+from config import create_openai_client
 
 from kg.graph import ALL_MODULES, ALL_OPERATIONS, ALL_PAGES, ALL_SYMPTOMS
 
 CACHE_DIR = "./cache"
 os.makedirs(CACHE_DIR, exist_ok=True)
 
-_CLIENT = OpenAI()
+_CLIENT = create_openai_client()
 
 # ──────────────────────────────────────────────────────────────────────────────
 # 提示词
