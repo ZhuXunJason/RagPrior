@@ -31,7 +31,7 @@ REPORTS_MSG = [
     ]
 
 
-def run_query(app: int, repeat: int = 1, mode: str = "default", given_range: Optional[List[int]] = None) -> None:
+def run_query(app: int, repeat: int = 1, mode: str = "default", given_range: Optional[List[int]] = None, model: str = "gpt-5.4") -> None:
     print(f"APP-{app}...")
     prompt = get_prompt(app=app, mode=mode)
     if given_range is None:
@@ -40,7 +40,7 @@ def run_query(app: int, repeat: int = 1, mode: str = "default", given_range: Opt
         repeats = given_range
     for i in repeats:
         print(f"iteration-{i}...")
-        response, token_usage_p, token_usage_r = ask_gpt(prompt)
+        response, token_usage_p, token_usage_r = ask_gpt(prompt, model=model)
         with open(f"response/{app}-{mode}-{i}.txt", encoding="utf-8", mode="w") as f:
             f.write(f"{response}\n{token_usage_p}\n{token_usage_r}")
 
@@ -105,9 +105,11 @@ def run_evaluate(app: int, mode: str = "default", repeat: int = 1, print_each: b
 
 
 if __name__ == "__main__":
-    APP = 7            # set app number
-    REPEAT = 1          # set repeat times
-    MODE = "default"    # set mode: "default" -> LLMPrior, "simple" -> SimpleLLMPrior, "direct" -> DirectLLMPrior
-    run_query(app=APP, repeat=REPEAT, mode=MODE, given_range=None)
+    APP = 1              # set app number
+    REPEAT = 3            # set repeat times
+    MODE = "default"      # set mode: "default" -> LLMPrior, "simple" -> SimpleLLMPrior, "direct" -> DirectLLMPrior
+    MODEL = "gpt-5.4"       # LLM model name
+
+    run_query(app=APP, repeat=REPEAT, mode=MODE, given_range=None, model=MODEL)
     run_parse(app=APP, repeat=REPEAT, mode=MODE, given_range=None)
     run_evaluate(app=APP, repeat=REPEAT, mode=MODE)

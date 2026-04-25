@@ -16,6 +16,12 @@ class DedupResult:
     total_reports: int
 
 
+def _is_google_model(model: str) -> bool:
+    """Detect if model is Google-native (Gemini/Gemma) or OpenAI-compatible."""
+    name = model.strip().lower()
+    return "gemini" in name or "gemma" in name
+
+
 def _as_model_name(model: str) -> str:
     model = model.strip()
     if model.startswith("models/"):
@@ -90,16 +96,46 @@ def _embed_texts_google(
     return np.asarray(vectors, dtype=np.float32)
 
 
+def _embed_texts_openai(
+    texts: List[str],
+    api_key: str,
+    model: str,
+    base_url: Optional[str] = None,
+    batch_size: int = 32,
+) -> np.ndarray:
+    from openai import OpenAI
+
+    client = OpenAI(api_key=api_key, base_url=base_url)
+
+    vectors: List[List[float]] = []
+    for i in range(0, len(texts), batch_size):
+        batch = texts[i : i + batch_size]
+        response = client.embeddings.create(model=model, input=batch)
+        for item in response.data:
+            vectors.append(item.embedding)
+
+    if len(vectors) != len(texts):
+        raise RuntimeError(
+            f"Embedding count mismatch: got {len(vectors)}, expected {len(texts)}"
+        )
+
+    return np.asarray(vectors, dtype=np.float32)
+
+
 def deduplicate_reports_by_embedding(
     reports: List[Dict[str, Any]],
     threshold: float,
     model: str,
     api_key: Optional[str],
+    openai_api_key: Optional[str] = None,
+    base_url: Optional[str] = None,
 ) -> DedupResult:
     """
     Cluster reports by description embedding similarity.
 
-    Returns an identity mapping when api_key is missing so pipeline still works.
+    - If model name contains "gemini" or "gemma", uses Google Generative AI API.
+    - Otherwise, uses OpenAI-compatible embedding API.
+    Returns an identity mapping when the relevant api_key is missing so pipeline still works.
     """
     total = len(reports)
     representatives: List[int] = []
@@ -109,15 +145,27 @@ def deduplicate_reports_by_embedding(
     if total == 0:
         return DedupResult([], {}, {}, threshold, model, 0)
 
-    if not api_key:
-        for idx in range(1, total + 1):
-            representatives.append(idx)
-            rep_to_members[idx] = []
-            member_to_rep[idx] = idx
-        return DedupResult(representatives, rep_to_members, member_to_rep, threshold, model, total)
+    use_google = _is_google_model(model)
+
+    if use_google:
+        if not api_key:
+            for idx in range(1, total + 1):
+                representatives.append(idx)
+                rep_to_members[idx] = []
+                member_to_rep[idx] = idx
+            return DedupResult(representatives, rep_to_members, member_to_rep, threshold, model, total)
+        embed_fn = lambda texts: _embed_texts_google(texts, api_key=api_key, model=model)
+    else:
+        if not openai_api_key:
+            for idx in range(1, total + 1):
+                representatives.append(idx)
+                rep_to_members[idx] = []
+                member_to_rep[idx] = idx
+            return DedupResult(representatives, rep_to_members, member_to_rep, threshold, model, total)
+        embed_fn = lambda texts: _embed_texts_openai(texts, api_key=openai_api_key, model=model, base_url=base_url)
 
     descriptions = [str(r.get("description", "") or "") for r in reports]
-    vectors = _embed_texts_google(descriptions, api_key=api_key, model=model)
+    vectors = embed_fn(descriptions)
 
     # Normalize for cosine similarity via dot product.
     norms = np.linalg.norm(vectors, axis=1, keepdims=True)

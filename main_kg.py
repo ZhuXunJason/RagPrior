@@ -23,9 +23,11 @@ import numpy as np
 
 from config import (
     create_openai_client,
+    get_base_url,
     get_duplicate_threshold,
     get_embedding_model,
     get_google_api_key,
+    get_openai_api_key,
 )
 from kg.dedup import (
     deduplicate_reports_by_embedding,
@@ -195,6 +197,7 @@ def run_pipeline(
     force_refresh: bool = False,
     dedup_threshold: Optional[float] = None,
     embedding_model: Optional[str] = None,
+    model: str = "gpt-5.4",
     skip_severity_calculation: bool = False,
     use_severity_sort: bool = False,
 ) -> None:
@@ -230,6 +233,8 @@ def run_pipeline(
                 threshold=eff_threshold,
                 model=eff_model,
                 api_key=get_google_api_key(),
+                openai_api_key=get_openai_api_key(),
+                base_url=get_base_url(),
             )
             reports = select_representative_reports(reports_all, dedup_result)
             print(
@@ -303,7 +308,7 @@ def run_pipeline(
     prompt = get_kg_prompt(reports, kg)
     for i in repeats:
         print(f"  [LLM] iteration-{i}...")
-        response, token_p, token_r = ask_gpt(prompt)
+        response, token_p, token_r = ask_gpt(prompt, model=model)
         with open(f"response/{app}-{mode}-{i}.txt", encoding="utf-8", mode="w") as f:
             f.write(f"{response}\n{token_p}\n{token_r}")
         # 立即解析，写 result
@@ -392,8 +397,10 @@ def run_evaluate(
 
 if __name__ == "__main__":
     APP    = 7      # 应用编号（对应 REPORTS_MSG 下标）
-    REPEAT = 5       # 重复次数（建议 ≥3 以稳定均值）
+    REPEAT = 3       # 重复次数（建议 ≥3 以稳定均值）
     MODE   = "kg"    # "kg" | "kg-only"
+    MODEL = "gpt-5.4"
+    EMBEDDING_MODEL = "gemini-embedding-2-preview"
     SKIP_SEVERITY = True
     USE_SEVERITY_SORT = False
 
@@ -401,6 +408,8 @@ if __name__ == "__main__":
         app=APP,
         repeat=REPEAT,
         mode=MODE,
+        model=MODEL,
+        embedding_model=EMBEDDING_MODEL,
         skip_severity_calculation=SKIP_SEVERITY,
         use_severity_sort=USE_SEVERITY_SORT,
     )

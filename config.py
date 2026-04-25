@@ -10,7 +10,7 @@ from openai import OpenAI
 load_dotenv(override=False)
 
 DEFAULT_EMBEDDING_MODEL = "gemini-embedding-2-preview"
-DEFAULT_DUPLICATE_THRESHOLD = 0.8
+DEFAULT_DUPLICATE_THRESHOLD = 0.9
 
 
 def _clean(value: Optional[str]) -> Optional[str]:
