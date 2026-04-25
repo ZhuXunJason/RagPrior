@@ -1,149 +1,187 @@
 import re
-from typing import List, Any, Dict
+from typing import List, Dict
 
-PROMPT_LLMPRIOR = """
-You are provided with a set of test reports.
-Each report includes a description of the bug and the operations that trigger it.
 
-The reports are listed below:
----
-#####
----
+class TreeNode:
+    def __init__(self, node_type: str, value: int):
+        self.type: str = node_type
+        self.children: List[TreeNode] = []
+        self.value: int = value
+        self.visit_count: int = 0
+        self.alive: bool = True
 
-Categorize all the reports into different bug types with fine grains.
-For example, errors in display should be classified by their unique occurrences, not just as general display errors.
-Note that:
-1. Similar bug description with completely different operations that trigger the bug should be categorized as different bug types.
-2. Completely different operations that trigger the bug with similar bug description should be categorized as different bug types.
 
-Use a tree structure to display. Each category starts with "LEVEL <level-number>". The corresponding reports numbers should be appended in this format: " -> Report: n1, n2, ...".
+def select_node(node: TreeNode) -> int:
+    if not node.alive:
+        return -1
+    else:
+        node.visit_count += 1
+        if node.type == "report":
+            node.alive = False
+            return node.value
+        else:
+            selected_node = None
+            for child in node.children:
+                if child.alive:
+                    selected_node = child
+                    break
+            if selected_node is None:
+                node.alive = False
+                return -1
+            for child in node.children:
+                if child.visit_count < selected_node.visit_count and child.alive:
+                    selected_node = child
+            return select_node(selected_node)
 
-Work this out in a step by step way to make sure we have the correct categorization.
-""".strip()
 
-PROMPT_SIMPLE = """
-You are provided with a set of test reports.
-Each report includes a description of the bug and the operations that trigger it.
+def check_alive(node: TreeNode):
+    if node.type == "cat":
+        for child in node.children:
+            check_alive(child)
+        node.alive = False
+        for child in node.children:
+            if child.alive:
+                node.alive = True
+                break
 
-The reports are listed below:
----
-#####
----
 
-Prioritize all the test reports to ensure a quickly review of diverse bug types.
+def generate_sequence(root: TreeNode) -> List[int]:
+    sequence = []
+    while root.alive:
+        r = select_node(root)
+        check_alive(root)
+        if r != -1 and r not in sequence:
+            sequence.append(r)
+    return sequence
 
-Only generate the prioritized test report sequence.
-""".strip()
 
-PROMPT_DIRECT = """
-You are provided with a set of test reports.
-Each report includes a description of the bug and the operations that trigger it.
+def parse(s: str, mode: str):
+    if mode == "default":
+        return parse_v1(s)
+    elif mode == "simple":
+        try:
+            return parse_v2(s)
+        except:
+            return parse_v3(s)
+    elif mode == "direct":
+        return parse_v3(s)
 
-The reports are listed below:
----
-#####
----
 
-First, categorize all the reports into different bug types with fine grains.
-For example, errors in display should be classified by their unique occurrences, not just as general display errors.
-Note that:
-1. Similar bug description with completely different operations that trigger the bug should be categorized as different bug types.
-2. Completely different operations that trigger the bug with similar bug description should be categorized as different bug types.
+def parse_v1(s: str) -> str:
+    lines = [line.strip() for line in s.split("\n")]
+    start_line = 0
+    for i, line in enumerate(lines):
+        if line.startswith("Now") and i < len(lines) // 2:
+            start_line = i
+    lines = lines[start_line:]
 
-Then, prioritize all the test reports, ensuring that reviewers can quickly encounter diverse bug types, if reviewing from highest to lowest priority.
-For example, given report 1,2,3 (bug A), report 4,5 (bug B), report 6,7,8 (bug C), a good prioritization sequence is 1,4,6,2,5,7,3,8.
+    curr_level = 0
+    root = TreeNode("cat", 0)
+    level_roots: Dict[str, TreeNode] = {"0": root}
 
-Show the result with a prioritization sequence of all the reports with each report in a line.
-Make sure we have the correct categorization and the best report prioritization sequence.
-""".strip()
+    for line in lines:
+        if line.startswith("```"):
+            continue
+        line = re.sub(r"^[\s#*│├└─]+", "", line)
+        line = line.replace("- LEVEL", "LEVEL")
+        line = line.replace("-> LEVEL", "LEVEL")
+        if line.find("-> Report:") == -1 and line.find("-> Report") >= 0:
+            line = line.replace("-> Report", "-> Report:")
+        line = line.strip()
 
-DATASET_ROOT = "./reports"  # set dataset root path
+        if line.find("-> Report:") != -1:
+            start = line.find("-> Report:") + len("-> Report:")
+            nums = [int(n) for n in re.findall(r"\d+", line[start:].strip())]
+            node = TreeNode("cat", 0)
+            for num in nums:
+                node.children.append(TreeNode("report", num))
+            level_roots[str(curr_level)].children.append(node)
+        elif line.startswith("LEVEL "):
+            match = re.match(r"LEVEL\s+(\d+)", line)
+            if not match:
+                continue
+            new_level = int(match.group(1))
+            node = TreeNode("cat", 0)
+            if new_level == curr_level + 1:
+                level_roots[str(curr_level)].children.append(node)
+                level_roots[str(new_level)] = node
+                curr_level = new_level
+            elif new_level < curr_level:
+                level_roots[str(new_level - 1)].children.append(node)
+                level_roots[str(new_level)] = node
+                curr_level = new_level
+            elif new_level == curr_level:
+                level_roots[str(curr_level - 1)].children.append(node)
+                level_roots[str(curr_level)] = node
+            else:
+                raise Exception("Invalid format.")
+    seq = generate_sequence(root)
+    res = ""
+    for n in seq:
+        res += f"Report {n}:\n"
+    return res.strip()
+
+
+def parse_v2(s: str) -> str:
+    s = s.replace("Report", "")
+    s = s.replace(".", "")
+    line = s.split("\n")[0]
+    seq = []
+    for n in line.split(","):
+        n = int(n.strip())
+        if n not in seq:
+            seq.append(n)
+    res = ""
+    for n in seq:
+        res += f"Report {n}:\n"
+    return res.strip()
+
+
+def parse_v3(s: str) -> str:
+    lines = [line.strip() for line in s.split("\n")]
+    start_line = -1
+    end_line = len(lines)
+    for i, line in enumerate(lines):
+        if line.startswith("1. Report"):
+            start_line = i
+            continue
+        if start_line != -1:
+            if line.find("Report") == -1:
+                end_line = i
+    if start_line == -1:
+        raise Exception("Invalid format.")
+    lines = lines[start_line:end_line]
+    seq = []
+    for line in lines:
+        n = extract_report_num(line)
+        if n not in seq:
+            seq.append(n)
+    res = ""
+    for n in seq:
+        res += f"Report {n}:\n"
+    return res.strip()
 
 
 def extract_report_num(line: str) -> int:
-    """从 'Report N' 或 'Report N:' 或 '1. Report N' 等格式中提取报告编号。"""
-    m = re.search(r'Report\s+(\d+)', line)
-    if m:
-        return int(m.group(1))
-    raise ValueError(f"Cannot extract report number from line: {line!r}")
-
-
-def parse(s: str, mode: str = "default") -> str:
-    """
-    解析 LLM 响应，返回 'Report N:\\n' 格式的优先级序列。
-
-    - simple / direct: LLM 直接输出序列，按出现顺序提取
-    - default: 树形结构（LEVEL n → Report: ...），
-               按先广度后深度的方式跨类别交叉，保证早发现多样性
-    """
-    if mode in ("simple", "direct"):
-        seen: List[int] = []
-        for m in re.finditer(r'Report\s+(\d+)', s):
-            n = int(m.group(1))
-            if n not in seen:
-                seen.append(n)
-        return "\n".join(f"Report {n}:" for n in seen)
-
-    # default 模式：解析树形结构，按类别交叉排列
-    # 收集每个叶节点类别的报告列表（按 LEVEL 行出现顺序）
-    categories: List[List[int]] = []
-    for line in s.splitlines():
-        nums = re.findall(r'Report[:\s]+(\d[\d,\s]*)', line)
-        if not nums:
-            continue
-        group: List[int] = []
-        for chunk in nums:
-            for n in re.findall(r'\d+', chunk):
-                v = int(n)
-                if v not in group:
-                    group.append(v)
-        if group:
-            categories.append(group)
-
-    # 跨类别轮询（round-robin），保证多样性优先
-    seen_set: set = set()
-    result: List[int] = []
-    max_len = max((len(c) for c in categories), default=0)
-    for i in range(max_len):
-        for cat in categories:
-            if i < len(cat) and cat[i] not in seen_set:
-                result.append(cat[i])
-                seen_set.add(cat[i])
-
-    return "\n".join(f"Report {n}:" for n in result)
-
-
-def load_reports(app: int) -> List[Dict[str, Any]]:
-    reports = []
+    left = line.find("Report") + len("Report")
+    line = line[left:]
     try:
-        with open(f"{DATASET_ROOT}/app{app}.csv", mode="r", encoding="utf-8") as f:
-            lines = f.readlines()
-            for i, line in enumerate(lines):
-                items = line.strip().split(",")
-                index, image_url, bug_type = items[0], items[-2], items[-1]
-                description = ",".join(items[1:-2])
-                reports.append({
-                    "index": index,
-                    "description": description,
-                    "img_url": image_url,
-                    "bug_type": bug_type,
-                })
-        return reports
-    except FileNotFoundError as e:
-        raise e
-
-
-def load_reports_str(app: int) -> str:
-    reports = load_reports(app=app)
-    return "\n".join(f'Report {index + 1} - {report["description"]}' for index, report in enumerate(reports))
-
-
-def get_prompt(app: int, mode: str = "default"):
-    if mode == "default":
-        return PROMPT_LLMPRIOR.replace("#####", load_reports_str(app))
-    elif mode == "direct":
-        return PROMPT_DIRECT.replace("#####", load_reports_str(app))
-    elif mode == "simple":
-        return PROMPT_SIMPLE.replace("#####", load_reports_str(app))
-    else:
-        raise Exception(f"Invalid mode: {mode}")
+        return int(line.strip())
+    except ValueError:
+        if line.find(":") == -1 and line.find("(") != -1 and line.find("-") == -1:
+            right = line.find("(")
+        elif line.find(":") != -1 and line.find("(") == -1 and line.find("-") == -1:
+            right = line.find(":")
+        elif line.find(":") == -1 and line.find("(") == -1 and line.find("-") != -1:
+            right = line.find("-")
+        elif line.find(":") != -1 and line.find("(") != -1 and line.find("-") == -1:
+            right = min(line.find("("), line.find(":"))
+        elif line.find(":") == -1 and line.find("(") != -1 and line.find("-") != -1:
+            right = min(line.find("("), line.find("-"))
+        elif line.find(":") != -1 and line.find("(") == -1 and line.find("-") != -1:
+            right = min(line.find(":"), line.find("-"))
+        elif line.find(":") != -1 and line.find("(") != -1 and line.find("-") != -1:
+            right = min(line.find("("), line.find("-"), line.find(":"))
+        else:
+            raise Exception("Invalid line format.")
+        return int(line[:right].strip())

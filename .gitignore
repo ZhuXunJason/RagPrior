@@ -2,3 +2,4 @@
 response/
 result/
 .env
+cache/
