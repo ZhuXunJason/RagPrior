@@ -105,11 +105,15 @@ def run_evaluate(app: int, mode: str = "default", repeat: int = 1, print_each: b
 
 
 if __name__ == "__main__":
-    APP = 1              # set app number
-    REPEAT = 3            # set repeat times
-    MODE = "default"      # set mode: "default" -> LLMPrior, "simple" -> SimpleLLMPrior, "direct" -> DirectLLMPrior
-    MODEL = "gpt-5.4"       # LLM model name
+    import argparse
 
-    run_query(app=APP, repeat=REPEAT, mode=MODE, given_range=None, model=MODEL)
-    run_parse(app=APP, repeat=REPEAT, mode=MODE, given_range=None)
-    run_evaluate(app=APP, repeat=REPEAT, mode=MODE)
+    parser = argparse.ArgumentParser(description="LLMPrior pipeline")
+    parser.add_argument("--app", type=int, default=1, help="app number")
+    parser.add_argument("--repeat", type=int, default=3, help="repeat times")
+    parser.add_argument("--mode", type=str, default="default", choices=["default", "simple", "direct"], help="pipeline mode")
+    parser.add_argument("--model", type=str, default="gpt-5.4", help="LLM model name")
+    args = parser.parse_args()
+
+    run_query(app=args.app, repeat=args.repeat, mode=args.mode, given_range=None, model=args.model)
+    run_parse(app=args.app, repeat=args.repeat, mode=args.mode, given_range=None)
+    run_evaluate(app=args.app, repeat=args.repeat, mode=args.mode)

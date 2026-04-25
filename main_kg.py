@@ -396,21 +396,29 @@ def run_evaluate(
 # ──────────────────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
-    APP    = 7      # 应用编号（对应 REPORTS_MSG 下标）
-    REPEAT = 3       # 重复次数（建议 ≥3 以稳定均值）
-    MODE   = "kg"    # "kg" | "kg-only"
-    MODEL = "gpt-5.4"
-    EMBEDDING_MODEL = "gemini-embedding-2-preview"
-    SKIP_SEVERITY = True
-    USE_SEVERITY_SORT = False
+    import argparse
+
+    parser = argparse.ArgumentParser(description="KG-RAG enhanced pipeline")
+    parser.add_argument("--app", type=int, default=7, help="app number")
+    parser.add_argument("--repeat", type=int, default=3, help="repeat times")
+    parser.add_argument("--mode", type=str, default="kg", choices=["kg", "kg-only"], help="pipeline mode")
+    parser.add_argument("--model", type=str, default="gpt-5.4", help="LLM model name")
+    parser.add_argument("--embedding-model", type=str, default="gemini-embedding-2-preview", help="embedding model name")
+    parser.add_argument("--dedup-threshold", type=float, default=None, help="dedup threshold (default: config value)")
+    parser.add_argument("--skip-severity", default=True, action=argparse.BooleanOptionalAction, help="skip severity calculation")
+    parser.add_argument("--use-severity-sort", action="store_true", default=False, help="use severity-only sort instead of LLM")
+    parser.add_argument("--force-refresh", action="store_true", default=False, help="force re-extract entities")
+    args = parser.parse_args()
 
     run_pipeline(
-        app=APP,
-        repeat=REPEAT,
-        mode=MODE,
-        model=MODEL,
-        embedding_model=EMBEDDING_MODEL,
-        skip_severity_calculation=SKIP_SEVERITY,
-        use_severity_sort=USE_SEVERITY_SORT,
+        app=args.app,
+        repeat=args.repeat,
+        mode=args.mode,
+        model=args.model,
+        embedding_model=args.embedding_model,
+        dedup_threshold=args.dedup_threshold,
+        skip_severity_calculation=args.skip_severity,
+        use_severity_sort=args.use_severity_sort,
+        force_refresh=args.force_refresh,
     )
-    run_evaluate(app=APP, repeat=REPEAT, mode=MODE, print_each=True)
+    run_evaluate(app=args.app, repeat=args.repeat, mode=args.mode, print_each=True)
