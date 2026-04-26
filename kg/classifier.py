@@ -21,6 +21,7 @@ import math
 from typing import Any, Dict, List
 
 from kg.graph import ALL_BUG_TYPES, BugKnowledgeGraph
+from llm import ask_completion
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -147,7 +148,7 @@ Return ONLY the bug type name (exactly as listed), nothing else.
 """.strip()
 
 
-def llm_fallback_classify(reports: List[Dict[str, Any]], client, model: str = "gpt-4o-mini") -> None:
+def llm_fallback_classify(reports: List[Dict[str, Any]], model: str = "gpt-4o-mini") -> None:
     """对 fallback==True 的报告用 LLM 做一次兜底分类，直接修改 report。"""
     targets = [r for r in reports if r.get("kg_class", {}).get("fallback")]
     if not targets:
@@ -162,13 +163,13 @@ def llm_fallback_classify(reports: List[Dict[str, Any]], client, model: str = "g
             description=r["description"],
         )
         try:
-            resp = client.chat.completions.create(
+            resp = ask_completion(
+                prompt,
                 model=model,
-                messages=[{"role": "user", "content": prompt}],
+                max_token=64,
                 temperature=0.0,
-                max_tokens=30,
             )
-            predicted = resp.choices[0].message.content.strip()
+            predicted = resp.get("content", "").strip()
             if predicted in ALL_BUG_TYPES:
                 r["kg_class"]["bug_type"]  = predicted
                 r["kg_class"]["fallback"]  = False

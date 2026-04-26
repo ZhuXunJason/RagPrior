@@ -19,14 +19,11 @@ import os
 import re
 from typing import Any, Dict, List
 
-from config import create_openai_client
-
 from kg.graph import ALL_MODULES, ALL_OPERATIONS, ALL_PAGES, ALL_SYMPTOMS
+from llm import ask_completion
 
 CACHE_DIR = "./cache"
 os.makedirs(CACHE_DIR, exist_ok=True)
-
-_CLIENT = create_openai_client()
 
 # ──────────────────────────────────────────────────────────────────────────────
 # 提示词
@@ -94,13 +91,13 @@ def _extract_single(description: str, debug: bool = False, model: str = "gpt-4o-
         modules="、".join(ALL_MODULES),
     )
     try:
-        resp = _CLIENT.chat.completions.create(
+        resp = ask_completion(
+            prompt,
             model=model,
-            messages=[{"role": "user", "content": prompt}],
+            max_token=400,
             temperature=0.0,
-            max_tokens=400,
         )
-        raw = resp.choices[0].message.content
+        raw = resp.get("content", "")
         if debug:
             print(f"[extractor DEBUG] raw response:\n{raw}\n")
         result = _parse_json(raw)

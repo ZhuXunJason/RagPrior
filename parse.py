@@ -116,6 +116,8 @@ def parse_v1(s: str) -> str:
             else:
                 raise Exception("Invalid format.")
     seq = generate_sequence(root)
+    if not seq:
+        raise Exception("Invalid format: no report sequence parsed.")
     res = ""
     for n in seq:
         res += f"Report {n}:\n"

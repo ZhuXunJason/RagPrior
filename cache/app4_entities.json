@@ -5,12 +5,12 @@
       "operations": [
         "选择",
         "点击",
-        "填写",
-        "通过审核"
+        "进入",
+        "填写"
       ],
       "symptoms": [
-        "提示",
         "弹出",
+        "提示",
         "报错"
       ],
       "specific_pages": [
@@ -19,12 +19,13 @@
       ],
       "specific_elements": [
         "审核通过",
+        "通过审核",
         "问题等级",
         "处理部门",
         "审核意见"
       ],
       "page_type": "操作事务类页面",
-      "module": "网络与通信模块"
+      "module": "内容与资源模块"
     }
   },
   {
@@ -35,20 +36,24 @@
         "点击"
       ],
       "symptoms": [
-        "网络连接错误"
+        "提示",
+        "无法连接"
       ],
-      "specific_pages": [],
-      "specific_elements": [],
-      "page_type": "用户交互类页面",
-      "module": "网络与通信模块"
+      "specific_pages": [
+        "待我处理事项"
+      ],
+      "specific_elements": [
+        "通过审核"
+      ],
+      "page_type": "操作事务类页面",
+      "module": "系统与设置模块"
     }
   },
   {
     "index": "265",
     "entities": {
       "operations": [
-        "删除",
-        "修改"
+        "点击"
       ],
       "symptoms": [],
       "specific_pages": [],
@@ -66,16 +71,13 @@
         "进入",
         "点击",
         "选择",
-        "查看",
         "保存"
       ],
       "symptoms": [
-        "提示",
-        "保存失败"
+        "提示"
       ],
       "specific_pages": [
-        "截屏相册",
-        "查看页面"
+        "截屏相册"
       ],
       "specific_elements": [
         "保存到手机"
@@ -93,7 +95,7 @@
       ],
       "symptoms": [
         "提示",
-        "网络异常"
+        "无法连接"
       ],
       "specific_pages": [],
       "specific_elements": [
@@ -101,7 +103,7 @@
         "密码"
       ],
       "page_type": "用户交互类页面",
-      "module": "网络与通信模块"
+      "module": "用户与账号模块"
     }
   },
   {
@@ -111,12 +113,14 @@
         "点击"
       ],
       "symptoms": [
-        "未显示"
+        "不显示"
       ],
       "specific_pages": [],
-      "specific_elements": [],
-      "page_type": "",
-      "module": ""
+      "specific_elements": [
+        "我的文件"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
     }
   },
   {
@@ -126,9 +130,12 @@
         "点击"
       ],
       "symptoms": [
-        "无法上传"
+        "加载失败"
       ],
-      "specific_pages": [],
+      "specific_pages": [
+        "待办事项",
+        "我发起的"
+      ],
       "specific_elements": [
         "上传新文档"
       ],
@@ -147,7 +154,6 @@
       ],
       "specific_pages": [],
       "specific_elements": [
-        "处理过的文件",
         "我处理的"
       ],
       "page_type": "用户交互类页面",

@@ -3,8 +3,7 @@
     "index": "1247",
     "entities": {
       "operations": [
-        "点击",
-        "保存"
+        "点击"
       ],
       "symptoms": [
         "跳转异常"
@@ -13,9 +12,10 @@
         "保存文件页面"
       ],
       "specific_elements": [
-        "加号"
+        "加号",
+        "定时备份"
       ],
-      "page_type": "用户交互类页面",
+      "page_type": "导航与结构页面",
       "module": "系统与设置模块"
     }
   },
@@ -24,18 +24,18 @@
     "entities": {
       "operations": [
         "点击",
-        "选择",
-        "删除"
+        "选择"
       ],
       "symptoms": [
-        "无法识别"
+        "不生效"
       ],
       "specific_pages": [],
       "specific_elements": [
+        "管理账簿",
         "删除按钮"
       ],
-      "page_type": "用户交互类页面",
-      "module": "用户与账号模块"
+      "page_type": "操作事务类页面",
+      "module": "内容与资源模块"
     }
   },
   {
@@ -47,49 +47,51 @@
         "删除"
       ],
       "symptoms": [
-        "无法删除"
+        "不生效"
       ],
       "specific_pages": [],
       "specific_elements": [
         "管理账簿",
-        "新建的账簿"
+        "新建的账簿",
+        "删除"
       ],
       "page_type": "用户交互类页面",
-      "module": "用户与账号模块"
+      "module": "内容与资源模块"
     }
   },
   {
     "index": "1254",
     "entities": {
       "operations": [
-        "点击",
-        "加载"
+        "点击"
       ],
       "symptoms": [
-        "无法识别",
+        "不显示",
         "加载失败"
       ],
       "specific_pages": [],
-      "specific_elements": [],
+      "specific_elements": [
+        "帮助"
+      ],
       "page_type": "用户交互类页面",
-      "module": "系统与设置模块"
+      "module": "内容与资源模块"
     }
   },
   {
     "index": "1301",
     "entities": {
       "operations": [
-        "点击",
-        "加载"
+        "点击"
       ],
       "symptoms": [
-        "加载失败",
-        "不显示"
+        "加载失败"
       ],
       "specific_pages": [
+        "帮助页"
+      ],
+      "specific_elements": [
         "帮助"
       ],
-      "specific_elements": [],
       "page_type": "数据展示类页面",
       "module": "内容与资源模块"
     }
@@ -97,19 +99,12 @@
   {
     "index": "1302",
     "entities": {
-      "operations": [
-        "打开",
-        "加载"
-      ],
-      "symptoms": [
-        "加载失败",
-        "无响应",
-        "白屏"
-      ],
+      "operations": [],
+      "symptoms": [],
       "specific_pages": [],
       "specific_elements": [],
-      "page_type": "用户交互类页面",
-      "module": "系统与设置模块"
+      "page_type": "",
+      "module": ""
     }
   },
   {
@@ -121,14 +116,16 @@
         "删除"
       ],
       "symptoms": [
-        "无法删除"
+        "不生效"
       ],
       "specific_pages": [],
       "specific_elements": [
-        "账簿3"
+        "管理账簿",
+        "账簿3",
+        "删除"
       ],
-      "page_type": "操作事务类页面",
-      "module": "用户与账号模块"
+      "page_type": "用户交互类页面",
+      "module": "订单与交易模块"
     }
   },
   {
@@ -136,18 +133,18 @@
     "entities": {
       "operations": [
         "点击",
-        "选择",
-        "删除"
+        "选择"
       ],
       "symptoms": [
-        "无法点击"
+        "不生效"
       ],
       "specific_pages": [],
       "specific_elements": [
+        "管理账簿",
         "删除按钮"
       ],
       "page_type": "用户交互类页面",
-      "module": "用户与账号模块"
+      "module": "系统与设置模块"
     }
   },
   {
@@ -158,30 +155,32 @@
         "删除"
       ],
       "symptoms": [
-        "无法进行删除操作"
+        "不生效"
       ],
-      "specific_pages": [],
+      "specific_pages": [
+        "管理账簿"
+      ],
       "specific_elements": [
-        "管理账簿",
-        "更多的下拉框"
+        "更多的下拉框",
+        "删除"
       ],
-      "page_type": "用户交互类页面",
-      "module": "用户与账号模块"
+      "page_type": "操作事务类页面",
+      "module": "系统与设置模块"
     }
   },
   {
     "index": "1251",
     "entities": {
       "operations": [
-        "点击",
-        "切换"
+        "点击"
       ],
       "symptoms": [
-        "不生效"
+        "不显示"
       ],
       "specific_pages": [],
       "specific_elements": [
-        "科目"
+        "科目",
+        "所有"
       ],
       "page_type": "用户交互类页面",
       "module": "内容与资源模块"
@@ -191,15 +190,16 @@
     "index": "1259",
     "entities": {
       "operations": [
+        "点击",
         "点击"
       ],
       "symptoms": [
-        "无法取消"
+        "不生效"
       ],
       "specific_pages": [],
       "specific_elements": [
         "科目",
-        "文件"
+        "所有"
       ],
       "page_type": "用户交互类页面",
       "module": "内容与资源模块"
@@ -213,13 +213,13 @@
         "选择"
       ],
       "symptoms": [
-        "无法显示"
+        "不显示"
       ],
-      "specific_pages": [
-        "收藏"
-      ],
+      "specific_pages": [],
       "specific_elements": [
-        "科目"
+        "星标",
+        "科目",
+        "收藏"
       ],
       "page_type": "用户交互类页面",
       "module": "内容与资源模块"
@@ -228,20 +228,12 @@
   {
     "index": "1263",
     "entities": {
-      "operations": [
-        "点击"
-      ],
-      "symptoms": [
-        "不生效"
-      ],
-      "specific_pages": [
-        "收藏"
-      ],
-      "specific_elements": [
-        "星标"
-      ],
-      "page_type": "用户交互类页面",
-      "module": "内容与资源模块"
+      "operations": [],
+      "symptoms": [],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "",
+      "module": ""
     }
   },
   {
@@ -255,7 +247,10 @@
         "不显示"
       ],
       "specific_pages": [],
-      "specific_elements": [],
+      "specific_elements": [
+        "科目",
+        "收藏"
+      ],
       "page_type": "用户交互类页面",
       "module": "内容与资源模块"
     }
@@ -269,9 +264,13 @@
       "symptoms": [
         "不显示"
       ],
-      "specific_pages": [],
+      "specific_pages": [
+        "收藏列表"
+      ],
       "specific_elements": [
-        "星星",
+        "科目",
+        "所有",
+        "项目右边的星星",
         "收藏"
       ],
       "page_type": "用户交互类页面",
@@ -300,6 +299,7 @@
     "index": "1290",
     "entities": {
       "operations": [
+        "点击",
         "点击"
       ],
       "symptoms": [
@@ -344,7 +344,7 @@
         "进入"
       ],
       "symptoms": [
-        "无法及时更新"
+        "不生效"
       ],
       "specific_pages": [
         "收藏界面"
@@ -353,30 +353,7 @@
         "五角星收藏",
         "左上角菜单栏"
       ],
-      "page_type": "用户交互类页面",
-      "module": "内容与资源模块"
-    }
-  },
-  {
-    "index": "1299",
-    "entities": {
-      "operations": [
-        "点击",
-        "查看",
-        "进入"
-      ],
-      "symptoms": [
-        "无法连接",
-        "不生效"
-      ],
-      "specific_pages": [
-        "收藏界面"
-      ],
-      "specific_elements": [
-        "五角星",
-        "菜单栏"
-      ],
-      "page_type": "用户交互类页面",
+      "page_type": "数据展示类页面",
       "module": "内容与资源模块"
     }
   },
@@ -388,15 +365,17 @@
         "切换"
       ],
       "symptoms": [
-        "未调用",
-        "不生效",
-        "缺失"
+        "不生效"
       ],
-      "specific_pages": [],
+      "specific_pages": [
+        "收藏界面",
+        "所有"
+      ],
       "specific_elements": [
-        "收藏按钮"
+        "收藏按钮",
+        "取消收藏按钮"
       ],
-      "page_type": "用户交互类页面",
+      "page_type": "操作事务类页面",
       "module": "内容与资源模块"
     }
   },
@@ -404,7 +383,7 @@
     "index": "1310",
     "entities": {
       "operations": [
-        "取消收藏",
+        "点击",
         "切换"
       ],
       "symptoms": [
@@ -426,10 +405,10 @@
       "operations": [
         "进入",
         "点击",
-        "切换"
+        "切换",
+        "退出"
       ],
       "symptoms": [
-        "缺失",
         "不显示"
       ],
       "specific_pages": [
@@ -437,6 +416,7 @@
         "搜藏栏目"
       ],
       "specific_elements": [
+        "所有",
         "收藏"
       ],
       "page_type": "用户交互类页面",
@@ -447,8 +427,7 @@
     "index": "1321",
     "entities": {
       "operations": [
-        "点击",
-        "收藏"
+        "点击"
       ],
       "symptoms": [
         "不显示"
@@ -467,16 +446,21 @@
     "index": "1322",
     "entities": {
       "operations": [
-        "点击",
-        "收藏"
+        "点击"
       ],
       "symptoms": [
-        "未调用",
-        "未生效"
+        "不生效"
       ],
-      "specific_pages": [],
+      "specific_pages": [
+        "科目",
+        "所有目录",
+        "最近的目录"
+      ],
       "specific_elements": [
-        "目录"
+        "收藏",
+        "取消收藏",
+        "所有目录",
+        "最近的目录"
       ],
       "page_type": "用户交互类页面",
       "module": "内容与资源模块"
@@ -487,17 +471,18 @@
     "entities": {
       "operations": [
         "进入",
-        "添加",
         "点击"
       ],
       "symptoms": [
-        "无法显示"
+        "不显示"
       ],
       "specific_pages": [
         "收藏页面"
       ],
-      "specific_elements": [],
-      "page_type": "用户交互类页面",
+      "specific_elements": [
+        "收藏"
+      ],
+      "page_type": "数据展示类页面",
       "module": "内容与资源模块"
     }
   },
@@ -505,22 +490,18 @@
     "index": "1360",
     "entities": {
       "operations": [
-        "点击",
-        "收藏",
-        "取消星标",
-        "刷新"
+        "点击"
       ],
       "symptoms": [
-        "未调用",
         "不生效"
       ],
       "specific_pages": [
+        "所有",
         "收藏"
       ],
       "specific_elements": [
-        "星标",
-        "所有",
-        "右上角"
+        "添加星标",
+        "收藏"
       ],
       "page_type": "用户交互类页面",
       "module": "内容与资源模块"
@@ -530,7 +511,8 @@
     "index": "1362",
     "entities": {
       "operations": [
-        "点击"
+        "点击",
+        "打开"
       ],
       "symptoms": [
         "不显示"
@@ -539,9 +521,10 @@
         "收藏界面"
       ],
       "specific_elements": [
-        "星星"
+        "星星",
+        "收藏"
       ],
-      "page_type": "用户交互类页面",
+      "page_type": "数据展示类页面",
       "module": "内容与资源模块"
     }
   },
@@ -569,12 +552,11 @@
         "点击"
       ],
       "symptoms": [
-        "耗时过长"
+        "缓慢"
       ],
       "specific_pages": [],
       "specific_elements": [
-        "星形标志",
-        "收藏"
+        "星形标志"
       ],
       "page_type": "用户交互类页面",
       "module": "内容与资源模块"
@@ -587,10 +569,11 @@
         "点击"
       ],
       "symptoms": [
-        "未调用",
         "不生效"
       ],
-      "specific_pages": [],
+      "specific_pages": [
+        "科目列表"
+      ],
       "specific_elements": [
         "星形标志"
       ],
@@ -603,17 +586,19 @@
     "entities": {
       "operations": [
         "点击",
+        "退出",
         "进入"
       ],
       "symptoms": [
-        "不显示",
-        "缺失"
+        "不显示"
       ],
       "specific_pages": [
         "收藏页面"
       ],
-      "specific_elements": [],
-      "page_type": "用户交互类页面",
+      "specific_elements": [
+        "收藏"
+      ],
+      "page_type": "数据展示类页面",
       "module": "内容与资源模块"
     }
   },
@@ -624,13 +609,10 @@
         "点击"
       ],
       "symptoms": [
-        "缺失",
-        "不显示"
+        "缺失"
       ],
       "specific_pages": [],
-      "specific_elements": [
-        "收藏列表"
-      ],
+      "specific_elements": [],
       "page_type": "数据展示类页面",
       "module": "内容与资源模块"
     }
@@ -639,6 +621,7 @@
     "index": "1277",
     "entities": {
       "operations": [
+        "进入",
         "点击",
         "修改",
         "保存"
@@ -646,9 +629,13 @@
       "symptoms": [
         "停止运行"
       ],
-      "specific_pages": [],
+      "specific_pages": [
+        "定时任务"
+      ],
       "specific_elements": [
-        "交易记录"
+        "交易记录",
+        "修改交易",
+        "保存"
       ],
       "page_type": "操作事务类页面",
       "module": "订单与交易模块"
@@ -665,7 +652,10 @@
         "无响应"
       ],
       "specific_pages": [],
-      "specific_elements": [],
+      "specific_elements": [
+        "定时任务",
+        "保存"
+      ],
       "page_type": "操作事务类页面",
       "module": "订单与交易模块"
     }
@@ -676,13 +666,17 @@
       "operations": [
         "点击"
       ],
-      "symptoms": [],
-      "specific_pages": [],
+      "symptoms": [
+        "不生效"
+      ],
+      "specific_pages": [
+        "管理账簿"
+      ],
       "specific_elements": [
         "管理账簿"
       ],
-      "page_type": "用户交互类页面",
-      "module": "用户与账号模块"
+      "page_type": "操作事务类页面",
+      "module": "系统与设置模块"
     }
   },
   {
@@ -692,12 +686,12 @@
         "点击"
       ],
       "symptoms": [],
-      "specific_pages": [],
-      "specific_elements": [
+      "specific_pages": [
         "管理账簿"
       ],
+      "specific_elements": [],
       "page_type": "用户交互类页面",
-      "module": "用户与账号模块"
+      "module": "订单与交易模块"
     }
   },
   {
@@ -706,13 +700,15 @@
       "operations": [
         "点击"
       ],
-      "symptoms": [],
-      "specific_pages": [],
-      "specific_elements": [
-        "账簿"
+      "symptoms": [
+        "不生效"
       ],
-      "page_type": "用户交互类页面",
-      "module": "用户与账号模块"
+      "specific_pages": [
+        "管理账簿"
+      ],
+      "specific_elements": [],
+      "page_type": "操作事务类页面",
+      "module": "系统与设置模块"
     }
   },
   {
@@ -726,10 +722,11 @@
       ],
       "specific_pages": [],
       "specific_elements": [
+        "管理账簿",
         "账簿的名字"
       ],
       "page_type": "用户交互类页面",
-      "module": "用户与账号模块"
+      "module": "订单与交易模块"
     }
   },
   {
@@ -740,15 +737,17 @@
         "修改"
       ],
       "symptoms": [
-        "重叠",
-        "无响应"
+        "缺失"
       ],
-      "specific_pages": [],
+      "specific_pages": [
+        "管理账簿"
+      ],
       "specific_elements": [
+        "管理账簿",
         "账簿名称"
       ],
       "page_type": "操作事务类页面",
-      "module": "用户与账号模块"
+      "module": "内容与资源模块"
     }
   },
   {
@@ -756,40 +755,38 @@
     "entities": {
       "operations": [
         "点击",
-        "重命名"
+        "修改"
       ],
-      "symptoms": [
-        "用户体验不好"
-      ],
+      "symptoms": [],
       "specific_pages": [
         "管理账簿"
       ],
       "specific_elements": [
         "更多按钮"
       ],
-      "page_type": "用户交互类页面",
-      "module": "用户与账号模块"
+      "page_type": "操作事务类页面",
+      "module": "系统与设置模块"
     }
   },
   {
     "index": "1325",
     "entities": {
       "operations": [
-        "重命名",
-        "点击"
+        "点击",
+        "修改"
       ],
       "symptoms": [
-        "空白",
-        "缺失",
-        "提示"
+        "缺失"
       ],
-      "specific_pages": [],
-      "specific_elements": [
-        "账簿名称",
+      "specific_pages": [
         "管理账簿"
       ],
+      "specific_elements": [
+        "管理账簿",
+        "账簿名称"
+      ],
       "page_type": "用户交互类页面",
-      "module": "用户与账号模块"
+      "module": "系统与设置模块"
     }
   },
   {
@@ -798,16 +795,15 @@
       "operations": [
         "点击"
       ],
-      "symptoms": [
-        "空白"
+      "symptoms": [],
+      "specific_pages": [
+        "管理账簿"
       ],
-      "specific_pages": [],
       "specific_elements": [
-        "管理账簿",
         "账簿名称"
       ],
       "page_type": "用户交互类页面",
-      "module": "用户与账号模块"
+      "module": "系统与设置模块"
     }
   },
   {
@@ -816,50 +812,39 @@
       "operations": [
         "点击"
       ],
-      "symptoms": [],
-      "specific_pages": [],
+      "symptoms": [
+        "不生效"
+      ],
+      "specific_pages": [
+        "管理账簿"
+      ],
       "specific_elements": [
         "管理账簿"
       ],
-      "page_type": "用户交互类页面",
-      "module": "用户与账号模块"
+      "page_type": "操作事务类页面",
+      "module": "内容与资源模块"
     }
   },
   {
     "index": "1368",
     "entities": {
-      "operations": [
-        "点击",
-        "重命名",
-        "删除"
-      ],
-      "symptoms": [
-        "缺失"
-      ],
-      "specific_pages": [
-        "账簿管理"
-      ],
-      "specific_elements": [
-        "账簿名字"
-      ],
-      "page_type": "用户交互类页面",
-      "module": "系统与设置模块"
+      "operations": [],
+      "symptoms": [],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "",
+      "module": ""
     }
   },
   {
     "index": "1389",
     "entities": {
-      "operations": [
-        "点击"
-      ],
+      "operations": [],
       "symptoms": [],
       "specific_pages": [],
-      "specific_elements": [
-        "管理账簿",
-        "账簿名"
-      ],
-      "page_type": "用户交互类页面",
-      "module": "用户与账号模块"
+      "specific_elements": [],
+      "page_type": "",
+      "module": ""
     }
   },
   {
@@ -870,42 +855,34 @@
         "保存"
       ],
       "symptoms": [
-        "缺失",
-        "未给用户反馈信息"
+        "缺失"
       ],
       "specific_pages": [],
       "specific_elements": [
+        "科目",
+        "所有",
         "账簿名称"
       ],
-      "page_type": "用户交互类页面",
-      "module": "系统与设置模块"
+      "page_type": "操作事务类页面",
+      "module": "内容与资源模块"
     }
   },
   {
     "index": "1297",
     "entities": {
-      "operations": [
-        "点击",
-        "输入",
-        "保存"
-      ],
-      "symptoms": [
-        "提示"
-      ],
+      "operations": [],
+      "symptoms": [],
       "specific_pages": [],
-      "specific_elements": [
-        "科目名称"
-      ],
-      "page_type": "用户交互类页面",
-      "module": "内容与资源模块"
+      "specific_elements": [],
+      "page_type": "",
+      "module": ""
     }
   },
   {
     "index": "1278",
     "entities": {
       "operations": [
-        "点击",
-        "加载"
+        "点击"
       ],
       "symptoms": [
         "无法连接",
@@ -916,7 +893,7 @@
         "联系我们"
       ],
       "page_type": "用户交互类页面",
-      "module": "网络与通信模块"
+      "module": "用户与账号模块"
     }
   },
   {
@@ -926,52 +903,53 @@
         "点击"
       ],
       "symptoms": [
-        "无法连接"
+        "提示"
       ],
       "specific_pages": [],
       "specific_elements": [
         "帮助"
       ],
-      "page_type": "系统状态类页面",
-      "module": "网络与通信模块"
+      "page_type": "用户交互类页面",
+      "module": "系统与设置模块"
     }
   },
   {
     "index": "1307",
     "entities": {
       "operations": [
-        "点击",
-        "加载"
+        "点击"
       ],
       "symptoms": [
-        "无法连接",
-        "加载失败",
-        "无响应"
+        "不显示",
+        "加载失败"
       ],
       "specific_pages": [],
       "specific_elements": [
         "帮助"
       ],
-      "page_type": "用户交互类页面",
-      "module": "网络与通信模块"
+      "page_type": "导航与结构页面",
+      "module": "系统与设置模块"
     }
   },
   {
     "index": "1276",
     "entities": {
       "operations": [
-        "点击"
+        "点击",
+        "选择"
       ],
       "symptoms": [
-        "勾选或取消勾选失败"
+        "不生效"
       ],
-      "specific_pages": [],
+      "specific_pages": [
+        "赞产负债表"
+      ],
       "specific_elements": [
         "显示菜单",
         "显示图例"
       ],
-      "page_type": "用户交互类页面",
-      "module": "系统与设置模块"
+      "page_type": "数据展示类页面",
+      "module": "订单与交易模块"
     }
   },
   {
@@ -986,15 +964,15 @@
         "不生效"
       ],
       "specific_pages": [
-        "资产负债表",
-        "汇总表"
+        "汇总表",
+        "资产负债表"
       ],
       "specific_elements": [
         "选项按钮",
-        "图例"
+        "显示图例"
       ],
-      "page_type": "数据展示类页面",
-      "module": "内容与资源模块"
+      "page_type": "用户交互类页面",
+      "module": "订单与交易模块"
     }
   },
   {
@@ -1004,29 +982,33 @@
         "点击"
       ],
       "symptoms": [
-        "无法选取"
+        "不生效"
       ],
       "specific_pages": [],
       "specific_elements": [
         "下拉选项",
-        "图例"
+        "显示图例"
       ],
       "page_type": "用户交互类页面",
-      "module": "系统与设置模块"
+      "module": "内容与资源模块"
     }
   },
   {
     "index": "1354",
     "entities": {
       "operations": [
-        "点击"
+        "点击",
+        "点击",
+        "选择"
       ],
       "symptoms": [
-        "无效"
+        "不生效"
       ],
       "specific_pages": [],
       "specific_elements": [
-        "图例"
+        "右上角三个点",
+        "显示图例",
+        "子功能"
       ],
       "page_type": "用户交互类页面",
       "module": "系统与设置模块"
@@ -1040,19 +1022,17 @@
         "点击"
       ],
       "symptoms": [
-        "无响应",
-        "无法进行相关操作",
-        "点击按钮无效"
+        "不生效"
       ],
       "specific_pages": [
         "汇总表页面"
       ],
       "specific_elements": [
-        "右上角的扩展按钮",
-        "图例"
+        "扩展按钮",
+        "显示图例"
       ],
-      "page_type": "用户交互类页面",
-      "module": "系统与设置模块"
+      "page_type": "数据展示类页面",
+      "module": "内容与资源模块"
     }
   },
   {
@@ -1062,16 +1042,17 @@
         "点击"
       ],
       "symptoms": [
-        "无法识别"
+        "不生效"
       ],
-      "specific_pages": [],
-      "specific_elements": [
+      "specific_pages": [
         "报表",
-        "汇总图",
-        "三个点",
-        "图例"
+        "汇总图"
       ],
-      "page_type": "用户交互类页面",
+      "specific_elements": [
+        "右上角的三个点",
+        "显示图例"
+      ],
+      "page_type": "数据展示类页面",
       "module": "内容与资源模块"
     }
   },
@@ -1082,49 +1063,42 @@
         "点击"
       ],
       "symptoms": [
-        "无法识别"
+        "不生效"
       ],
       "specific_pages": [],
       "specific_elements": [
-        "图标",
-        "图例"
+        "右上角的图标",
+        "显示图例",
+        "选项"
       ],
       "page_type": "用户交互类页面",
-      "module": "系统与设置模块"
+      "module": "内容与资源模块"
     }
   },
   {
     "index": "1373",
     "entities": {
-      "operations": [
-        "点击"
-      ],
-      "symptoms": [
-        "无法勾选"
-      ],
-      "specific_pages": [
-        "汇总表"
-      ],
-      "specific_elements": [
-        "图例",
-        "显示设置条件"
-      ],
-      "page_type": "用户交互类页面",
-      "module": "系统与设置模块"
+      "operations": [],
+      "symptoms": [],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "",
+      "module": ""
     }
   },
   {
     "index": "1396",
     "entities": {
       "operations": [
-        "点击"
+        "点击",
+        "选择"
       ],
       "symptoms": [
-        "无法识别"
+        "不生效"
       ],
       "specific_pages": [],
       "specific_elements": [
-        "图例"
+        "显示图例"
       ],
       "page_type": "用户交互类页面",
       "module": "内容与资源模块"
@@ -1133,20 +1107,12 @@
   {
     "index": "1400",
     "entities": {
-      "operations": [
-        "点击",
-        "选择"
-      ],
-      "symptoms": [
-        "未调用",
-        "功能未实现"
-      ],
+      "operations": [],
+      "symptoms": [],
       "specific_pages": [],
-      "specific_elements": [
-        "右上角的对勾"
-      ],
-      "page_type": "用户交互类页面",
-      "module": "系统与设置模块"
+      "specific_elements": [],
+      "page_type": "",
+      "module": ""
     }
   },
   {
@@ -1156,13 +1122,13 @@
         "进入"
       ],
       "symptoms": [
-        "缺失"
+        "不显示"
       ],
       "specific_pages": [
         "定时任务页面"
       ],
       "specific_elements": [
-        "控件"
+        "+控件"
       ],
       "page_type": "用户交互类页面",
       "module": "系统与设置模块"
@@ -1172,15 +1138,16 @@
     "index": "1312",
     "entities": {
       "operations": [
-        "点击",
-        "修改"
+        "点击"
       ],
       "symptoms": [
         "缺失"
       ],
       "specific_pages": [],
       "specific_elements": [
-        "右上角“+”号"
+        "修改交易计划",
+        "定时备份",
+        "+号"
       ],
       "page_type": "用户交互类页面",
       "module": "订单与交易模块"
@@ -1193,6 +1160,7 @@
         "点击"
       ],
       "symptoms": [
+        "提示",
         "停止运行"
       ],
       "specific_pages": [],
@@ -1211,14 +1179,15 @@
         "点击"
       ],
       "symptoms": [
-        "不正常停止",
-        "崩溃"
+        "停止运行"
       ],
-      "specific_pages": [],
+      "specific_pages": [
+        "设置通用"
+      ],
       "specific_elements": [
         "在Play Store上推荐"
       ],
-      "page_type": "系统状态类页面",
+      "page_type": "用户交互类页面",
       "module": "系统与设置模块"
     }
   },
@@ -1231,145 +1200,104 @@
         "确认"
       ],
       "symptoms": [
-        "停止运行",
-        "返回异常"
+        "停止运行"
       ],
       "specific_pages": [
+        "管理账簿的侧边栏",
         "科目界面"
       ],
       "specific_elements": [
-        "Play Store上推荐"
+        "侧边栏",
+        "推荐",
+        "确认"
       ],
       "page_type": "用户交互类页面",
-      "module": "内容与资源模块"
+      "module": "订单与交易模块"
     }
   },
   {
     "index": "1402",
     "entities": {
-      "operations": [
-        "点击",
-        "选择"
-      ],
-      "symptoms": [
-        "停止运行"
-      ],
+      "operations": [],
+      "symptoms": [],
       "specific_pages": [],
       "specific_elements": [],
-      "page_type": "系统状态类页面",
-      "module": "系统与设置模块"
+      "page_type": "",
+      "module": ""
     }
   },
   {
     "index": "1267",
     "entities": {
-      "operations": [
-        "点击",
-        "输入",
-        "保存"
-      ],
-      "symptoms": [
-        "停止运行"
-      ],
-      "specific_pages": [
-        "科目页面"
-      ],
-      "specific_elements": [
-        "科目名称",
-        "+号"
-      ],
-      "page_type": "用户交互类页面",
-      "module": "内容与资源模块"
+      "operations": [],
+      "symptoms": [],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "",
+      "module": ""
     }
   },
   {
     "index": "1320",
     "entities": {
-      "operations": [
-        "进入",
-        "输入",
-        "点击",
-        "保存"
-      ],
-      "symptoms": [
-        "崩溃",
-        "退出"
-      ],
-      "specific_pages": [
-        "创建科目页面"
-      ],
-      "specific_elements": [
-        "科目名称"
-      ],
-      "page_type": "用户交互类页面",
-      "module": "内容与资源模块"
+      "operations": [],
+      "symptoms": [],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "",
+      "module": ""
     }
   },
   {
     "index": "1303",
     "entities": {
-      "operations": [
-        "点击",
-        "修改",
-        "保存"
-      ],
-      "symptoms": [
-        "停止运行"
-      ],
+      "operations": [],
+      "symptoms": [],
       "specific_pages": [],
       "specific_elements": [],
-      "page_type": "操作事务类页面",
-      "module": "订单与交易模块"
+      "page_type": "",
+      "module": ""
     }
   },
   {
     "index": "1304",
     "entities": {
-      "operations": [
-        "点击",
-        "修改",
-        "保存"
-      ],
-      "symptoms": [
-        "停止运行"
-      ],
+      "operations": [],
+      "symptoms": [],
       "specific_pages": [],
       "specific_elements": [],
-      "page_type": "操作事务类页面",
-      "module": "订单与交易模块"
+      "page_type": "",
+      "module": ""
     }
   },
   {
     "index": "1305",
     "entities": {
-      "operations": [
-        "点击",
-        "修改",
-        "保存"
-      ],
-      "symptoms": [
-        "停止运行"
-      ],
+      "operations": [],
+      "symptoms": [],
       "specific_pages": [],
       "specific_elements": [],
-      "page_type": "操作事务类页面",
-      "module": "系统与设置模块"
+      "page_type": "",
+      "module": ""
     }
   },
   {
     "index": "1328",
     "entities": {
       "operations": [
+        "点击",
         "修改",
-        "添加",
         "保存"
       ],
       "symptoms": [
-        "无响应",
-        "停止运行"
+        "无响应"
       ],
       "specific_pages": [],
-      "specific_elements": [],
+      "specific_elements": [
+        "修改交易",
+        "添加备注",
+        "保存"
+      ],
       "page_type": "操作事务类页面",
       "module": "订单与交易模块"
     }
@@ -1377,14 +1305,14 @@
   {
     "index": "1308",
     "entities": {
-      "operations": [],
-      "symptoms": [],
-      "specific_pages": [],
-      "specific_elements": [
-        "通用",
-        "界面",
-        "常规界面"
+      "operations": [
+        "点击"
       ],
+      "symptoms": [],
+      "specific_pages": [
+        "通用"
+      ],
+      "specific_elements": [],
       "page_type": "用户交互类页面",
       "module": "系统与设置模块"
     }
@@ -1396,7 +1324,7 @@
         "点击"
       ],
       "symptoms": [
-        "显示不全"
+        "缺失"
       ],
       "specific_pages": [],
       "specific_elements": [
@@ -1417,12 +1345,14 @@
       "symptoms": [
         "缺失"
       ],
-      "specific_pages": [],
+      "specific_pages": [
+        "报表"
+      ],
       "specific_elements": [
         "净值"
       ],
-      "page_type": "",
-      "module": ""
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
     }
   },
   {
@@ -1430,17 +1360,16 @@
     "entities": {
       "operations": [
         "点击",
-        "修改",
-        "设定",
-        "保存"
+        "输入"
       ],
       "symptoms": [
-        "提示",
-        "报错"
+        "缺失"
       ],
       "specific_pages": [],
       "specific_elements": [
-        "交易金额"
+        "修改交易",
+        "保存",
+        "金额"
       ],
       "page_type": "操作事务类页面",
       "module": "订单与交易模块"
@@ -1449,160 +1378,100 @@
   {
     "index": "1346",
     "entities": {
-      "operations": [
-        "点击",
-        "修改"
-      ],
-      "symptoms": [
-        "不显示",
-        "空白"
-      ],
-      "specific_pages": [
-        "最近页面"
-      ],
-      "specific_elements": [
-        "科目"
-      ],
-      "page_type": "用户交互类页面",
-      "module": "内容与资源模块"
+      "operations": [],
+      "symptoms": [],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "",
+      "module": ""
     }
   },
   {
     "index": "1350",
     "entities": {
-      "operations": [
-        "点击"
-      ],
-      "symptoms": [
-        "缺失",
-        "不显示"
-      ],
+      "operations": [],
+      "symptoms": [],
       "specific_pages": [],
-      "specific_elements": [
-        "科目"
-      ],
-      "page_type": "用户交互类页面",
-      "module": "内容与资源模块"
+      "specific_elements": [],
+      "page_type": "",
+      "module": ""
     }
   },
   {
     "index": "1380",
     "entities": {
-      "operations": [
-        "点击"
-      ],
-      "symptoms": [
-        "缺失",
-        "空白"
-      ],
-      "specific_pages": [
-        "最近的科目页面"
-      ],
-      "specific_elements": [
-        "新建科目"
-      ],
-      "page_type": "数据展示类页面",
-      "module": "内容与资源模块"
+      "operations": [],
+      "symptoms": [],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "",
+      "module": ""
     }
   },
   {
     "index": "1369",
     "entities": {
-      "operations": [
-        "点击"
-      ],
-      "symptoms": [
-        "无效"
-      ],
-      "specific_pages": [
-        "最近的"
-      ],
-      "specific_elements": [
-        "加号"
-      ],
-      "page_type": "用户交互类页面",
-      "module": "内容与资源模块"
+      "operations": [],
+      "symptoms": [],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "",
+      "module": ""
     }
   },
   {
     "index": "1371",
     "entities": {
-      "operations": [
-        "点击"
-      ],
-      "symptoms": [
-        "残留"
-      ],
-      "specific_pages": [
-        "通用"
-      ],
+      "operations": [],
+      "symptoms": [],
+      "specific_pages": [],
       "specific_elements": [],
-      "page_type": "用户交互类页面",
-      "module": "系统与设置模块"
+      "page_type": "",
+      "module": ""
     }
   },
   {
     "index": "1372",
     "entities": {
-      "operations": [
-        "点击",
-        "进入"
-      ],
-      "symptoms": [
-        "残留"
-      ],
-      "specific_pages": [
-        "通用"
-      ],
-      "specific_elements": [
-        "滚动条"
-      ],
-      "page_type": "用户交互类页面",
-      "module": "系统与设置模块"
+      "operations": [],
+      "symptoms": [],
+      "specific_pages": [],
+      "specific_elements": [],
+      "page_type": "",
+      "module": ""
     }
   },
   {
     "index": "1374",
     "entities": {
-      "operations": [
-        "点击"
-      ],
-      "symptoms": [
-        "布局缺陷"
-      ],
-      "specific_pages": [
-        "通用"
-      ],
+      "operations": [],
+      "symptoms": [],
+      "specific_pages": [],
       "specific_elements": [],
-      "page_type": "用户交互类页面",
-      "module": "系统与设置模块"
+      "page_type": "",
+      "module": ""
     }
   },
   {
     "index": "1375",
     "entities": {
       "operations": [],
-      "symptoms": [
-        "错位",
-        "不美观"
-      ],
+      "symptoms": [],
       "specific_pages": [],
-      "specific_elements": [
-        "常规"
-      ],
-      "page_type": "用户交互类页面",
-      "module": "系统与设置模块"
+      "specific_elements": [],
+      "page_type": "",
+      "module": ""
     }
   },
   {
     "index": "1376",
     "entities": {
-      "operations": [],
+      "operations": [
+        "点击"
+      ],
       "symptoms": [],
       "specific_pages": [],
-      "specific_elements": [
-        "通用界面"
-      ],
+      "specific_elements": [],
       "page_type": "用户交互类页面",
       "module": "系统与设置模块"
     }
@@ -1614,10 +1483,12 @@
         "点击"
       ],
       "symptoms": [
-        "多余"
+        "错位"
       ],
       "specific_pages": [],
-      "specific_elements": [],
+      "specific_elements": [
+        "通用"
+      ],
       "page_type": "用户交互类页面",
       "module": "系统与设置模块"
     }
@@ -1625,10 +1496,11 @@
   {
     "index": "1392",
     "entities": {
-      "operations": [],
+      "operations": [
+        "点击"
+      ],
       "symptoms": [
-        "布局上的问题",
-        "影响美观"
+        "错位"
       ],
       "specific_pages": [],
       "specific_elements": [
@@ -1644,12 +1516,12 @@
       "operations": [
         "点击"
       ],
-      "symptoms": [
-        "不美观"
-      ],
+      "symptoms": [],
       "specific_pages": [],
-      "specific_elements": [],
-      "page_type": "系统状态类页面",
+      "specific_elements": [
+        "通用"
+      ],
+      "page_type": "用户交互类页面",
       "module": "系统与设置模块"
     }
   },
@@ -1660,11 +1532,12 @@
         "点击"
       ],
       "symptoms": [],
-      "specific_pages": [],
-      "specific_elements": [
+      "specific_pages": [
+        "通用",
         "常规"
       ],
-      "page_type": "用户交互类页面",
+      "specific_elements": [],
+      "page_type": "导航与结构页面",
       "module": "系统与设置模块"
     }
   },
@@ -1675,13 +1548,12 @@
         "点击"
       ],
       "symptoms": [
-        "缺失",
         "不显示"
       ],
-      "specific_pages": [],
-      "specific_elements": [
+      "specific_pages": [
         "报表界面"
       ],
+      "specific_elements": [],
       "page_type": "数据展示类页面",
       "module": "内容与资源模块"
     }
@@ -1689,14 +1561,16 @@
   {
     "index": "1384",
     "entities": {
-      "operations": [],
-      "symptoms": [
-        "无响应",
-        "缺失"
+      "operations": [
+        "点击"
       ],
-      "specific_pages": [],
+      "symptoms": [
+        "不生效"
+      ],
+      "specific_pages": [
+        "报表"
+      ],
       "specific_elements": [
-        "报表",
         "饼图"
       ],
       "page_type": "数据展示类页面",
@@ -1710,7 +1584,6 @@
         "点击"
       ],
       "symptoms": [
-        "未实现",
         "不显示"
       ],
       "specific_pages": [],
@@ -1725,16 +1598,15 @@
     "index": "1398",
     "entities": {
       "operations": [
-        "查看"
+        "点击"
       ],
       "symptoms": [
-        "缺失",
         "不显示"
       ],
-      "specific_pages": [],
-      "specific_elements": [
+      "specific_pages": [
         "报表"
       ],
+      "specific_elements": [],
       "page_type": "数据展示类页面",
       "module": "内容与资源模块"
     }
@@ -1746,15 +1618,14 @@
         "点击"
       ],
       "symptoms": [
-        "不显示",
-        "缺失"
+        "提示"
       ],
-      "specific_pages": [],
-      "specific_elements": [
+      "specific_pages": [
         "定时任务",
         "交易"
       ],
-      "page_type": "用户交互类页面",
+      "specific_elements": [],
+      "page_type": "操作事务类页面",
       "module": "订单与交易模块"
     }
   },
@@ -1762,18 +1633,20 @@
     "index": "1382",
     "entities": {
       "operations": [
+        "点击",
         "点击"
       ],
       "symptoms": [
-        "无显示"
+        "不显示"
       ],
-      "specific_pages": [],
-      "specific_elements": [
-        "定时计划",
-        "交易",
+      "specific_pages": [
         "定时任务"
       ],
-      "page_type": "操作事务类页面",
+      "specific_elements": [
+        "定时计划",
+        "交易"
+      ],
+      "page_type": "数据展示类页面",
       "module": "订单与交易模块"
     }
   },
@@ -1792,20 +1665,18 @@
         "定时备份"
       ],
       "page_type": "数据展示类页面",
-      "module": "系统与设置模块"
+      "module": "订单与交易模块"
     }
   },
   {
     "index": "1347",
     "entities": {
       "operations": [
+        "点击",
         "搜索"
       ],
       "symptoms": [
-        "未调用",
-        "不生效",
-        "缺失",
-        "不显示"
+        "缺失"
       ],
       "specific_pages": [],
       "specific_elements": [],
@@ -1818,15 +1689,14 @@
     "entities": {
       "operations": [
         "保存",
+        "点击",
         "搜索"
       ],
       "symptoms": [
         "缺失"
       ],
       "specific_pages": [],
-      "specific_elements": [
-        "子科目名称"
-      ],
+      "specific_elements": [],
       "page_type": "用户交互类页面",
       "module": "内容与资源模块"
     }
@@ -1835,15 +1705,17 @@
     "index": "1381",
     "entities": {
       "operations": [
+        "点击",
         "输入"
       ],
       "symptoms": [
-        "停止运行",
-        "崩溃"
+        "停止运行"
       ],
       "specific_pages": [],
-      "specific_elements": [],
-      "page_type": "操作事务类页面",
+      "specific_elements": [
+        "新建交易"
+      ],
+      "page_type": "用户交互类页面",
       "module": "订单与交易模块"
     }
   },
@@ -1854,15 +1726,14 @@
         "点击"
       ],
       "symptoms": [
-        "无响应",
-        "停止运行"
+        "无响应"
       ],
       "specific_pages": [],
       "specific_elements": [
-        "平均线"
+        "显示平均线"
       ],
       "page_type": "用户交互类页面",
-      "module": "系统与设置模块"
+      "module": "内容与资源模块"
     }
   },
   {
@@ -1875,14 +1746,14 @@
         "保存"
       ],
       "symptoms": [
-        "提示",
-        "无法创建"
+        "提示"
       ],
       "specific_pages": [
         "下载页面"
       ],
       "specific_elements": [
-        "带加号按钮"
+        "带加号按钮",
+        "保存"
       ],
       "page_type": "用户交互类页面",
       "module": "内容与资源模块"
@@ -1895,27 +1766,28 @@
         "点击"
       ],
       "symptoms": [
-        "无响应"
+        "无响应",
+        "缺失"
       ],
       "specific_pages": [
-        "管理账簿"
+        "管理账簿",
+        "账簿界面"
       ],
       "specific_elements": [
         "账簿2"
       ],
       "page_type": "用户交互类页面",
-      "module": "用户与账号模块"
+      "module": "内容与资源模块"
     }
   },
   {
     "index": "1261",
     "entities": {
       "operations": [
-        "加载"
+        "点击"
       ],
       "symptoms": [
-        "加载失败",
-        "无响应"
+        "加载失败"
       ],
       "specific_pages": [],
       "specific_elements": [
@@ -1930,6 +1802,7 @@
     "entities": {
       "operations": [
         "点击",
+        "进入",
         "查看"
       ],
       "symptoms": [
@@ -1940,7 +1813,8 @@
       ],
       "specific_elements": [
         "输入框",
-        "下划线"
+        "下划线",
+        "联系我们"
       ],
       "page_type": "用户交互类页面",
       "module": "系统与设置模块"
@@ -1953,15 +1827,17 @@
         "点击"
       ],
       "symptoms": [
-        "不显示"
+        "提示",
+        "缺失"
       ],
       "specific_pages": [],
       "specific_elements": [
-        "更多选项按钮",
-        "图例"
+        "现金流",
+        "右上角更多选项按钮",
+        "显示图例"
       ],
       "page_type": "数据展示类页面",
-      "module": "内容与资源模块"
+      "module": "订单与交易模块"
     }
   },
   {
@@ -1969,12 +1845,9 @@
     "entities": {
       "operations": [
         "点击",
-        "输入",
-        "搜索"
+        "输入"
       ],
-      "symptoms": [
-        "显示所有"
-      ],
+      "symptoms": [],
       "specific_pages": [],
       "specific_elements": [
         "搜索栏"
@@ -1991,8 +1864,7 @@
         "输入"
       ],
       "symptoms": [
-        "停止运行",
-        "提示"
+        "停止运行"
       ],
       "specific_pages": [],
       "specific_elements": [
@@ -2011,12 +1883,12 @@
       "symptoms": [
         "重叠"
       ],
-      "specific_pages": [],
-      "specific_elements": [
+      "specific_pages": [
         "管理账簿"
       ],
+      "specific_elements": [],
       "page_type": "用户交互类页面",
-      "module": "用户与账号模块"
+      "module": "内容与资源模块"
     }
   },
   {
@@ -2027,7 +1899,7 @@
         "选择"
       ],
       "symptoms": [
-        "不一致"
+        "错位"
       ],
       "specific_pages": [
         "报表界面"
@@ -2050,13 +1922,12 @@
       "symptoms": [
         "不显示"
       ],
-      "specific_pages": [
+      "specific_pages": [],
+      "specific_elements": [
+        "定时任务",
         "交易"
       ],
-      "specific_elements": [
-        "定时任务的名称"
-      ],
-      "page_type": "用户交互类页面",
+      "page_type": "数据展示类页面",
       "module": "订单与交易模块"
     }
   },
@@ -2064,17 +1935,18 @@
     "index": "1284",
     "entities": {
       "operations": [
+        "点击",
         "导出",
-        "填写",
-        "保存"
+        "保存",
+        "输入"
       ],
       "symptoms": [
-        "不正常退出"
+        "退出"
       ],
       "specific_pages": [],
       "specific_elements": [],
-      "page_type": "",
-      "module": ""
+      "page_type": "操作事务类页面",
+      "module": "订单与交易模块"
     }
   },
   {
@@ -2091,7 +1963,7 @@
       "specific_elements": [
         "占位科目"
       ],
-      "page_type": "用户交互类页面",
+      "page_type": "操作事务类页面",
       "module": "内容与资源模块"
     }
   },
@@ -2100,16 +1972,23 @@
     "entities": {
       "operations": [
         "点击",
+        "输入",
         "保存",
         "进入"
       ],
       "symptoms": [
         "停止运行"
       ],
-      "specific_pages": [],
+      "specific_pages": [
+        "支出",
+        "报表"
+      ],
       "specific_elements": [
+        "保险",
         "人寿保险",
-        "健康保险"
+        "健康保险",
+        "保存",
+        "饼图"
       ],
       "page_type": "操作事务类页面",
       "module": "订单与交易模块"
@@ -2122,14 +2001,13 @@
         "点击"
       ],
       "symptoms": [
-        "无响应",
-        "停止运行"
+        "无响应"
       ],
       "specific_pages": [],
       "specific_elements": [
-        "平均线"
+        "显示平均线"
       ],
-      "page_type": "数据展示类页面",
+      "page_type": "用户交互类页面",
       "module": "内容与资源模块"
     }
   },
@@ -2137,17 +2015,16 @@
     "index": "1300",
     "entities": {
       "operations": [
-        "点击",
-        "创建"
+        "点击"
       ],
       "symptoms": [
-        "缺失",
         "不显示"
       ],
       "specific_pages": [],
       "specific_elements": [
+        "最近的选项",
         "加号",
-        "选项"
+        "所有选项"
       ],
       "page_type": "用户交互类页面",
       "module": "内容与资源模块"
@@ -2164,11 +2041,10 @@
       ],
       "specific_pages": [],
       "specific_elements": [
-        "现金流",
         "现金流折线图"
       ],
       "page_type": "数据展示类页面",
-      "module": "内容与资源模块"
+      "module": "订单与交易模块"
     }
   },
   {
@@ -2176,13 +2052,16 @@
     "entities": {
       "operations": [
         "点击",
-        "新建"
+        "输入"
       ],
       "symptoms": [
-        "缺失"
+        "不显示"
       ],
       "specific_pages": [],
-      "specific_elements": [],
+      "specific_elements": [
+        "所有",
+        "新建"
+      ],
       "page_type": "用户交互类页面",
       "module": "内容与资源模块"
     }
@@ -2194,14 +2073,17 @@
         "点击"
       ],
       "symptoms": [
-        "停止运行"
+        "停止运行",
+        "退出"
       ],
-      "specific_pages": [],
+      "specific_pages": [
+        "主界面"
+      ],
       "specific_elements": [
         "柱状图"
       ],
       "page_type": "数据展示类页面",
-      "module": "系统与设置模块"
+      "module": "订单与交易模块"
     }
   },
   {
@@ -2212,12 +2094,14 @@
         "打开"
       ],
       "symptoms": [
-        "异常"
+        "报错"
       ],
       "specific_pages": [],
-      "specific_elements": [],
-      "page_type": "",
-      "module": ""
+      "specific_elements": [
+        "收藏"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
     }
   },
   {
@@ -2232,8 +2116,12 @@
         "停止运行"
       ],
       "specific_pages": [],
-      "specific_elements": [],
-      "page_type": "操作事务类页面",
+      "specific_elements": [
+        "新建交易",
+        "金额",
+        "保存"
+      ],
+      "page_type": "用户交互类页面",
       "module": "订单与交易模块"
     }
   },
@@ -2244,10 +2132,12 @@
         "点击"
       ],
       "symptoms": [
-        "缺失",
-        "不显示"
+        "缺失"
       ],
-      "specific_pages": [],
+      "specific_pages": [
+        "定时任务",
+        "交易"
+      ],
       "specific_elements": [
         "新建按钮"
       ],
@@ -2260,16 +2150,20 @@
     "entities": {
       "operations": [
         "点击",
+        "输入",
         "保存",
         "导出"
       ],
       "symptoms": [
-        "无法保存",
-        "无法导出"
+        "不生效"
       ],
       "specific_pages": [],
-      "specific_elements": [],
-      "page_type": "操作事务类页面",
+      "specific_elements": [
+        "导出交易",
+        "相关信息",
+        "保存"
+      ],
+      "page_type": "用户交互类页面",
       "module": "订单与交易模块"
     }
   },
@@ -2284,9 +2178,11 @@
         "缓慢"
       ],
       "specific_pages": [],
-      "specific_elements": [],
+      "specific_elements": [
+        "帮助"
+      ],
       "page_type": "用户交互类页面",
-      "module": "网络与通信模块"
+      "module": "内容与资源模块"
     }
   },
   {
@@ -2297,7 +2193,7 @@
         "导出"
       ],
       "symptoms": [
-        "不显示"
+        "提示"
       ],
       "specific_pages": [],
       "specific_elements": [
@@ -2312,18 +2208,21 @@
     "index": "1357",
     "entities": {
       "operations": [
-        "创建",
-        "收藏",
+        "操作",
+        "保存",
         "进入"
       ],
-      "symptoms": [],
+      "symptoms": [
+        "重叠"
+      ],
       "specific_pages": [
+        "利息收入",
         "收藏模块"
       ],
       "specific_elements": [
         "科目"
       ],
-      "page_type": "用户交互类页面",
+      "page_type": "操作事务类页面",
       "module": "内容与资源模块"
     }
   },
@@ -2334,15 +2233,14 @@
         "打开"
       ],
       "symptoms": [
-        "耗时过长",
-        "不显示"
+        "耗时过长"
       ],
       "specific_pages": [
         "帮助页面"
       ],
       "specific_elements": [],
       "page_type": "用户交互类页面",
-      "module": "网络与通信模块"
+      "module": "内容与资源模块"
     }
   },
   {
@@ -2355,13 +2253,15 @@
         "保存"
       ],
       "symptoms": [
-        "无法识别",
         "不生效"
       ],
       "specific_pages": [],
       "specific_elements": [
+        "修改交易",
+        "什么快递开始",
         "费用",
-        "时间"
+        "时间",
+        "保存"
       ],
       "page_type": "操作事务类页面",
       "module": "订单与交易模块"
@@ -2371,10 +2271,11 @@
     "index": "1365",
     "entities": {
       "operations": [
+        "选择",
         "点击"
       ],
       "symptoms": [
-        "位置错误"
+        "无法识别"
       ],
       "specific_pages": [],
       "specific_elements": [
@@ -2393,7 +2294,6 @@
         "点击"
       ],
       "symptoms": [
-        "缺失",
         "不显示"
       ],
       "specific_pages": [],
@@ -2413,9 +2313,11 @@
       "symptoms": [
         "错位"
       ],
-      "specific_pages": [],
+      "specific_pages": [
+        "Afi 界面"
+      ],
       "specific_elements": [
-        "Afi"
+        "金额单位"
       ],
       "page_type": "用户交互类页面",
       "module": "订单与交易模块"
@@ -2426,14 +2328,16 @@
     "entities": {
       "operations": [
         "点击",
-        "导出",
-        "填写"
+        "输入",
+        "导出"
       ],
       "symptoms": [
-        "功能失效"
+        "不生效"
       ],
       "specific_pages": [],
-      "specific_elements": [],
+      "specific_elements": [
+        "导出交易"
+      ],
       "page_type": "操作事务类页面",
       "module": "订单与交易模块"
     }
@@ -2443,14 +2347,18 @@
     "entities": {
       "operations": [
         "点击",
-        "导出"
+        "选择",
+        "导出",
+        "保存"
       ],
       "symptoms": [
-        "无法连接"
+        "不生效"
       ],
       "specific_pages": [],
       "specific_elements": [
-        "文件格式"
+        "导出交易",
+        "文件格式",
+        "导出"
       ],
       "page_type": "操作事务类页面",
       "module": "订单与交易模块"
@@ -2463,15 +2371,15 @@
         "点击"
       ],
       "symptoms": [
-        "崩溃",
         "退出"
       ],
       "specific_pages": [],
       "specific_elements": [
-        "playstore"
+        "管理账簿",
+        "playstore上推荐"
       ],
       "page_type": "用户交互类页面",
-      "module": "搜索与推荐模块"
+      "module": "系统与设置模块"
     }
   }
 ]

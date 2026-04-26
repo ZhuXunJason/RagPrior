@@ -22,7 +22,6 @@ from typing import List, Optional
 import numpy as np
 
 from config import (
-    create_openai_client,
     get_base_url,
     get_duplicate_threshold,
     get_embedding_model,
@@ -40,11 +39,11 @@ from kg.classifier import classify_all, llm_fallback_classify
 from kg.severity import compute_all_severities
 from prompt_kg import get_kg_prompt
 from prompt import load_reports
-from llm import ask_gpt
+from llm import ask_completion
 from parse import extract_report_num
 from main import REPORTS_MSG
 
-_CLIENT = create_openai_client()
+KG_RANKING_MAX_TOKEN = 32768
 
 # ──────────────────────────────────────────────────────────────────────────────
 # 工具：解析编号列表（与 parse_v3 逻辑等价，直接内联避免依赖 mode 参数）
@@ -86,6 +85,15 @@ def _parse_numbered_sequence(s: str) -> List[int]:
 
 def _format_result_sequence(seq: List[int]) -> str:
     return "\n".join(f"Report {n}:" for n in seq)
+
+
+def _validate_subset_sequence(seq: List[int], expected_count: int) -> None:
+    if not seq:
+        raise ValueError("Empty ranking sequence parsed from model response.")
+    if expected_count >= 20 and len(seq) < max(5, expected_count // 4):
+        raise ValueError(
+            f"Ranking sequence too short for {expected_count} reports: {len(seq)}"
+        )
 
 
 def _default_severity() -> dict:
@@ -256,7 +264,7 @@ def run_pipeline(
     kg = BugKnowledgeGraph()
     kg.enrich_from_extractions(reports)           # 将 specific_pages/elements 加入图
     classify_all(reports, kg, model=model)                     # 图匹配打分
-    llm_fallback_classify(reports, _CLIENT, model=model)       # 兜底：对无匹配报告用 LLM 分类
+    llm_fallback_classify(reports, model=model)                # 兜底：对无匹配报告用 LLM 分类
 
     print(f"[graph]  {kg.summary()}")
 
@@ -308,12 +316,27 @@ def run_pipeline(
     prompt = get_kg_prompt(reports, kg)
     for i in repeats:
         print(f"  [LLM] iteration-{i}...")
-        response, token_p, token_r = ask_gpt(prompt, model=model)
+        llm_result = ask_completion(
+            prompt,
+            model=model,
+            max_token=KG_RANKING_MAX_TOKEN,
+        )
+        response = llm_result.get("content", "")
+        token_p = llm_result.get("prompt_tokens", 0)
+        token_r = llm_result.get("completion_tokens", 0)
         with open(f"response/{app}-{mode}-{i}.txt", encoding="utf-8", mode="w") as f:
-            f.write(f"{response}\n{token_p}\n{token_r}")
+            if response:
+                f.write(f"{response}\n")
+            f.write(f"Input Tokens: {token_p}\n")
+            f.write(f"Output Tokens: {token_r}\n")
+            f.write(f"Provider: {llm_result.get('provider', '')}\n")
+            f.write(f"Finish Reason: {llm_result.get('finish_reason', '')}\n")
         # 立即解析，写 result
         try:
+            if not response.strip():
+                raise ValueError("Model returned empty content.")
             subset_sequence = _parse_numbered_sequence(response)
+            _validate_subset_sequence(subset_sequence, len(reports))
 
             # If pre-clustering is active, expand compressed ranking back to all reports.
             if dedup_result is not None:
@@ -404,7 +427,7 @@ if __name__ == "__main__":
     parser.add_argument("--mode", type=str, default="kg", choices=["kg", "kg-only"], help="pipeline mode")
     parser.add_argument("--model", type=str, default="gemini-3-flash-preview", help="LLM model name")
     parser.add_argument("--embedding-model", type=str, default="gemini-embedding-2-preview", help="embedding model name")
-    parser.add_argument("--dedup-threshold", type=float, default=None, help="dedup threshold (default: config value)")
+    parser.add_argument("--dedup-threshold", type=float, default=0.85, help="dedup threshold (default: config value)")
     parser.add_argument("--skip-severity", default=True, action=argparse.BooleanOptionalAction, help="skip severity calculation")
     parser.add_argument("--use-severity-sort", action="store_true", default=False, help="use severity-only sort instead of LLM")
     parser.add_argument("--force-refresh", action="store_true", default=False, help="force re-extract entities")
