@@ -250,13 +250,13 @@ def run_pipeline(
             reports = reports_all
 
     # ── Phase 1：实体提取 ──────────────────────────────────────────────────────
-    reports = extract_all(reports, app=app, force_refresh=force_refresh)
+    reports = extract_all(reports, app=app, force_refresh=force_refresh, model=model)
 
     # ── Phase 2：KG 扩充 + 图匹配分类 ─────────────────────────────────────────
     kg = BugKnowledgeGraph()
     kg.enrich_from_extractions(reports)           # 将 specific_pages/elements 加入图
-    classify_all(reports, kg)                     # 图匹配打分
-    llm_fallback_classify(reports, _CLIENT)       # 兜底：对无匹配报告用 LLM 分类
+    classify_all(reports, kg, model=model)                     # 图匹配打分
+    llm_fallback_classify(reports, _CLIENT, model=model)       # 兜底：对无匹配报告用 LLM 分类
 
     print(f"[graph]  {kg.summary()}")
 
@@ -399,10 +399,10 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="KG-RAG enhanced pipeline")
-    parser.add_argument("--app", type=int, default=7, help="app number")
+    parser.add_argument("--app", type=int, default=1, help="app number")
     parser.add_argument("--repeat", type=int, default=3, help="repeat times")
     parser.add_argument("--mode", type=str, default="kg", choices=["kg", "kg-only"], help="pipeline mode")
-    parser.add_argument("--model", type=str, default="gpt-5.4", help="LLM model name")
+    parser.add_argument("--model", type=str, default="gemini-3-flash-preview", help="LLM model name")
     parser.add_argument("--embedding-model", type=str, default="gemini-embedding-2-preview", help="embedding model name")
     parser.add_argument("--dedup-threshold", type=float, default=None, help="dedup threshold (default: config value)")
     parser.add_argument("--skip-severity", default=True, action=argparse.BooleanOptionalAction, help="skip severity calculation")

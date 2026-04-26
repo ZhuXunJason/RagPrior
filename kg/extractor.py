@@ -85,7 +85,7 @@ def _default_entities() -> Dict[str, Any]:
     }
 
 
-def _extract_single(description: str, debug: bool = False) -> Dict[str, Any]:
+def _extract_single(description: str, debug: bool = False, model: str = "gpt-4o-mini") -> Dict[str, Any]:
     prompt = _EXTRACT_PROMPT.format(
         description=description,
         ops="、".join(ALL_OPERATIONS),
@@ -95,7 +95,7 @@ def _extract_single(description: str, debug: bool = False) -> Dict[str, Any]:
     )
     try:
         resp = _CLIENT.chat.completions.create(
-            model="gpt-4o-mini",
+            model=model,
             messages=[{"role": "user", "content": prompt}],
             temperature=0.0,
             max_tokens=400,
@@ -122,6 +122,7 @@ def extract_all(
     reports: List[Dict[str, Any]],
     app: int,
     force_refresh: bool = False,
+    model: str = "gpt-4o-mini",
 ) -> List[Dict[str, Any]]:
     """
     对整个应用的所有报告进行实体提取，结果写回报告的 "entities" 字段。
@@ -130,6 +131,7 @@ def extract_all(
         reports:       load_reports() 返回的原始报告列表
         app:           应用编号（用于缓存）
         force_refresh: 忽略缓存，重新提取
+        model:         提取用的 LLM 模型名
 
     Returns:
         原列表，每个元素增加 "entities" 字段
@@ -149,7 +151,7 @@ def extract_all(
     print(f"[extractor] Extracting entities for app{app} ({len(reports)} reports)...")
     to_cache = []
     for i, r in enumerate(reports):
-        entities = _extract_single(r["description"])
+        entities = _extract_single(r["description"], model=model)
         r["entities"] = entities
         to_cache.append({"index": r["index"], "entities": entities})
         if (i + 1) % 20 == 0 or (i + 1) == len(reports):

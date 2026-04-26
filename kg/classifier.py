@@ -118,6 +118,7 @@ def classify_report(
 def classify_all(
     reports: List[Dict[str, Any]],
     kg: BugKnowledgeGraph,
+    model: str = "gpt-4o-mini",
 ) -> List[Dict[str, Any]]:
     idf = compute_idf(kg)
     fallback = sum(1 for r in reports
@@ -146,7 +147,7 @@ Return ONLY the bug type name (exactly as listed), nothing else.
 """.strip()
 
 
-def llm_fallback_classify(reports: List[Dict[str, Any]], client) -> None:
+def llm_fallback_classify(reports: List[Dict[str, Any]], client, model: str = "gpt-4o-mini") -> None:
     """对 fallback==True 的报告用 LLM 做一次兜底分类，直接修改 report。"""
     targets = [r for r in reports if r.get("kg_class", {}).get("fallback")]
     if not targets:
@@ -162,7 +163,7 @@ def llm_fallback_classify(reports: List[Dict[str, Any]], client) -> None:
         )
         try:
             resp = client.chat.completions.create(
-                model="gpt-4o-mini",
+                model=model,
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.0,
                 max_tokens=30,

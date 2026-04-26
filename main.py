@@ -111,7 +111,7 @@ if __name__ == "__main__":
     parser.add_argument("--app", type=int, default=1, help="app number")
     parser.add_argument("--repeat", type=int, default=3, help="repeat times")
     parser.add_argument("--mode", type=str, default="default", choices=["default", "simple", "direct"], help="pipeline mode")
-    parser.add_argument("--model", type=str, default="gpt-5.4", help="LLM model name")
+    parser.add_argument("--model", type=str, default="gpt-4o", help="LLM model name")
     args = parser.parse_args()
 
     run_query(app=args.app, repeat=args.repeat, mode=args.mode, given_range=None, model=args.model)
