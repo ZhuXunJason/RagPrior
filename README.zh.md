@@ -17,7 +17,7 @@ DUPLICATE_THRESHOLD=0.85
 ```
 
 - `BASE_URL` 可选，可指向自定义的 OpenAI 兼容端点。
-- `GOOGLE_API_KEY` 在 KG 模式下用于 embedding 预聚类（使用 Gemini）。
+- `GOOGLE_API_KEY` 在 KG 模式下用于 embedding 预聚类。
 - `EMBEDDING_MODEL` 和 `DUPLICATE_THRESHOLD` 是 KG 模式的可选配置。
 
 ## 使用方式

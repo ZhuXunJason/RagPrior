@@ -423,9 +423,9 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="KG-RAG enhanced pipeline")
     parser.add_argument("--app", type=int, default=1, help="app number")
-    parser.add_argument("--repeat", type=int, default=3, help="repeat times")
+    parser.add_argument("--repeat", type=int, default=5, help="repeat times")
     parser.add_argument("--mode", type=str, default="kg", choices=["kg", "kg-only"], help="pipeline mode")
-    parser.add_argument("--model", type=str, default="gemini-3-flash-preview", help="LLM model name")
+    parser.add_argument("--model", type=str, default="deepseek-v4-pro", help="LLM model name")
     parser.add_argument("--embedding-model", type=str, default="gemini-embedding-2-preview", help="embedding model name")
     parser.add_argument("--dedup-threshold", type=float, default=0.85, help="dedup threshold (default: config value)")
     parser.add_argument("--skip-severity", default=True, action=argparse.BooleanOptionalAction, help="skip severity calculation")
@@ -433,10 +433,13 @@ if __name__ == "__main__":
     parser.add_argument("--force-refresh", action="store_true", default=False, help="force re-extract entities")
     args = parser.parse_args()
 
+    # File naming: {app}-{mode}-{model}-t{threshold}-{i}.txt  e.g. "1-kg-only-gpt-5.4-t1.0-1.txt"
+    file_tag = f"{args.mode}-{args.model}-t{args.dedup_threshold}"
+
     run_pipeline(
         app=args.app,
         repeat=args.repeat,
-        mode=args.mode,
+        mode=file_tag,
         model=args.model,
         embedding_model=args.embedding_model,
         dedup_threshold=args.dedup_threshold,
@@ -444,4 +447,4 @@ if __name__ == "__main__":
         use_severity_sort=args.use_severity_sort,
         force_refresh=args.force_refresh,
     )
-    run_evaluate(app=args.app, repeat=args.repeat, mode=args.mode, print_each=True)
+    run_evaluate(app=args.app, repeat=args.repeat, mode=file_tag, print_each=True)
