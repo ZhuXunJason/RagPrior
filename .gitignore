@@ -5,3 +5,4 @@ result/
 cache/
 tests/
 .claude/
+__pycache__/

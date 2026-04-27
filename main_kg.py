@@ -201,6 +201,7 @@ def run_pipeline(
     app: int,
     repeat: int = 1,
     mode: str = "kg",
+    output_tag: Optional[str] = None,
     given_range: Optional[List[int]] = None,
     force_refresh: bool = False,
     dedup_threshold: Optional[float] = None,
@@ -223,6 +224,8 @@ def run_pipeline(
         raise ValueError(
             "skip_severity_calculation 和 use_severity_sort 不能同时为 True。"
         )
+
+    file_mode = output_tag or mode
 
     print(f"\n=== APP-{app} [{mode}] ===")
 
@@ -299,7 +302,7 @@ def run_pipeline(
 
         result_str = _format_result_sequence(final_sequence)
         for i in repeats:
-            with open(f"result/{app}-{mode}-{i}.txt", encoding="utf-8", mode="w") as f:
+            with open(f"result/{app}-{file_mode}-{i}.txt", encoding="utf-8", mode="w") as f:
                 f.write(result_str)
         print("[severity-sort] Done.")
         return
@@ -307,7 +310,7 @@ def run_pipeline(
     if mode == "kg-only":
         result_str = _kg_greedy_sort(reports, kg)
         for i in repeats:
-            with open(f"result/{app}-{mode}-{i}.txt", encoding="utf-8", mode="w") as f:
+            with open(f"result/{app}-{file_mode}-{i}.txt", encoding="utf-8", mode="w") as f:
                 f.write(result_str)
         print(f"[kg-only] Done.")
         return
@@ -324,7 +327,7 @@ def run_pipeline(
         response = llm_result.get("content", "")
         token_p = llm_result.get("prompt_tokens", 0)
         token_r = llm_result.get("completion_tokens", 0)
-        with open(f"response/{app}-{mode}-{i}.txt", encoding="utf-8", mode="w") as f:
+        with open(f"response/{app}-{file_mode}-{i}.txt", encoding="utf-8", mode="w") as f:
             if response:
                 f.write(f"{response}\n")
             f.write(f"Input Tokens: {token_p}\n")
@@ -353,10 +356,10 @@ def run_pipeline(
                 final_sequence = subset_sequence
 
             result = _format_result_sequence(final_sequence)
-            with open(f"result/{app}-{mode}-{i}.txt", encoding="utf-8", mode="w") as f:
+            with open(f"result/{app}-{file_mode}-{i}.txt", encoding="utf-8", mode="w") as f:
                 f.write(result)
         except Exception as e:
-            print(f"  [parse] Error: {e}. Please manually fix result/{app}-{mode}-{i}.txt")
+            print(f"  [parse] Error: {e}. Please manually fix result/{app}-{file_mode}-{i}.txt")
 
 
 def run_evaluate(
@@ -439,7 +442,8 @@ if __name__ == "__main__":
     run_pipeline(
         app=args.app,
         repeat=args.repeat,
-        mode=file_tag,
+        mode=args.mode,
+        output_tag=file_tag,
         model=args.model,
         embedding_model=args.embedding_model,
         dedup_threshold=args.dedup_threshold,
