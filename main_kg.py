@@ -391,8 +391,8 @@ def run_evaluate(
 # ──────────────────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
-    APP    = 7      # 应用编号（对应 REPORTS_MSG 下标）
-    REPEAT = 5       # 重复次数（建议 ≥3 以稳定均值）
+    APP    = 6      # 应用编号（对应 REPORTS_MSG 下标）
+    REPEAT = 3       # 重复次数（建议 ≥3 以稳定均值）
     MODE   = "kg"    # "kg" | "kg-only"
     SKIP_SEVERITY = True
     USE_SEVERITY_SORT = False
