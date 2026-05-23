@@ -1,10 +1,23 @@
-from typing import Any, Dict, Optional, Tuple
+import os
+from typing import Any, Dict, List, Optional, Tuple
 
 from google import genai
 from google.genai import types
 from openai import OpenAI
 
 from config import create_openai_client, get_base_url, get_google_api_key, get_openai_api_key
+
+
+def _guess_mime_type(url: str) -> str:
+    ext = os.path.splitext(url.split("?")[0])[1].lower()
+    return {
+        ".png": "image/png",
+        ".jpg": "image/jpeg",
+        ".jpeg": "image/jpeg",
+        ".gif": "image/gif",
+        ".webp": "image/webp",
+        ".bmp": "image/bmp",
+    }.get(ext, "image/png")
 
 
 def is_gemini_model(model: str) -> bool:
@@ -62,6 +75,7 @@ def ask_completion(
     base_url: Optional[str] = None,
     api_key: Optional[str] = None,
     request_options: Optional[Dict[str, Any]] = None,
+    image_urls: Optional[List[str]] = None,
 ) -> Dict[str, Any]:
     if is_gemini_model(model):
         return ask_gemini(
@@ -71,6 +85,7 @@ def ask_completion(
             api_key=api_key,
             request_options=request_options,
             temperature=temperature,
+            image_urls=image_urls,
         )
     return ask_openai(
         prompt,
@@ -80,6 +95,7 @@ def ask_completion(
         api_key=api_key,
         request_options=request_options,
         temperature=temperature,
+        image_urls=image_urls,
     )
 
 
@@ -90,6 +106,7 @@ def ask_gpt(
     base_url: Optional[str] = None,
     api_key: Optional[str] = None,
     request_options: Optional[Dict[str, Any]] = None,
+    image_urls: Optional[List[str]] = None,
 ) -> Tuple[str, int, int]:
     result = ask_completion(
         prompt,
@@ -99,6 +116,7 @@ def ask_gpt(
         base_url=base_url,
         api_key=api_key,
         request_options=request_options,
+        image_urls=image_urls,
     )
     return (
         result.get("content", ""),
@@ -114,6 +132,7 @@ def ask_gemini(
     api_key: Optional[str] = None,
     request_options: Optional[Dict[str, Any]] = None,
     temperature: float = 0.0,
+    image_urls: Optional[List[str]] = None,
 ) -> Dict[str, Any]:
     gemini_client = _build_gemini_client(api_key=api_key)
     if not gemini_client:
@@ -126,9 +145,17 @@ def ask_gemini(
     if request_options:
         config_kwargs.update(request_options.get("gemini_config", {}))
 
+    if image_urls:
+        contents: list = [prompt]
+        for url in image_urls:
+            mime_type = _guess_mime_type(url)
+            contents.append(types.Part.from_uri(uri=url, mime_type=mime_type))
+    else:
+        contents = prompt
+
     response = gemini_client.models.generate_content(
         model=model,
-        contents=prompt,
+        contents=contents,
         config=types.GenerateContentConfig(**config_kwargs),
     )
 
@@ -165,12 +192,24 @@ def ask_openai(
     api_key: Optional[str] = None,
     request_options: Optional[Dict[str, Any]] = None,
     temperature: float = 0.0,
+    image_urls: Optional[List[str]] = None,
 ) -> Dict[str, Any]:
     openai_client = _build_openai_client(api_key=api_key, base_url=base_url)
 
+    if image_urls:
+        content: list = [{"type": "text", "text": prompt}]
+        for url in image_urls:
+            content.append({
+                "type": "image_url",
+                "image_url": {"url": url, "detail": "low"},
+            })
+        messages: list = [{"role": "user", "content": content}]
+    else:
+        messages = [{"role": "user", "content": prompt}]
+
     request_kwargs: Dict[str, Any] = {
         "model": model,
-        "messages": [{"role": "user", "content": prompt}],
+        "messages": messages,
         "temperature": temperature,
     }
     if model.startswith("gpt-5"):

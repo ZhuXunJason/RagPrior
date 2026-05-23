@@ -41,19 +41,18 @@ python main_kg.py --app 7 --repeat 3 --mode kg \
     --dedup-threshold 0.85 \
     --skip-severity
 
+# Multimodal mode: use screenshots alongside text for entity extraction
+python main_kg.py --app 1 --repeat 5 --mode kg \
+    --model gpt-5.4 \
+    --embedding-model gemini-embedding-2-preview \
+    --use-vision
+
 # KG-only greedy sort baseline (no LLM ranking call)
 python main_kg.py --app 7 --repeat 3 --mode kg-only --no-skip-severity
 ```
 
-### Grid experiments
+`--use-vision` sends each report's screenshot (from CSV `img_url`) to the model together with the text description. The model cross-references both modalities in a single API call. Vision extraction uses a separate cache (`app{n}_entities_vision.json`). Falls back to text-only on image download errors.
 
-```powershell
-# run_exp.ps1: loop through apps 1-8 with two dedup thresholds
-.\run_exp.ps1
-
-# Then evaluate:
-python eval_table.py
-```
 
 ## KG-RAG Pipeline (main_kg.py)
 
@@ -67,7 +66,8 @@ The KG-RAG enhanced pipeline consists of four phases:
 
 ### Phase 1 — Entity Extraction
 - For each report, extracts structured entities via LLM: operations, symptoms, specific pages/elements, page type, and module.
-- Results are cached in `./cache/app{n}_entities.json` to avoid redundant calls.
+- Results are cached in `./cache/app{n}_entities.json` (text-only) or `./cache/app{n}_entities_vision.json` (multimodal).
+- With `--use-vision`, the model receives both text description and screenshot in a single multimodal call, producing richer entities by cross-referencing visual evidence against text.
 
 ### Phase 2 — Knowledge Graph Construction & Classification
 - Builds a `BugKnowledgeGraph` from extracted entities — nodes represent pages, operations, symptoms, and modules; edges represent co-occurrence.
@@ -91,12 +91,12 @@ The KG-RAG enhanced pipeline consists of four phases:
 |------|------|
 | `main.py` | LLM-only pipeline entry (query, parse, evaluate) |
 | `main_kg.py` | KG-RAG pipeline entry (run_pipeline, run_evaluate) |
-| `llm.py` | OpenAI-compatible LLM interface |
+| `llm.py` | OpenAI/Gemini LLM interface with optional multimodal (image) support |
 | `prompt.py` | Prompt templates and report loading |
 | `prompt_kg.py` | KG-specific prompt template |
 | `parse.py` | Response parsing and sequence extraction |
 | `config.py` | Environment config and client factory |
-| `kg/extractor.py` | Phase 1: entity extraction |
+| `kg/extractor.py` | Phase 1: entity extraction (text or text+image via `--use-vision`) |
 | `kg/graph.py` | BugKnowledgeGraph data structure |
 | `kg/classifier.py` | Phase 2: graph-based bug classification |
 | `kg/severity.py` | Phase 3: severity score computation |
@@ -109,3 +109,5 @@ The KG-RAG enhanced pipeline consists of four phases:
 - If `run_parse` fails, manually fix the LLM response format or rerun specific cases with `given_range`.
 - If `run_evaluate` fails, the generated prioritization sequence is invalid — rerun the cases.
 - Use `--force-refresh` to re-extract entities (ignoring cache).
+- Vision cache (`app{n}_entities_vision.json`) is separate from text cache — switching `--use-vision` on/off won't invalidate existing caches.
+- Image URLs that fail to download trigger automatic fallback to text-only extraction per report.

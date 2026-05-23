@@ -41,9 +41,17 @@ python main_kg.py --app 7 --repeat 3 --mode kg \
     --dedup-threshold 0.85 \
     --skip-severity
 
+# 多模态模式：截图与文本一同用于实体提取
+python main_kg.py --app 1 --repeat 5 --mode kg \
+    --model gpt-5.4 \
+    --embedding-model gemini-embedding-2-preview \
+    --use-vision
+
 # KG-only 贪心排序基线（无 LLM 排序调用）
 python main_kg.py --app 7 --repeat 3 --mode kg-only --no-skip-severity
 ```
+
+`--use-vision` 会将每份报告的截图（来自 CSV 中的 `img_url`）与文本描述一起发送给模型，单次 API 调用中完成图文交叉参照。vision 提取使用独立缓存（`app{n}_entities_vision.json`）。图片下载失败时自动降级为纯文本提取。
 
 ### 网格实验
 
@@ -67,7 +75,8 @@ KG-RAG 增强流水线包含以下四个阶段：
 
 ### Phase 1 — 实体提取
 - 对每份报告，使用 LLM 提取结构化实体：操作步骤、缺陷症状、涉及页面/元素、页面类型、功能模块。
-- 结果缓存在 `./cache/app{n}_entities.json`，避免重复调用。
+- 结果缓存在 `./cache/app{n}_entities.json`（纯文本）或 `./cache/app{n}_entities_vision.json`（多模态）。
+- 使用 `--use-vision` 时，模型在单次多模态调用中同时接收文本描述和截图，通过交叉参照视觉证据提取更丰富的实体。
 
 ### Phase 2 — 知识图谱构建与分类
 - 从提取的实体构建 `BugKnowledgeGraph`——节点代表页面、操作、症状和模块，边代表共现关系。
@@ -91,12 +100,12 @@ KG-RAG 增强流水线包含以下四个阶段：
 |------|------|
 | `main.py` | 纯 LLM 流水线入口（query、parse、evaluate） |
 | `main_kg.py` | KG-RAG 流水线入口（run_pipeline、run_evaluate） |
-| `llm.py` | OpenAI 兼容 LLM 调用接口 |
+| `llm.py` | OpenAI/Gemini LLM 调用接口，支持多模态（图像）输入 |
 | `prompt.py` | Prompt 模板和报告加载 |
 | `prompt_kg.py` | KG 专用的 prompt 模板 |
 | `parse.py` | LLM 响应解析和排序序列提取 |
 | `config.py` | 环境配置和客户端工厂 |
-| `kg/extractor.py` | Phase 1：实体提取 |
+| `kg/extractor.py` | Phase 1：实体提取（纯文本或图文多模态，通过 `--use-vision` 切换） |
 | `kg/graph.py` | BugKnowledgeGraph 数据结构 |
 | `kg/classifier.py` | Phase 2：基于图的 bug 分类 |
 | `kg/severity.py` | Phase 3：严重性分数计算 |
@@ -109,3 +118,5 @@ KG-RAG 增强流水线包含以下四个阶段：
 - 如果 `run_parse` 失败，可手动修正 LLM 响应格式，或使用 `given_range` 重新运行特定轮次。
 - 如果 `run_evaluate` 失败，说明生成的排序序列无效——需要重新运行。
 - 使用 `--force-refresh` 可强制重新提取实体（忽略缓存）。
+- Vision 缓存（`app{n}_entities_vision.json`）与文本缓存分离——开关 `--use-vision` 不会影响已有缓存。
+- 图片 URL 下载失败时自动降级为纯文本提取，不影响流水线继续运行。

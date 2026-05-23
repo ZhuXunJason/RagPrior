@@ -209,6 +209,7 @@ def run_pipeline(
     model: str = "gpt-5.4",
     skip_severity_calculation: bool = False,
     use_severity_sort: bool = False,
+    use_vision: bool = False,
 ) -> None:
     """
     完整四阶段流水线。
@@ -261,7 +262,7 @@ def run_pipeline(
             reports = reports_all
 
     # ── Phase 1：实体提取 ──────────────────────────────────────────────────────
-    reports = extract_all(reports, app=app, force_refresh=force_refresh, model=model)
+    reports = extract_all(reports, app=app, force_refresh=force_refresh, model=model, use_vision=use_vision)
 
     # ── Phase 2：KG 扩充 + 图匹配分类 ─────────────────────────────────────────
     kg = BugKnowledgeGraph()
@@ -434,6 +435,7 @@ if __name__ == "__main__":
     parser.add_argument("--skip-severity", default=True, action=argparse.BooleanOptionalAction, help="skip severity calculation")
     parser.add_argument("--use-severity-sort", action="store_true", default=False, help="use severity-only sort instead of LLM")
     parser.add_argument("--force-refresh", action="store_true", default=False, help="force re-extract entities")
+    parser.add_argument("--use-vision", action="store_true", default=False, help="use multimodal model with screenshots for entity extraction")
     args = parser.parse_args()
 
     # File naming: {app}-{mode}-{model}-t{threshold}-{i}.txt  e.g. "1-kg-only-gpt-5.4-t1.0-1.txt"
@@ -450,5 +452,6 @@ if __name__ == "__main__":
         skip_severity_calculation=args.skip_severity,
         use_severity_sort=args.use_severity_sort,
         force_refresh=args.force_refresh,
+        use_vision=args.use_vision,
     )
     run_evaluate(app=args.app, repeat=args.repeat, mode=file_tag, print_each=True)
