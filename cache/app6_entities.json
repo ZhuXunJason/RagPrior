@@ -8,7 +8,8 @@
         "搜索"
       ],
       "symptoms": [
-        "不显示"
+        "提示",
+        "逻辑错误"
       ],
       "specific_pages": [
         "搜索界面"
@@ -29,12 +30,13 @@
         "搜索"
       ],
       "symptoms": [
-        "无响应",
-        "模糊"
+        "逻辑错误"
       ],
       "specific_pages": [],
       "specific_elements": [
-        "搜索栏"
+        "搜索栏",
+        "漫画",
+        "搜索"
       ],
       "page_type": "用户交互类页面",
       "module": "搜索与推荐模块"
@@ -49,11 +51,12 @@
         "搜索"
       ],
       "symptoms": [
-        "无响应"
+        "逻辑错误"
       ],
       "specific_pages": [],
       "specific_elements": [
-        "搜索栏"
+        "搜索栏",
+        "漫画"
       ],
       "page_type": "用户交互类页面",
       "module": "搜索与推荐模块"
@@ -68,8 +71,16 @@
       "symptoms": [
         "不显示"
       ],
-      "specific_pages": [],
-      "specific_elements": [],
+      "specific_pages": [
+        "书城",
+        "小说",
+        "人气榜单",
+        "男生热销榜"
+      ],
+      "specific_elements": [
+        "人气榜单",
+        "男生热销榜"
+      ],
       "page_type": "数据展示类页面",
       "module": "内容与资源模块"
     }
@@ -82,10 +93,12 @@
         "选择"
       ],
       "symptoms": [
-        "缺失",
-        "无法显示"
+        "不显示"
       ],
-      "specific_pages": [],
+      "specific_pages": [
+        "小说榜单",
+        "男生热销榜"
+      ],
       "specific_elements": [
         "男生热销榜"
       ],
@@ -97,16 +110,21 @@
     "index": "1604",
     "entities": {
       "operations": [
-        "点击"
+        "点击",
+        "查看"
       ],
       "symptoms": [
         "缺失",
         "不显示"
       ],
-      "specific_pages": [],
-      "specific_elements": [
+      "specific_pages": [
         "小说榜单",
         "男生热销榜"
+      ],
+      "specific_elements": [
+        "男生热销榜",
+        "各种人气排行的分类",
+        "具体的书籍"
       ],
       "page_type": "数据展示类页面",
       "module": "内容与资源模块"
@@ -121,8 +139,13 @@
       "symptoms": [
         "空白"
       ],
-      "specific_pages": [],
-      "specific_elements": [],
+      "specific_pages": [
+        "小说榜单",
+        "女生热销榜"
+      ],
+      "specific_elements": [
+        "女生热销榜"
+      ],
       "page_type": "数据展示类页面",
       "module": "内容与资源模块"
     }
@@ -134,10 +157,10 @@
         "点击"
       ],
       "symptoms": [
-        "不显示",
         "缺失"
       ],
       "specific_pages": [
+        "小说榜单",
         "男生热销榜"
       ],
       "specific_elements": [
@@ -155,12 +178,14 @@
         "加载"
       ],
       "symptoms": [
-        "缺失",
-        "不显示"
+        "不显示",
+        "缺失"
       ],
-      "specific_pages": [],
-      "specific_elements": [
+      "specific_pages": [
         "小说榜单",
+        "男生热销榜"
+      ],
+      "specific_elements": [
         "男生热销榜"
       ],
       "page_type": "数据展示类页面",
@@ -174,12 +199,12 @@
         "点击"
       ],
       "symptoms": [
-        "缺失",
-        "不显示"
+        "空白"
       ],
-      "specific_pages": [],
+      "specific_pages": [
+        "小说榜单"
+      ],
       "specific_elements": [
-        "小说榜单",
         "男生热销榜"
       ],
       "page_type": "数据展示类页面",
@@ -194,14 +219,17 @@
         "打开"
       ],
       "symptoms": [
-        "无显示"
+        "不显示"
       ],
       "specific_pages": [
         "小说榜单",
         "新书榜",
         "小说人气排行"
       ],
-      "specific_elements": [],
+      "specific_elements": [
+        "小说榜单",
+        "新书榜"
+      ],
       "page_type": "数据展示类页面",
       "module": "内容与资源模块"
     }
@@ -216,10 +244,11 @@
         "不显示"
       ],
       "specific_pages": [
-        "小说榜单",
+        "小说榜单"
+      ],
+      "specific_elements": [
         "男生热销榜"
       ],
-      "specific_elements": [],
       "page_type": "数据展示类页面",
       "module": "内容与资源模块"
     }
@@ -235,7 +264,9 @@
         "空白"
       ],
       "specific_pages": [
-        "小说榜单页面"
+        "小说人气排行",
+        "小说榜单页面",
+        "新书榜"
       ],
       "specific_elements": [
         "新书榜"
@@ -253,13 +284,14 @@
         "搜索"
       ],
       "symptoms": [
-        "无搜索结果",
+        "提示",
         "不显示"
       ],
       "specific_pages": [],
       "specific_elements": [
         "搜索按钮",
-        "小说"
+        "小说",
+        "提示框"
       ],
       "page_type": "用户交互类页面",
       "module": "搜索与推荐模块"
@@ -269,13 +301,14 @@
     "index": "1624",
     "entities": {
       "operations": [
+        "进入",
         "输入",
         "选择",
-        "搜索",
-        "进入"
+        "点击",
+        "搜索"
       ],
       "symptoms": [
-        "无响应"
+        "提示"
       ],
       "specific_pages": [],
       "specific_elements": [
@@ -298,7 +331,10 @@
         "不显示"
       ],
       "specific_pages": [],
-      "specific_elements": [],
+      "specific_elements": [
+        "话题",
+        "关注"
+      ],
       "page_type": "用户交互类页面",
       "module": "内容与资源模块"
     }
@@ -312,13 +348,16 @@
         "刷新"
       ],
       "symptoms": [
-        "缺失",
         "不显示"
       ],
       "specific_pages": [
-        "关注"
+        "关注界面"
       ],
-      "specific_elements": [],
+      "specific_elements": [
+        "圈子",
+        "关注",
+        "话题"
+      ],
       "page_type": "用户交互类页面",
       "module": "内容与资源模块"
     }
@@ -331,11 +370,16 @@
         "选择"
       ],
       "symptoms": [
-        "位置错误"
+        "逻辑错误"
       ],
-      "specific_pages": [],
+      "specific_pages": [
+        "分类",
+        "全部"
+      ],
       "specific_elements": [
-        "漫画"
+        "分类",
+        "全部",
+        "人气"
       ],
       "page_type": "数据展示类页面",
       "module": "内容与资源模块"
@@ -349,12 +393,17 @@
         "选择"
       ],
       "symptoms": [
-        "排序错误"
+        "逻辑错误"
       ],
-      "specific_pages": [],
-      "specific_elements": [],
+      "specific_pages": [
+        "分类"
+      ],
+      "specific_elements": [
+        "人气",
+        "恋爱"
+      ],
       "page_type": "数据展示类页面",
-      "module": "搜索与推荐模块"
+      "module": "内容与资源模块"
     }
   },
   {
@@ -365,10 +414,17 @@
         "选择"
       ],
       "symptoms": [
-        "与实际不符"
+        "逻辑错误"
       ],
-      "specific_pages": [],
-      "specific_elements": [],
+      "specific_pages": [
+        "分类"
+      ],
+      "specific_elements": [
+        "热血",
+        "人气",
+        "第二名",
+        "第三名"
+      ],
       "page_type": "数据展示类页面",
       "module": "内容与资源模块"
     }
@@ -381,7 +437,7 @@
         "点击"
       ],
       "symptoms": [
-        "排序出现错误"
+        "逻辑错误"
       ],
       "specific_pages": [
         "分类界面"
@@ -398,16 +454,18 @@
     "index": "1618",
     "entities": {
       "operations": [
+        "进入",
         "点击"
       ],
       "symptoms": [
-        "缺失"
+        "逻辑错误"
       ],
       "specific_pages": [
         "书城本周推荐更多页面"
       ],
       "specific_elements": [
-        "人气"
+        "人气",
+        "漫画排名"
       ],
       "page_type": "数据展示类页面",
       "module": "内容与资源模块"
@@ -421,7 +479,7 @@
         "点击"
       ],
       "symptoms": [
-        "错误"
+        "逻辑错误"
       ],
       "specific_pages": [
         "书城分类页面"
@@ -439,10 +497,11 @@
     "entities": {
       "operations": [
         "输入",
+        "点击",
         "搜索"
       ],
       "symptoms": [
-        "无搜索结果显示"
+        "不显示"
       ],
       "specific_pages": [],
       "specific_elements": [
@@ -461,11 +520,9 @@
         "输入",
         "搜索"
       ],
-      "symptoms": [
-        "未调用",
-        "无法识别"
-      ],
+      "symptoms": [],
       "specific_pages": [
+        "书城",
         "小说界面"
       ],
       "specific_elements": [
@@ -473,7 +530,7 @@
         "搜索"
       ],
       "page_type": "用户交互类页面",
-      "module": "内容与资源模块"
+      "module": "搜索与推荐模块"
     }
   },
   {
@@ -485,14 +542,16 @@
         "搜索"
       ],
       "symptoms": [
-        "无关数据"
+        "逻辑错误"
       ],
       "specific_pages": [
-        "书城"
+        "书城",
+        "漫画"
       ],
       "specific_elements": [
         "灵剑尊",
-        "漫画"
+        "搜索",
+        "推荐的搜索"
       ],
       "page_type": "用户交互类页面",
       "module": "搜索与推荐模块"

@@ -3,18 +3,20 @@
     "index": "1329",
     "entities": {
       "operations": [
-        "点击"
+        "点击",
+        "返回",
+        "注册"
       ],
       "symptoms": [
-        "返回异常",
-        "不生效"
+        "无法返回",
+        "功能缺失"
       ],
       "specific_pages": [
         "登陆界面"
       ],
       "specific_elements": [
-        "返回键",
         "忘记密码",
+        "返回键",
         "立即注册"
       ],
       "page_type": "用户交互类页面",
@@ -27,20 +29,20 @@
       "operations": [
         "打开",
         "进入",
-        "打开",
-        "点击"
+        "点击",
+        "注册"
       ],
       "symptoms": [
         "不生效"
       ],
       "specific_pages": [
-        "首页",
-        "我"
+        "首页"
       ],
       "specific_elements": [
+        "我",
         "立即注册"
       ],
-      "page_type": "用户交互类页面",
+      "page_type": "操作事务类页面",
       "module": "用户与账号模块"
     }
   },
@@ -48,10 +50,11 @@
     "index": "1336",
     "entities": {
       "operations": [
-        "点击"
+        "点击",
+        "注册"
       ],
       "symptoms": [
-        "无响应"
+        "无反应"
       ],
       "specific_pages": [
         "首页"
@@ -72,12 +75,14 @@
         "点击"
       ],
       "symptoms": [
-        "不生效"
+        "无反应"
       ],
       "specific_pages": [
-        "我"
+        "“我”界面"
       ],
-      "specific_elements": [],
+      "specific_elements": [
+        "所有控件"
+      ],
       "page_type": "用户交互类页面",
       "module": "用户与账号模块"
     }
@@ -89,14 +94,16 @@
         "点击"
       ],
       "symptoms": [
-        "无响应"
+        "无反应",
+        "提示"
       ],
-      "specific_pages": [],
-      "specific_elements": [
-        "我",
+      "specific_pages": [
         "金币商城"
       ],
-      "page_type": "用户交互类页面",
+      "specific_elements": [
+        "金币商城"
+      ],
+      "page_type": "导航与结构页面",
       "module": "内容与资源模块"
     }
   },
@@ -107,7 +114,7 @@
         "点击"
       ],
       "symptoms": [
-        "无响应"
+        "无反应"
       ],
       "specific_pages": [
         "首页"
@@ -116,7 +123,7 @@
         "我",
         "夜间模式"
       ],
-      "page_type": "用户交互类页面",
+      "page_type": "系统状态类页面",
       "module": "系统与设置模块"
     }
   },
@@ -128,11 +135,12 @@
         "点击"
       ],
       "symptoms": [
-        "不生效"
+        "功能缺失"
       ],
       "specific_pages": [
         "IP家园",
-        "我"
+        "我页面",
+        "金币商城"
       ],
       "specific_elements": [
         "我",
@@ -150,16 +158,18 @@
         "点击"
       ],
       "symptoms": [
-        "不生效"
+        "逻辑错误"
       ],
       "specific_pages": [
-        "首页"
-      ],
-      "specific_elements": [
+        "首页",
         "排行榜"
       ],
+      "specific_elements": [
+        "排行榜",
+        "其他选项"
+      ],
       "page_type": "导航与结构页面",
-      "module": "内容与资源模块"
+      "module": "搜索与推荐模块"
     }
   },
   {
@@ -169,7 +179,7 @@
         "点击"
       ],
       "symptoms": [
-        "位置错误"
+        "逻辑错误"
       ],
       "specific_pages": [
         "排行榜"
@@ -189,7 +199,7 @@
         "切换"
       ],
       "symptoms": [
-        "不生效"
+        "逻辑错误"
       ],
       "specific_pages": [
         "首页"
@@ -198,7 +208,7 @@
         "辣品",
         "最新选项"
       ],
-      "page_type": "用户交互类页面",
+      "page_type": "数据展示类页面",
       "module": "内容与资源模块"
     }
   },
@@ -206,16 +216,18 @@
     "index": "1331",
     "entities": {
       "operations": [
-        "点击"
+        "点击",
+        "打开",
+        "搜索"
       ],
       "symptoms": [
-        "不生效"
+        "无反应"
       ],
       "specific_pages": [
         "辣品"
       ],
       "specific_elements": [
-        "搜索"
+        "右上角的搜索"
       ],
       "page_type": "用户交互类页面",
       "module": "搜索与推荐模块"
@@ -227,17 +239,19 @@
       "operations": [
         "打开",
         "进入",
-        "点击"
+        "点击",
+        "搜索"
       ],
       "symptoms": [
         "不生效"
       ],
       "specific_pages": [
         "首页",
-        "辣品"
+        "辣品页面"
       ],
       "specific_elements": [
-        "搜索功能"
+        "辣品",
+        "右上角搜索功能"
       ],
       "page_type": "用户交互类页面",
       "module": "搜索与推荐模块"
@@ -247,7 +261,8 @@
     "index": "1340",
     "entities": {
       "operations": [
-        "点击"
+        "点击",
+        "搜索"
       ],
       "symptoms": [
         "不生效"
@@ -256,9 +271,10 @@
         "首页"
       ],
       "specific_elements": [
+        "辣品",
         "搜索键"
       ],
-      "page_type": "用户交互类页面",
+      "page_type": "导航与结构页面",
       "module": "搜索与推荐模块"
     }
   }

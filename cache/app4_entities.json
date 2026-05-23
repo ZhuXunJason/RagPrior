@@ -6,23 +6,23 @@
         "选择",
         "点击",
         "进入",
-        "填写"
+        "输入"
       ],
       "symptoms": [
-        "弹出",
         "提示",
         "报错"
       ],
       "specific_pages": [
-        "待我处理",
-        "审核通过"
+        "待我处理页面",
+        "审核通过页面"
       ],
       "specific_elements": [
         "审核通过",
-        "通过审核",
         "问题等级",
         "处理部门",
-        "审核意见"
+        "审核意见",
+        "通过审核",
+        "提示信息"
       ],
       "page_type": "操作事务类页面",
       "module": "内容与资源模块"
@@ -46,21 +46,24 @@
         "通过审核"
       ],
       "page_type": "操作事务类页面",
-      "module": "系统与设置模块"
+      "module": "网络与通信模块"
     }
   },
   {
     "index": "265",
     "entities": {
       "operations": [
-        "点击"
+        "点击",
+        "删除",
+        "修改"
       ],
       "symptoms": [],
       "specific_pages": [],
       "specific_elements": [
-        "上传记录"
+        "上传记录",
+        "文字"
       ],
-      "page_type": "用户交互类页面",
+      "page_type": "操作事务类页面",
       "module": "内容与资源模块"
     }
   },
@@ -71,18 +74,20 @@
         "进入",
         "点击",
         "选择",
+        "查看",
         "保存"
       ],
       "symptoms": [
         "提示"
       ],
       "specific_pages": [
-        "截屏相册"
+        "App“截屏相册”页面",
+        "查看页面"
       ],
       "specific_elements": [
         "保存到手机"
       ],
-      "page_type": "用户交互类页面",
+      "page_type": "操作事务类页面",
       "module": "内容与资源模块"
     }
   },
@@ -95,14 +100,14 @@
       ],
       "symptoms": [
         "提示",
-        "无法连接"
+        "弱网异常"
       ],
       "specific_pages": [],
       "specific_elements": [
         "用户名",
         "密码"
       ],
-      "page_type": "用户交互类页面",
+      "page_type": "操作事务类页面",
       "module": "用户与账号模块"
     }
   },
@@ -115,11 +120,11 @@
       "symptoms": [
         "不显示"
       ],
-      "specific_pages": [],
-      "specific_elements": [
+      "specific_pages": [
         "我的文件"
       ],
-      "page_type": "用户交互类页面",
+      "specific_elements": [],
+      "page_type": "数据展示类页面",
       "module": "内容与资源模块"
     }
   },
@@ -130,7 +135,7 @@
         "点击"
       ],
       "symptoms": [
-        "加载失败"
+        "不生效"
       ],
       "specific_pages": [
         "待办事项",
@@ -152,11 +157,13 @@
       "symptoms": [
         "不显示"
       ],
-      "specific_pages": [],
-      "specific_elements": [
+      "specific_pages": [
         "我处理的"
       ],
-      "page_type": "用户交互类页面",
+      "specific_elements": [
+        "处理过的文件"
+      ],
+      "page_type": "数据展示类页面",
       "module": "内容与资源模块"
     }
   },
@@ -167,11 +174,11 @@
         "点击"
       ],
       "symptoms": [
-        "无响应"
+        "无反应"
       ],
       "specific_pages": [],
       "specific_elements": [
-        "我上传的"
+        "“我上传的”按钮"
       ],
       "page_type": "用户交互类页面",
       "module": "内容与资源模块"

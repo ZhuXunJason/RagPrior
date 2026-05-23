@@ -2,23 +2,110 @@
   {
     "index": "167",
     "entities": {
-      "operations": [],
-      "symptoms": [],
-      "specific_pages": [],
-      "specific_elements": []
+      "operations": [
+        "登录",
+        "打开",
+        "点击",
+        "分享"
+      ],
+      "symptoms": [
+        "无反应"
+      ],
+      "specific_pages": [
+        "今日头条",
+        "微信朋友圈"
+      ],
+      "specific_elements": [
+        "分享",
+        "微信朋友圈按钮"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
     }
   },
   {
     "index": "170",
     "entities": {
-      "operations": [],
-      "symptoms": [],
-      "specific_pages": [],
-      "specific_elements": []
+      "operations": [
+        "选择",
+        "点击",
+        "分享"
+      ],
+      "symptoms": [
+        "不支持"
+      ],
+      "specific_pages": [
+        "朋友圈"
+      ],
+      "specific_elements": [
+        "分享",
+        "视频链接"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
     }
   },
   {
     "index": "171",
+    "entities": {
+      "operations": [
+        "点击",
+        "分享"
+      ],
+      "symptoms": [
+        "不生效"
+      ],
+      "specific_pages": [
+        "微信朋友圈"
+      ],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "网络与通信模块"
+    }
+  },
+  {
+    "index": "173",
+    "entities": {
+      "operations": [
+        "进入",
+        "打开",
+        "点击",
+        "分享"
+      ],
+      "symptoms": [
+        "不生效"
+      ],
+      "specific_pages": [
+        "任何频道",
+        "文章"
+      ],
+      "specific_elements": [
+        "分享到微信"
+      ],
+      "page_type": "内容与资源模块",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "176",
+    "entities": {
+      "operations": [
+        "点击",
+        "分享"
+      ],
+      "symptoms": [
+        "不生效"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "分享到微信分享"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "网络与通信模块"
+    }
+  },
+  {
+    "index": "177",
     "entities": {
       "operations": [
         "点击"
@@ -29,79 +116,7 @@
       "specific_pages": [
         "微信朋友圈"
       ],
-      "specific_elements": [],
-      "page_type": "用户交互类页面",
-      "module": "内容与资源模块"
-    }
-  },
-  {
-    "index": "173",
-    "entities": {
-      "operations": [],
-      "symptoms": [],
-      "specific_pages": [],
-      "specific_elements": []
-    }
-  },
-  {
-    "index": "176",
-    "entities": {
-      "operations": [
-        "点击"
-      ],
-      "symptoms": [
-        "不生效"
-      ],
-      "specific_pages": [],
       "specific_elements": [
-        "分享到微信"
-      ],
-      "page_type": "用户交互类页面",
-      "module": "内容与资源模块"
-    }
-  },
-  {
-    "index": "177",
-    "entities": {
-      "operations": [],
-      "symptoms": [],
-      "specific_pages": [],
-      "specific_elements": []
-    }
-  },
-  {
-    "index": "180",
-    "entities": {
-      "operations": [],
-      "symptoms": [],
-      "specific_pages": [],
-      "specific_elements": []
-    }
-  },
-  {
-    "index": "181",
-    "entities": {
-      "operations": [],
-      "symptoms": [],
-      "specific_pages": [],
-      "specific_elements": []
-    }
-  },
-  {
-    "index": "182",
-    "entities": {
-      "operations": [
-        "打开",
-        "点击"
-      ],
-      "symptoms": [
-        "不生效"
-      ],
-      "specific_pages": [
-        "新闻页"
-      ],
-      "specific_elements": [
-        "分享按钮",
         "微信朋友圈按钮"
       ],
       "page_type": "用户交互类页面",
@@ -109,52 +124,84 @@
     }
   },
   {
-    "index": "185",
-    "entities": {
-      "operations": [],
-      "symptoms": [],
-      "specific_pages": [],
-      "specific_elements": []
-    }
-  },
-  {
-    "index": "194",
-    "entities": {
-      "operations": [],
-      "symptoms": [],
-      "specific_pages": [],
-      "specific_elements": []
-    }
-  },
-  {
-    "index": "196",
+    "index": "180",
     "entities": {
       "operations": [
-        "点击"
+        "登录",
+        "打开",
+        "点击",
+        "分享"
       ],
       "symptoms": [
         "不生效"
       ],
-      "specific_pages": [],
-      "specific_elements": [],
+      "specific_pages": [
+        "今日头条",
+        "微信朋友圈"
+      ],
+      "specific_elements": [
+        "分享",
+        "微信朋友圈",
+        "按钮"
+      ],
       "page_type": "用户交互类页面",
       "module": "内容与资源模块"
     }
   },
   {
-    "index": "197",
+    "index": "181",
     "entities": {
       "operations": [
         "点击",
-        "刷新"
+        "分享"
       ],
       "symptoms": [
-        "跳转异常"
+        "不生效"
       ],
       "specific_pages": [
-        "分享界面"
+        "微信朋友圈"
+      ],
+      "specific_elements": [],
+      "page_type": "用户交互类页面",
+      "module": "网络与通信模块"
+    }
+  },
+  {
+    "index": "182",
+    "entities": {
+      "operations": [
+        "打开",
+        "点击",
+        "分享"
+      ],
+      "symptoms": [
+        "不生效"
+      ],
+      "specific_pages": [
+        "新闻"
       ],
       "specific_elements": [
+        "分享",
+        "微信朋友圈"
+      ],
+      "page_type": "内容与资源模块",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "185",
+    "entities": {
+      "operations": [
+        "点击",
+        "分享",
+        "选择"
+      ],
+      "symptoms": [
+        "不生效"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "新闻",
         "微信分享"
       ],
       "page_type": "用户交互类页面",
@@ -162,37 +209,123 @@
     }
   },
   {
+    "index": "194",
+    "entities": {
+      "operations": [
+        "登录",
+        "打开",
+        "点击",
+        "分享"
+      ],
+      "symptoms": [
+        "无反应"
+      ],
+      "specific_pages": [
+        "今日头条",
+        "微信朋友圈"
+      ],
+      "specific_elements": [
+        "分享",
+        "微信朋友圈按钮"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
+    }
+  },
+  {
+    "index": "196",
+    "entities": {
+      "operations": [
+        "点击",
+        "分享"
+      ],
+      "symptoms": [
+        "无反应"
+      ],
+      "specific_pages": [],
+      "specific_elements": [
+        "微信朋友圈"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "网络与通信模块"
+    }
+  },
+  {
+    "index": "197",
+    "entities": {
+      "operations": [
+        "点击",
+        "分享",
+        "刷新",
+        "返回"
+      ],
+      "symptoms": [
+        "跳转异常",
+        "返回异常"
+      ],
+      "specific_pages": [
+        "文章尾",
+        "分享界面"
+      ],
+      "specific_elements": [
+        "新闻",
+        "微信分享"
+      ],
+      "page_type": "内容与资源模块",
+      "module": "内容与资源模块"
+    }
+  },
+  {
     "index": "200",
     "entities": {
-      "operations": [],
-      "symptoms": [],
+      "operations": [
+        "点击",
+        "分享"
+      ],
+      "symptoms": [
+        "接口失败"
+      ],
       "specific_pages": [],
-      "specific_elements": []
+      "specific_elements": [
+        "微信朋友圈"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "网络与通信模块"
     }
   },
   {
     "index": "201",
     "entities": {
-      "operations": [],
-      "symptoms": [],
+      "operations": [
+        "点击",
+        "分享"
+      ],
+      "symptoms": [
+        "接口失败"
+      ],
       "specific_pages": [],
-      "specific_elements": []
+      "specific_elements": [
+        "微信好友"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "网络与通信模块"
     }
   },
   {
     "index": "203",
     "entities": {
       "operations": [
-        "点击"
+        "点击",
+        "分享"
       ],
       "symptoms": [
-        "无响应"
+        "无反应"
       ],
       "specific_pages": [
-        "朋友圈"
+        "微信朋友圈"
       ],
       "specific_elements": [
-        "分享"
+        "朋友圈分享"
       ],
       "page_type": "用户交互类页面",
       "module": "内容与资源模块"
@@ -201,28 +334,75 @@
   {
     "index": "210",
     "entities": {
-      "operations": [],
-      "symptoms": [],
-      "specific_pages": [],
-      "specific_elements": []
+      "operations": [
+        "进入",
+        "点击",
+        "查看",
+        "选择",
+        "分享",
+        "返回"
+      ],
+      "symptoms": [
+        "闪退",
+        "返回异常",
+        "不生效"
+      ],
+      "specific_pages": [
+        "今日头条app",
+        "新闻页面",
+        "微信朋友圈",
+        "微信好友"
+      ],
+      "specific_elements": [
+        "感兴趣的新闻",
+        "分享到微信朋友圈",
+        "微信朋友圈",
+        "微信好友"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
     }
   },
   {
     "index": "164",
     "entities": {
-      "operations": [],
-      "symptoms": [],
-      "specific_pages": [],
-      "specific_elements": []
+      "operations": [
+        "进入",
+        "点击",
+        "选择"
+      ],
+      "symptoms": [
+        "提示",
+        "报错",
+        "不生效"
+      ],
+      "specific_pages": [
+        "今日头条app",
+        "猜你喜欢页面"
+      ],
+      "specific_elements": [
+        "搜索图标",
+        "关心"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "搜索与推荐模块"
     }
   },
   {
     "index": "175",
     "entities": {
-      "operations": [],
-      "symptoms": [],
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "提示"
+      ],
       "specific_pages": [],
-      "specific_elements": []
+      "specific_elements": [
+        "关注"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
     }
   },
   {
@@ -235,45 +415,97 @@
         "提示"
       ],
       "specific_pages": [],
-      "specific_elements": [],
+      "specific_elements": [
+        "关注"
+      ],
       "page_type": "用户交互类页面",
-      "module": "用户与账号模块"
+      "module": "内容与资源模块"
     }
   },
   {
     "index": "206",
     "entities": {
-      "operations": [],
-      "symptoms": [],
-      "specific_pages": [],
-      "specific_elements": []
+      "operations": [
+        "登录",
+        "点击",
+        "搜索"
+      ],
+      "symptoms": [
+        "提示"
+      ],
+      "specific_pages": [
+        "新闻内容"
+      ],
+      "specific_elements": [
+        "搜索按钮",
+        "关心按钮"
+      ],
+      "page_type": "操作事务类页面",
+      "module": "内容与资源模块"
     }
   },
   {
     "index": "169",
     "entities": {
-      "operations": [],
-      "symptoms": [],
-      "specific_pages": [],
-      "specific_elements": []
+      "operations": [
+        "打开",
+        "点击"
+      ],
+      "symptoms": [
+        "无反应"
+      ],
+      "specific_pages": [
+        "文章"
+      ],
+      "specific_elements": [
+        "作者名称",
+        "关注按钮"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
     }
   },
   {
     "index": "174",
     "entities": {
-      "operations": [],
-      "symptoms": [],
-      "specific_pages": [],
-      "specific_elements": []
+      "operations": [
+        "点击",
+        "进入",
+        "选择",
+        "查看"
+      ],
+      "symptoms": [
+        "无反应"
+      ],
+      "specific_pages": [
+        "一条新闻",
+        "新华网页面"
+      ],
+      "specific_elements": [
+        "右上角功能设置“...”按钮",
+        "左下角查看头条号",
+        "关注"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
     }
   },
   {
     "index": "179",
     "entities": {
-      "operations": [],
-      "symptoms": [],
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "不生效"
+      ],
       "specific_pages": [],
-      "specific_elements": []
+      "specific_elements": [
+        "新闻",
+        "关注"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
     }
   },
   {
@@ -283,7 +515,7 @@
         "点击"
       ],
       "symptoms": [
-        "不生效"
+        "功能缺失"
       ],
       "specific_pages": [],
       "specific_elements": [
@@ -300,14 +532,14 @@
         "点击"
       ],
       "symptoms": [
-        "无响应"
+        "无反应"
       ],
       "specific_pages": [],
       "specific_elements": [
         "关注按钮"
       ],
       "page_type": "用户交互类页面",
-      "module": "用户与账号模块"
+      "module": "内容与资源模块"
     }
   },
   {
@@ -317,23 +549,31 @@
         "点击"
       ],
       "symptoms": [
-        "无响应"
+        "无反应"
       ],
       "specific_pages": [],
       "specific_elements": [
         "关注按钮"
       ],
       "page_type": "用户交互类页面",
-      "module": "用户与账号模块"
+      "module": "内容与资源模块"
     }
   },
   {
     "index": "192",
     "entities": {
-      "operations": [],
-      "symptoms": [],
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "无反应"
+      ],
       "specific_pages": [],
-      "specific_elements": []
+      "specific_elements": [
+        "关注按钮"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
     }
   },
   {
@@ -350,7 +590,7 @@
         "作者名称"
       ],
       "page_type": "用户交互类页面",
-      "module": "用户与账号模块"
+      "module": "内容与资源模块"
     }
   },
   {
@@ -362,9 +602,10 @@
       "symptoms": [
         "不生效"
       ],
-      "specific_pages": [],
+      "specific_pages": [
+        "新闻来源主题"
+      ],
       "specific_elements": [
-        "新源来源主题",
         "关注"
       ],
       "page_type": "用户交互类页面",
@@ -374,28 +615,59 @@
   {
     "index": "199",
     "entities": {
-      "operations": [],
-      "symptoms": [],
-      "specific_pages": [],
-      "specific_elements": []
+      "operations": [
+        "点击"
+      ],
+      "symptoms": [
+        "不生效"
+      ],
+      "specific_pages": [
+        "新闻"
+      ],
+      "specific_elements": [
+        "关注"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
     }
   },
   {
     "index": "202",
     "entities": {
-      "operations": [],
-      "symptoms": [],
+      "operations": [
+        "选择",
+        "点击"
+      ],
+      "symptoms": [
+        "无反应"
+      ],
       "specific_pages": [],
-      "specific_elements": []
+      "specific_elements": [
+        "关注按钮",
+        "文章作者"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
     }
   },
   {
     "index": "204",
     "entities": {
-      "operations": [],
-      "symptoms": [],
-      "specific_pages": [],
-      "specific_elements": []
+      "operations": [
+        "进入",
+        "点击"
+      ],
+      "symptoms": [
+        "无反应"
+      ],
+      "specific_pages": [
+        "入驻商"
+      ],
+      "specific_elements": [
+        "关注"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "内容与资源模块"
     }
   },
   {
@@ -418,37 +690,84 @@
   {
     "index": "212",
     "entities": {
-      "operations": [],
-      "symptoms": [],
-      "specific_pages": [],
-      "specific_elements": []
+      "operations": [
+        "进入",
+        "点击",
+        "浏览",
+        "选择"
+      ],
+      "symptoms": [
+        "无反应"
+      ],
+      "specific_pages": [
+        "今日头条app",
+        "新闻发布者账号页面"
+      ],
+      "specific_elements": [
+        "感兴趣的新闻",
+        "关注"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "用户与账号模块"
     }
   },
   {
     "index": "168",
     "entities": {
-      "operations": [],
+      "operations": [
+        "点击",
+        "刷新"
+      ],
       "symptoms": [],
       "specific_pages": [],
-      "specific_elements": []
+      "specific_elements": [
+        "微信好友"
+      ],
+      "page_type": "用户交互类页面",
+      "module": "网络与通信模块"
     }
   },
   {
     "index": "172",
     "entities": {
-      "operations": [],
-      "symptoms": [],
+      "operations": [
+        "点击",
+        "分享",
+        "刷新",
+        "返回"
+      ],
+      "symptoms": [
+        "返回异常"
+      ],
       "specific_pages": [],
-      "specific_elements": []
+      "specific_elements": [
+        "微信分享",
+        "新闻"
+      ],
+      "page_type": "数据展示类页面",
+      "module": "内容与资源模块"
     }
   },
   {
     "index": "195",
     "entities": {
-      "operations": [],
-      "symptoms": [],
-      "specific_pages": [],
-      "specific_elements": []
+      "operations": [
+        "点击",
+        "分享",
+        "刷新",
+        "返回"
+      ],
+      "symptoms": [
+        "返回异常"
+      ],
+      "specific_pages": [
+        "新闻"
+      ],
+      "specific_elements": [
+        "朋友圈分享"
+      ],
+      "page_type": "数据展示类页面",
+      "module": "内容与资源模块"
     }
   }
 ]
