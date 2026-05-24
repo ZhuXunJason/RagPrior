@@ -35,6 +35,7 @@ from kg.dedup import (
 )
 from kg.graph import BugKnowledgeGraph
 from kg.extractor import extract_all
+from kg.enricher import enrich_reports
 from kg.classifier import classify_all, llm_fallback_classify
 from kg.severity import compute_all_severities
 from prompt_kg import get_kg_prompt
@@ -263,6 +264,16 @@ def run_pipeline(
 
     # ── Phase 1：实体提取 ──────────────────────────────────────────────────────
     reports = extract_all(reports, app=app, force_refresh=force_refresh, model=model, use_vision=use_vision)
+    if use_vision:
+        try:
+            reports = enrich_reports(
+                reports,
+                app=app,
+                use_vision=use_vision,
+                force_refresh=force_refresh,
+            )
+        except Exception as e:
+            print(f"[enricher] disabled due to error: {type(e).__name__}: {e}")
 
     # ── Phase 2：KG 扩充 + 图匹配分类 ─────────────────────────────────────────
     kg = BugKnowledgeGraph()
@@ -270,6 +281,8 @@ def run_pipeline(
     classify_all(reports, kg, model=model)                     # 图匹配打分
     llm_fallback_classify(reports, model=model)                # 兜底：对无匹配报告用 LLM 分类
 
+    classify_all(reports, kg, model=model)
+    llm_fallback_classify(reports, model=model)
     print(f"[graph]  {kg.summary()}")
 
     # ── Phase 3：分类后严重性推导 ──────────────────────────────────────────────

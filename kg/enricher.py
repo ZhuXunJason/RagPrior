@@ -183,7 +183,8 @@ def enrich_reports(
           text_meta:   文本实体提取结果
           image_meta:  图像分析结果（仅 use_vision=True 时有值）
     """
-    cache_path = os.path.join(CACHE_DIR, f"app{app}_enriched.json")
+    cache_suffix = "_vision" if use_vision else ""
+    cache_path = os.path.join(CACHE_DIR, f"app{app}_enriched{cache_suffix}.json")
 
     # 读取缓存
     if not force_refresh and os.path.exists(cache_path):

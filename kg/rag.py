@@ -45,6 +45,8 @@ def _format_report_line(
     sev     = report.get("severity", {})
     ents    = report.get("entities", {})
     idx     = report.get("index", "")
+    kg_meta = report.get("kg_meta", {})
+    image_meta = kg_meta.get("image_meta") or {}
 
     bug_type = klass.get("bug_type", "—")
     score    = klass.get("score", 0.0)
@@ -72,6 +74,27 @@ def _format_report_line(
         sim_str = ",".join(f"#{n}" for n in similar_nums[:4])
         lines.append(f"  [结构相似] {sim_str} 共享同一页面/元素（同一缺陷区域，注意多样性）")
 
+    visual_bits = []
+    page_desc = image_meta.get("page_description", "")
+    if page_desc:
+        visual_bits.append(f"椤甸潰:{page_desc}")
+    visible_elements = image_meta.get("visible_elements") or []
+    if visible_elements:
+        visual_bits.append(f"鍙鍏冪礌:{','.join(visible_elements[:4])}")
+    visual_defect = image_meta.get("visual_defect", "")
+    if visual_defect:
+        visual_bits.append(f"缂洪櫡:{visual_defect}")
+    error_messages = image_meta.get("error_messages") or []
+    if error_messages:
+        visual_bits.append(f"閿欒:{','.join(error_messages[:3])}")
+    suggested_bug_type = image_meta.get("suggested_bug_type", "")
+    if suggested_bug_type:
+        visual_bits.append(f"寤鸿绫诲瀷:{suggested_bug_type}")
+    severity_hint = image_meta.get("severity_hint", "")
+    if severity_hint:
+        visual_bits.append(f"severity_hint:{severity_hint}")
+    if visual_bits:
+        lines.append("  [视觉证据] " + " | ".join(visual_bits))
     return "\n".join(lines)
 
 

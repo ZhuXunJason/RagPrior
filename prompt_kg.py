@@ -24,6 +24,7 @@ Each report below shows its KG-derived context:
   [KG路径]   The actual path in the KG: operations → elements → pages → modules
   [分类证据] The TF-IDF weighted features (symptoms/operations) that led to the bug type classification
   [结构相似] Other reports sharing the same KG nodes (same page/element area) — these are likely in the same defect region
+  [视觉证据] Screenshot-derived page state, visible elements, visual defects, and visible error text
 """.strip()
 
 _TASK = """
@@ -34,6 +35,7 @@ Prioritization rules (apply in strict order):
    - Use [分类证据] and [KG路径] to judge whether two reports truly represent different bugs,
      even if their text descriptions sound similar.
    - Reports with [结构相似] hints are likely in the same defect region — spread them out.
+   - Use [视觉证据] to verify page state, visible elements, and visual defects when screenshots are available.
 
 2. SEVERITY SECOND: Among reports that contribute equal diversity value,
    prefer higher priority scores (CRITICAL > HIGH > MEDIUM > LOW).
@@ -44,6 +46,7 @@ Prioritization rules (apply in strict order):
 
 4. KG UNCERTAINTY: Reports marked ⚠LLM-fallback had no strong KG match — treat their
    bug type as approximate. When in doubt about placement, err toward diversity.
+   If visual evidence suggests a higher-confidence bug type than text, prefer that signal.
 
 Output ONLY a numbered list, one report per line. No explanations.
 Example:

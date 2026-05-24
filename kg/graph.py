@@ -369,6 +369,20 @@ class BugKnowledgeGraph:
                         if not self.G.has_edge(elem, pg):
                             self.G.add_edge(elem, pg, rel="appearsOn")
 
+            if not page_nodes and page_type and self.G.has_node(page_type):
+                self.G.add_edge(report_id, page_type, rel="occursOn")
+
+            kg_meta = r.get("kg_meta", {})
+            image_meta = kg_meta.get("image_meta") or {}
+            for elem in image_meta.get("visible_elements", []) or []:
+                if elem:
+                    if not self.G.has_node(elem):
+                        self.G.add_node(elem, node_type="AppElement")
+                    self.G.add_edge(report_id, elem, rel="involves")
+                    for pg in page_nodes:
+                        if not self.G.has_edge(elem, pg):
+                            self.G.add_edge(elem, pg, rel="appearsOn")
+
     # ── 多样性计算 ────────────────────────────────────────────────────────────
 
     def bug_type_distance(self, bt1: str, bt2: str) -> float:
