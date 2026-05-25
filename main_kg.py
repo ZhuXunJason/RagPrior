@@ -271,6 +271,7 @@ def run_pipeline(
                 app=app,
                 use_vision=use_vision,
                 force_refresh=force_refresh,
+                model=model,
             )
         except Exception as e:
             print(f"[enricher] disabled due to error: {type(e).__name__}: {e}")
@@ -280,9 +281,6 @@ def run_pipeline(
     kg.enrich_from_extractions(reports)           # 将 specific_pages/elements 加入图
     classify_all(reports, kg, model=model)                     # 图匹配打分
     llm_fallback_classify(reports, model=model)                # 兜底：对无匹配报告用 LLM 分类
-
-    classify_all(reports, kg, model=model)
-    llm_fallback_classify(reports, model=model)
     print(f"[graph]  {kg.summary()}")
 
     # ── Phase 3：分类后严重性推导 ──────────────────────────────────────────────
