@@ -19,7 +19,7 @@ import os
 import re
 from typing import Any, Dict, List, Optional
 
-from kg.graph import ALL_MODULES, ALL_OPERATIONS, ALL_PAGES, ALL_SYMPTOMS
+from kg.graph import ALL_BUG_TYPES, ALL_MODULES, ALL_OPERATIONS, ALL_PAGES, ALL_SYMPTOMS
 from llm import ask_completion
 
 CACHE_DIR = "./cache"
@@ -67,7 +67,15 @@ Return a JSON object with exactly these fields:
   "specific_pages":    [specific page/screen names mentioned in text or visible in screenshot, e.g. "登录页", "首页"],
   "specific_elements": [specific UI element names mentioned in text or visible in screenshot, e.g. "登录按钮", "搜索框", "标题"],
   "page_type":         "<one of: {pages}>",
-  "module":            "<one of: {modules}>"
+  "module":            "<one of: {modules}>",
+  "visual_evidence":   {{
+    "page_description": "<brief description of the page/screen shown in the screenshot>",
+    "visible_elements": ["<UI elements visible in the screenshot>", ...],
+    "visual_defect": "<description of any visible bug/defect in the screenshot>",
+    "error_messages": ["<any error text visible in the screenshot>"],
+    "suggested_bug_type": "<one of: {bug_types}>",
+    "severity_hint": "<one of: 低/中/高/致命>"
+  }}
 }}
 
 Rules:
@@ -77,6 +85,7 @@ Rules:
 - specific_elements: list UI elements VISIBLE in the screenshot AND those mentioned in text
 - page_type: infer from the screenshot's page layout and structure
 - module: infer from the page's functional context
+- visual_evidence: describe what you actually SEE in the screenshot — page state, visible UI, any visual defects or error text
 - Return ONLY the JSON object, no other text.
 """.strip()
 
@@ -115,22 +124,35 @@ def _extract_single(
     img_url: Optional[str] = None,
     debug: bool = False,
     model: str = "gpt-4o-mini",
+    raise_on_error: bool = False,
 ) -> Dict[str, Any]:
     use_vision = img_url is not None
     template = _EXTRACT_PROMPT_VISION if use_vision else _EXTRACT_PROMPT
-    prompt = template.format(
-        description=description,
-        ops="、".join(ALL_OPERATIONS),
-        syms="、".join(ALL_SYMPTOMS),
-        pages="、".join(ALL_PAGES),
-        modules="、".join(ALL_MODULES),
-    )
+    format_kwargs: Dict[str, Any] = {
+        "description": description,
+        "ops": "、".join(ALL_OPERATIONS),
+        "syms": "、".join(ALL_SYMPTOMS),
+        "pages": "、".join(ALL_PAGES),
+        "modules": "、".join(ALL_MODULES),
+    }
+    if use_vision:
+        format_kwargs["bug_types"] = "、".join(ALL_BUG_TYPES)
+    prompt = template.format(**format_kwargs)
     try:
+        is_deepseek = model.startswith("deepseek-")
+        max_token = 1024 if is_deepseek else (
+            512 if use_vision else 400
+        )
         resp = ask_completion(
             prompt,
             model=model,
-            max_token=400,
+            max_token=max_token,
             temperature=0.0,
+            request_options=(
+                {"extra_body": {"thinking": {"type": "disabled"}}}
+                if is_deepseek
+                else None
+            ),
             image_urls=[img_url] if use_vision else None,
         )
         raw = resp.get("content", "")
@@ -144,8 +166,16 @@ def _extract_single(
     except Exception as e:
         if use_vision:
             print(f"[extractor VISION ERROR] {type(e).__name__}: {e}, falling back to text-only")
-            return _extract_single(description, img_url=None, debug=debug, model=model)
+            return _extract_single(
+                description,
+                img_url=None,
+                debug=debug,
+                model=model,
+                raise_on_error=raise_on_error,
+            )
         print(f"[extractor ERROR] {type(e).__name__}: {e}")
+        if raise_on_error:
+            raise
         return _default_entities()
 
 
@@ -159,6 +189,7 @@ def extract_all(
     force_refresh: bool = False,
     model: str = "gpt-4o-mini",
     use_vision: bool = False,
+    raise_on_error: bool = False,
 ) -> List[Dict[str, Any]]:
     """
     对整个应用的所有报告进行实体提取，结果写回报告的 "entities" 字段。
@@ -169,6 +200,7 @@ def extract_all(
         force_refresh: 忽略缓存，重新提取
         model:         提取用的 LLM 模型名
         use_vision:    是否使用多模态模型同时分析截图
+        raise_on_error: 视觉与文本提取均失败时是否抛出异常
 
     Returns:
         原列表，每个元素增加 "entities" 字段
@@ -176,28 +208,59 @@ def extract_all(
     cache_suffix = "_vision" if use_vision else ""
     cache_path = os.path.join(CACHE_DIR, f"app{app}_entities{cache_suffix}.json")
 
-    # 读取缓存
-    if not force_refresh and os.path.exists(cache_path):
+    cache_list = []
+    if os.path.exists(cache_path):
         with open(cache_path, encoding="utf-8") as f:
             cache_list = json.load(f)
-        idx_map = {item["index"]: item["entities"] for item in cache_list}
-        for r in reports:
-            r["entities"] = idx_map.get(r["index"], _default_entities())
-        print(f"[extractor] Cache loaded: {cache_path} ({len(reports)} reports)")
-        return reports
+
+    idx_map = {
+        item["index"]: item["entities"]
+        for item in cache_list
+        if "index" in item and "entities" in item
+    }
+    if force_refresh:
+        missing_reports = reports
+    else:
+        missing_reports = [r for r in reports if r["index"] not in idx_map]
 
     mode_tag = "vision" if use_vision else "text"
-    print(f"[extractor] Extracting entities for app{app} ({len(reports)} reports, {mode_tag})...")
-    to_cache = []
-    for i, r in enumerate(reports):
-        img_url = r.get("img_url") if use_vision else None
-        entities = _extract_single(r["description"], img_url=img_url, model=model)
-        r["entities"] = entities
-        to_cache.append({"index": r["index"], "entities": entities})
-        if (i + 1) % 20 == 0 or (i + 1) == len(reports):
-            print(f"  [{i + 1}/{len(reports)}]")
+    if missing_reports:
+        print(
+            f"[extractor] Extracting entities for app{app} "
+            f"({len(missing_reports)}/{len(reports)} missing reports, {mode_tag})..."
+        )
+    elif cache_list:
+        print(f"[extractor] Cache loaded: {cache_path} ({len(reports)} reports)")
 
-    with open(cache_path, encoding="utf-8", mode="w") as f:
-        json.dump(to_cache, f, ensure_ascii=False, indent=2)
-    print(f"[extractor] Cache saved: {cache_path}")
+    for i, r in enumerate(missing_reports):
+        img_url = r.get("img_url") if use_vision else None
+        entities = _extract_single(
+            r["description"],
+            img_url=img_url,
+            model=model,
+            raise_on_error=raise_on_error,
+        )
+        idx_map[r["index"]] = entities
+        if (i + 1) % 20 == 0 or (i + 1) == len(missing_reports):
+            print(f"  [{i + 1}/{len(missing_reports)}]")
+
+    if missing_reports:
+        merged_cache = [
+            {"index": index, "entities": entities}
+            for index, entities in idx_map.items()
+        ]
+        with open(cache_path, encoding="utf-8", mode="w") as f:
+            json.dump(merged_cache, f, ensure_ascii=False, indent=2)
+        print(f"[extractor] Cache saved: {cache_path} ({len(merged_cache)} reports)")
+
+    for r in reports:
+        entities = idx_map.get(r["index"], _default_entities())
+        r["entities"] = entities
+        if use_vision:
+            ve = entities.get("visual_evidence")
+            if isinstance(ve, dict) and ve:
+                r["kg_meta"] = {"text_meta": {}, "image_meta": ve}
+            else:
+                r["kg_meta"] = {"text_meta": {}, "image_meta": None}
+
     return reports

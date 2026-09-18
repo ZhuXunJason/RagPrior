@@ -1,0 +1,5 @@
+218,进入“商城”页面 选择玫瑰 分类中没有相应的商品，系统并没有提示没有该类商品，而是显示的空白，可能会让用户误以为是网络或者app出现问题。,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1494996689000_Screenshot_2017-05-17-12-52-29.png,1
+219,点击“商店”页面 选择梅 分类中没有显示相应的商品，系统并没有提示没有该类商品或是显示正在加载界面，而是直接显示的空白，这样会让用户以为是网络出现问题,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1496126827000_11.jpg,1
+221,查看“商店”页面 选择郁金香 分类中没有相对应的商品，系统没有任何提示，会让用户以为是手机问题,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1496151102000_%E8%8A%B1%E7%94%B0%E5%B0%8F%E6%86%A9.jpg,1
+220,点击注册 点击保存 因为验证版本问题出错而导致第一次保存失败，只有重启才可以正常使用,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1496143837000_3333_%E7%9C%8B%E5%9B%BE%E7%8E%8B.png,2
+222,修改用户资料 点击保存 有时会无法保存,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1496151851000_%E8%8A%B1%E7%94%B0.jpg,3

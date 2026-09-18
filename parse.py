@@ -57,7 +57,10 @@ def generate_sequence(root: TreeNode) -> List[int]:
 
 def parse(s: str, mode: str):
     if mode == "default":
-        return parse_v1(s)
+        try:
+            return parse_v1(s)
+        except Exception:
+            return parse_report_sequence(s)
     elif mode == "simple":
         try:
             return parse_v2(s)
@@ -85,13 +88,12 @@ def parse_v1(s: str) -> str:
         line = re.sub(r"^[\s#*│├└─]+", "", line)
         line = line.replace("- LEVEL", "LEVEL")
         line = line.replace("-> LEVEL", "LEVEL")
-        if line.find("-> Report:") == -1 and line.find("-> Report") >= 0:
-            line = line.replace("-> Report", "-> Report:")
+        line = line.replace("→", "->")
         line = line.strip()
 
-        if line.find("-> Report:") != -1:
-            start = line.find("-> Report:") + len("-> Report:")
-            nums = [int(n) for n in re.findall(r"\d+", line[start:].strip())]
+        report_match = re.search(r"->\s*Reports?\s*:?\s*(.*)$", line, flags=re.IGNORECASE)
+        if report_match:
+            nums = [int(n) for n in re.findall(r"\d+", report_match.group(1))]
             node = TreeNode("cat", 0)
             for num in nums:
                 node.children.append(TreeNode("report", num))
@@ -122,6 +124,25 @@ def parse_v1(s: str) -> str:
     for n in seq:
         res += f"Report {n}:\n"
     return res.strip()
+
+
+def parse_report_sequence(s: str) -> str:
+    """Extract report identifiers from common non-tree model output variants."""
+    seq = []
+    pattern = re.compile(
+        r"\bReports?(?:\s+(?:IDs?|numbers?))?\s*#?\s*:?\s*([\d\s,，;、-]+)",
+        flags=re.IGNORECASE,
+    )
+    for line in s.splitlines():
+        for match in pattern.finditer(line):
+            for value in re.findall(r"\d+", match.group(1)):
+                report_num = int(value)
+                if report_num not in seq:
+                    seq.append(report_num)
+
+    if not seq:
+        raise Exception("Invalid format: no report sequence parsed.")
+    return "\n".join(f"Report {n}:" for n in seq)
 
 
 def parse_v2(s: str) -> str:

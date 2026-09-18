@@ -1,0 +1,26 @@
+224,点击壹钱包 进入后点击下方一账通登录 未填写账号密码或者只填写其中一个 点击登录 一账通登录时未填写账号密码或者只填写账号或者密码点击登录出现乱码,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1497751492000_%E6%8D%95%E8%8E%B7.jpg,1
+225,使用一账通登录 添加正确身份证信息 点击登录 提示窗口的信息为乱码，添加不正确信息，提示窗口的信息为乱码。,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1497751475000_%E6%88%AA%E5%B1%8F_20170618_094911.png,1
+229,点击一账通登录 用户名，密码，验证码其中任意一项不输入 点击登录 未能弹出弹窗，提示用户名或密码错误，验证码错误，用户名或密码不能为空，验证码不能为空等提示,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1497752044000_%E4%B8%80%E8%B4%A6%E9%80%9A%E7%99%BB%E5%BD%95.png,1
+223,查看规格参数 商品的规格参数不显示,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1497750487000_QQ%E5%9B%BE%E7%89%8720170618094717.png,2
+240,进入购物车 查看规格参数 常出现规格参数没有填写,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1497754604000_%E5%95%A6%E5%95%A6%E5%95%A6%E5%95%A6%E5%95%A6.jpg,2
+252,点击规格参数 产品介绍不完整,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1497757392000_5.jpg,2
+227,进入积分特权商城页面 点击分享按钮 点击分享到“微信” 无法点击，无法进行分享。,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1497752073000_%E5%95%86%E5%9F%8E%E5%88%86%E4%BA%AB.png,3
+228,1、进入积分特权的商品详情页面 2、点击右上角更多按钮 3、底部弹出分享按钮 4、点击朋友圈 提示“签名错误，请打包签名再试”的错误提示，无法进行分享。,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1497752237000_%E5%95%86%E5%9F%8E%E5%86%85%E5%88%86%E4%BA%AB1.png,3
+233,进入理财界面 点击分享 出现签名错误，请打开签名包再试，无法分享。,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1497752787000_a.png,3
+234,首页打开一个链接 点击分享 显示签名错误无法分享,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1497753431000_%E6%88%AA%E5%B1%8F_20170618_103659.jpg,3
+237,1.点击壹钱包 2.随意点击一个商品 3.点击进入商品右上方点击分享 4.点击微信好友分享 出现：“”签名错误，请打开签名包再试“”,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1497753933000_QQ%E6%88%AA%E5%9B%BE20170618104258.png,3
+241,点击分享朋友圈 功能不存在,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1497754628000_QQ%E5%9B%BE%E7%89%8720170618105321.jpg,3
+243,进入网易严选界面 选择商品进行分享 点击分享到朋友圈 系统无法反应，无法进行分享。其他界面的分享也无法实现 例如：平安金分享到QQ空间提示签名错误，请打开签名包再试,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1497757798000_1497754565000_Screenshot_2017-06-18-10-41-44-613_com.paic.zhifu.png,3
+249,选择积分特权 点击分享 不能分享,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1497756924000_%E7%A7%AF%E5%88%86%E7%89%B9%E6%9D%83%E4%B8%8D%E8%83%BD%E5%88%86%E4%BA%AB.jpg,3
+226,点击壹钱包 随意点击一个商品 点击电话客服 app软件停止运行,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1497751875000_123.jpg,4
+230,点击电话客服 APP崩溃,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1497752546000_QQ%E5%9B%BE%E7%89%8720170618102218.png,4
+232,1、进入积分特权的商品详情页面 2、点击左下角的“客服”按钮 3、弹出客服的类型 4、选择“电话客服” 程序出错，不正常退出,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1497752641000_%E7%94%B5%E8%AF%9D%E5%AE%A2%E6%9C%8D.png,4
+238,进入购买商品页面 点击电话客服 壹钱包直接停止运行,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1497753940000_%E5%AE%A2%E6%9C%8D.jpg,4
+246,点击客服 程序停止运行,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1497755674000_%E7%82%B9%E5%87%BB%E5%9C%A8%E7%BA%BF%E5%AE%A2%E6%9C%8D%20%E7%A8%8B%E5%BA%8F%E5%81%9C%E6%AD%A2%E8%BF%90%E8%A1%8C.jpg,4
+253,点击电话客服服务 软件停止运行,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1497757800000_%E5%AE%A2%E6%9C%8D.jpg,4
+231,1、进入积分特权的商品详情页面 2、点击左下角的“客服”按钮 3、选择“在线客服1” 提示“拉起失败”，无法打开客服页面。,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1497752470000_%E7%94%B5%E8%AF%9D%E5%AE%A2%E6%9C%8D.png,4
+236,选择购买商品 点击商城客服 出现错误页面,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1497753537000_2.png,4
+247,选择查看商品 点击分享 会出现签名错误。,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1497756051000_6.jpg,3
+248,联系商城客服 客服不在线，显示客服都在忙，几乎所有商品都联系不到客服,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1497756641000_%E5%AE%A2%E6%9C%8D2.jpg,4
+250,1、打开“购物”页面 2、点击“电子卡券” 3、在网络通畅的情况下有一定概率加载不出电子卡券tab里面的内容,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1497757017000_1.png,5
+251,1、打开“购物”页面 2、点击“合作商户”  3、在网络通畅的情况下有一定概率加载不出合作商户tab里面的内容,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1497757245000_2.png,5

@@ -148,7 +148,11 @@ Return ONLY the bug type name (exactly as listed), nothing else.
 """.strip()
 
 
-def llm_fallback_classify(reports: List[Dict[str, Any]], model: str = "gpt-4o-mini") -> None:
+def llm_fallback_classify(
+    reports: List[Dict[str, Any]],
+    model: str = "gpt-4o-mini",
+    raise_on_error: bool = False,
+) -> None:
     """对 fallback==True 的报告用 LLM 做一次兜底分类，直接修改 report。"""
     targets = [r for r in reports if r.get("kg_class", {}).get("fallback")]
     if not targets:
@@ -166,8 +170,13 @@ def llm_fallback_classify(reports: List[Dict[str, Any]], model: str = "gpt-4o-mi
             resp = ask_completion(
                 prompt,
                 model=model,
-                max_token=64,
+                max_token=256 if model.startswith("deepseek-") else 64,
                 temperature=0.0,
+                request_options=(
+                    {"extra_body": {"thinking": {"type": "disabled"}}}
+                    if model.startswith("deepseek-")
+                    else None
+                ),
             )
             predicted = resp.get("content", "").strip()
             if predicted in ALL_BUG_TYPES:
@@ -176,3 +185,5 @@ def llm_fallback_classify(reports: List[Dict[str, Any]], model: str = "gpt-4o-mi
                 r["kg_class"]["evidence"]  = []
         except Exception as e:
             print(f"[classifier fallback ERROR] {e}")
+            if raise_on_error:
+                raise

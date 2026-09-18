@@ -12,13 +12,9 @@ Prioritize crowdsourced test reports using LLM and KG-RAG.
 OPENAI_API_KEY=your_openai_key
 BASE_URL=https://api.openai.com/v1
 GOOGLE_API_KEY=your_google_key
-EMBEDDING_MODEL=gemini-embedding-2-preview
+EMBEDDING_MODEL=gemini-embedding-2
 DUPLICATE_THRESHOLD=0.85
 ```
-
-- `BASE_URL` is optional and can point to a custom OpenAI-compatible endpoint.
-- `GOOGLE_API_KEY` is required for KG mode embedding pre-clustering (using Gemini).
-- `EMBEDDING_MODEL` and `DUPLICATE_THRESHOLD` are optional KG mode settings.
 
 ## Usage
 
@@ -44,7 +40,7 @@ python main_kg.py --app 7 --repeat 3 --mode kg \
 # Multimodal mode: use screenshots alongside text for entity extraction
 python main_kg.py --app 1 --repeat 5 --mode kg \
     --model gpt-5.4 \
-    --embedding-model gemini-embedding-2-preview \
+    --embedding-model gemini-embedding-2 \
     --use-vision
 
 # KG-only greedy sort baseline (no LLM ranking call)
@@ -53,13 +49,35 @@ python main_kg.py --app 7 --repeat 3 --mode kg-only --no-skip-severity
 
 `--use-vision` sends each report's screenshot (from CSV `img_url`) to the model together with the text description. The model cross-references both modalities in a single API call. Vision extraction uses a separate cache (`app{n}_entities_vision.json`). Falls back to text-only on image download errors.
 
+### Stage ablations
+
+`--ablation` accepts the mutually exclusive values `none`, `no-stage1`, and
+`no-stage2`. The default `none` preserves the full pipeline.
+
+```bash
+# Disable description-embedding pre-clustering.
+python main_kg.py --app 1 --repeat 5 --mode kg \
+    --model gpt-5.6-terra --embedding-model gemini-embedding-2 \
+    --ablation no-stage1 --use-vision --skip-severity \
+    --strict-output
+
+# Retain pre-clustering and disable all Stage-II knowledge/vision processing.
+python main_kg.py --app 1 --repeat 5 --mode kg \
+    --model gpt-5.6-terra --embedding-model gemini-embedding-2 \
+    --dedup-threshold 0.85 --ablation no-stage2 \
+    --skip-severity --strict-output
+
+# Resume the strict App1--App20, five-run ablation batch.
+python experiment_logs/run_graphprior_ablation_gpt_terra.py --variant all
+```
+
 
 ## KG-RAG Pipeline (main_kg.py)
 
 The KG-RAG enhanced pipeline consists of four phases:
 
 ### Phase 0 — Embedding Pre-clustering (Deduplication)
-- Embeds all report descriptions using the configured embedding model (default: `gemini-embedding-2-preview`).
+- Embeds all report descriptions using the configured embedding model (default: `gemini-embedding-2`).
 - Groups similar reports by cosine similarity above `DUPLICATE_THRESHOLD`.
 - Selects one representative per cluster, reducing the number of reports passed to subsequent phases.
 - After LLM ranking, expands the compressed sequence back to all original reports via `expand_ranked_sequence`.

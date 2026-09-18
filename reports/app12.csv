@@ -1,0 +1,10 @@
+256,用户登录 点击资产 提示除以零异常。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1507970375020/Screenshot_2017-10-14-16-39-12-389_com.yao.club.png,1
+258,进入App首页 点击”资产“ 不会打开【资产】界面，只弹出一个提示信息,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1508406371551/QQ%E5%9B%BE%E7%89%8720171014160737.jpg,1
+259,进入App首页 点击”资产“ 不会打开【资产】界面，只弹出一个提示信息,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1508406371551/QQ%E5%9B%BE%E7%89%8720171014160737.jpg,1
+261,进入首页 点击”资产“ app提示”divide by zero “,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1508485743536/QQ%E6%88%AA%E5%9B%BE20171020154913.png,1
+262,点击资产 没有跳转，弹出了英文提示框,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1521105634765/1521105634765_Screenshot_2018-03-15-17-20-00.png,1
+264,点击资产 信息不显示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1521616205844/1521616205844_QQ%E6%88%AA%E5%9B%BE20180321145646.png,1
+254,用户登录 进入记一笔模块 输入地点、时间、场地费等信息，其中场地费、水费、羽毛球个数、非会员人数输入超长数字 点击保存 造成应用崩溃。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1507969789454/QQ%E5%9B%BE%E7%89%8720171014162933.jpg,2
+255,用户登录 进入活动模块 选择任意活动长按 点击修改按钮 发现标题栏缺失，页面布局紊乱。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1507970117572/Screenshot_2017-10-14-16-34-53-619_com.yao.club.png,2
+260,进入首页 点击”记一笔“ 输入四个字长作为地点 点击”保存“ app提示请输入地点和场地费,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1508482425765/QQ%E6%88%AA%E5%9B%BE20171020145328.png,2
+263,点击记一笔 界面控件不显示造成保存错误,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1521614432885/1521614432885_QQ%E6%88%AA%E5%9B%BE20180321143336.png,2

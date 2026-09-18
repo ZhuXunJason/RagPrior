@@ -1,0 +1,88 @@
+1419,点击进入某目的地 点击新浪微博分享 返回搜索页面 点击推荐目的地 发现字符排列重叠,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542413486812/1542413486812_Screenshot_2018-11-17-08-08-22.png,10
+1446,填写好友姓名 只能填写中文汉字，否则会提示名字不规范，无法邀请只有外文名的外国朋友,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542415103154/1542415103154_Screenshot_2018-11-17-08-37-15-243_com.tuniu.app..png,1
+1438,点击推荐方式二  输入好友姓名 没有字数限制（没有错误值分析提示）,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414874482/1542414874482_TIM%E6%88%AA%E5%9B%BE20181117083211.png,1
+1444,进入“推荐方式二”  输入好友姓名 只输入姓氏“王”应显示“名字不符合规范”，实际上软件未定为违规,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542415022759/1542415022759_Screenshot_2018-11-17-08-32-56.png,1
+1458,点击推荐有礼 选择推荐方式二 输入好友姓名 无长度限制,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542415320572/1542415320572_Screenshot_2018-11-17-08-41-34%5B1%5D.png,1
+1487,1.点击我的 2.点击右上角的推荐有礼 3.点击推荐方式二 4.在好友手机输入框输入正确手机号码，如15989111816 5.在好友姓名输入框输入任意位数汉字 6.点击立即推荐 7.不提示好友姓名格式错误,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542419734205/1542419734205_Screenshot_2018-11-17-09-55-32.png,1
+1423,搜索北京 搜索结果应与北京相关但是却出现了与北京无关的“马尔代夫”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414218510/1542414218510_Screenshot_2018-11-17-08-22-25.png,2
+1462,输入“1”  会显示无关信息,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542415513322/1542415513322_S81117-084434.jpg,2
+1469,进入途牛app进入首页 点击首页搜索框 输入*1 预期结果：查询结果为空 实际结果：出现与搜索内容无关的搜索结果,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542416133815/1542416133815_bug1.png,2
+1480,点击上方搜索 输入/n  能搜索到页面，应提示输入错误,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542418449426/1542418449426_Screenshot_2018-11-17-09-31-00-76%5B1%5D.png,2
+1482,点击出发 点击搜索框 输入“b” 出现了与之不符的预期搜索,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542418706191/1542418706191_d891881475add60b0c66955eceb23c0.png,2
+1492,点击上方搜索 输入6个空格 点击搜索 得到泰国 应该提示输入不能为空或者输入错误,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542422073145/1542422073145_0794f0f5a5896407e63cb96cbcec1d6.png,2
+1430,点击推荐有礼 选择推荐方式二 在好友手机输入11111111111 手机号会提示已经是老会员,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414588527/1542414588527_%E5%9B%BE%E7%89%874.png,1
+1448,点击推荐有礼 选择推荐方式二 正确输入好友手机  会出现老会员填写邀请人失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542415184374/1542415184374_%E5%9B%BE%E7%89%875.png,1
+1449,点击推荐好友 选择推荐方式二 正确填写好友信息后 点击立即推荐 总是提示填写邀请人信息失败。星级会员则能正常提交。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542415212152/1542415212152_Screenshot_2018-11-17-08-38-19-297_com.tuniu.app.ui.png,1
+1463,登陆新注册账户 点击推荐有礼 选择推荐方式二进行邀请 填写另一未注册手机号的信息 点击立即推荐 弹出 ’老会员填写邀请人信息失败‘这一消息（本应显示 未消费用户 无法邀请），会对用户产生困扰。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542415645038/1542415645038_Screenshot_2018-11-17-08-42-22.png,1
+1471,使用推荐方式二 填写好友信息 点击立即推荐 推荐失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542416212440/1542416212440_%E6%96%B9%E5%BC%8F%E4%BA%8C.png,1
+1501,进去推荐有礼模块 选择推荐方式二 点击“我已阅读并同意途牛旅游网的[活动规则]“  该复选框一开始就是打勾的，用户都没读活动规则，默认不应该是勾选的。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542425018182/1542425018182_21.jpg,1
+1503,进入途牛app 点击我的 进入推荐有礼 点击推荐方式二 输入12345678901 点击立即推荐 提示我的好友已经是途牛会员，应提示输入错误。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542425101564/1542425101564_QQ%E6%88%AA%E5%9B%BE20181117095203.jpg,1
+1509,选择推荐方式二 输入好友手机13871354811 点击立即推荐 手机号会提示已经是老会员，但是此手机号码为真实号码且从未注册过途牛旅行,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542426210013/1542426210013_4.png,1
+1507,进入推荐有礼 选择推荐方式一 点击“点击分享，邀请注册” 在使用任一方式进行分享后，如果分享人为停止，仍显示分享成功。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542425541997/1542425541997_TIM%E5%9B%BE%E7%89%8720181117113210.jpg,1
+1415,搜素联想 未找到任何信息,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542413823026/1542413823026_Screenshot_2018-11-17-08-15-47.png,2
+1431,输入联想 bug：跳转后的页面无信息，不会将相关信息列出来，影响用户体验。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414611755/1542414611755_5.png,2
+1489,进入首页 点击搜索栏 搜索“联想” 无反应，无提示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542420138678/1542420138678_%E6%8D%95%E8%8E%B718.PNG,2
+1505,输入“nanjing” 无法显示与“nanjing”相关的两项结果。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542425464628/1542425464628_2.jpg,2
+1413,点击”全部“ 选择完“花费”范围 点击确定 ”确定“按钮无法点击,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542413726636/1542413726636_Screenshot_2018-11-17-08-14-33.png,3
+1420,选择区域国内  全部选国内  点击确定 确定按钮无法点击,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414128155/1542414128155_P16%40~F%5B%60C2%5D%24CT%285DE%28S8%60L.png,3
+1464,点击帮你选 选择所有条目要求 点击确定 总是提示未找到符合条件的线路，无法点击确定,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542415709700/1542415709700_Screenshot_2018-11-17-08-46-53.png,3
+1510,选择境外区域 点击境外轻旅行 点击确认 无法确认，功能不完整。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542426291902/1542426291902_QQ%E5%9B%BE%E7%89%8720181117113108.png,3
+1442,点击推荐有礼 选择推荐方式二 输入好友手机 没有错误提示，且没有字数限制,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414956575/1542414956575_TIM%E6%88%AA%E5%9B%BE20181117083211.png,1
+1481,点击推荐有礼 输入错误的手机号 输入错误验证码 输入乱码邀请人手机号 点击注册并领取 三个框内均可以输入汉字英文字符等内容,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542418518263/1542418518263_Screenshot_2018-11-17-08-35-39.png,1
+1485,1.点击我的 2.点击右上角的推荐有礼 3.点击推荐方式二 4.在好友手机输入框输入11位任意数字 5在推荐好礼中“好友手机”输入框输入十一位任意组合数字 6.点击立即推荐 不提示用户格式错误,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542419415280/1542419415280_Screenshot_2018-11-17-09-49-26.png,1
+1407,点击查看更多 app停止运行,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542413195746/1542413195746_%E5%9B%BE%E7%89%871.png,4
+1410,进人搜索界面 点击查看更多 APP显示已停止运行，在等其返回搜索界面后再次点击则能够正常进入查看更多的界面。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542413377503/1542413377503_snipaste_20181117_080648.png,4
+1411,点击查看更多 app停止运行,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542413406703/1542413406703_Screenshot_2018-11-17-08-04-58.png,4
+1428,进入推荐目的地界面 点击查看更多 小概率出现不正常退出。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414539307/1542414539307_%E6%9F%A5%E7%9C%8B%E6%9B%B4%E5%A4%9A.PNG,4
+1468,点击推荐目的地 点击查看更多 可能造成app停止运行或崩溃 可能造成app需要加载时间较长,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542415944891/1542415944891_Screenshot_2018-11-17-08-33-58.png,4
+1497,点击帮你选 有小概率的不正常退出,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542423535680/1542423535680_WLK65ZOEM%7B1_TVW7G83IJ%5BW.png,4
+1498,重新打开应用进入搜索页面 点击推荐目的地 点击查看更多  app崩溃，停止运行 页面卡顿，长时间空白后才进入到正确的查看更多页面,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542423921135/1542423921135_Screenshot_2018-11-17-10-58-11.png,4
+1414,点击帮你选 页面加载缓慢，影响用户体验,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542413788246/1542413788246_%E5%B8%AE%E4%BD%A0%E9%80%89%E7%9B%AE%E7%9A%84%E5%9C%B0.png,5
+1416,搜素联想 点击帮你选 页面无实际内容,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542413893808/1542413893808_Screenshot_2018-11-17-08-15-07.png,5
+1427,点击帮你选 进入帮你选目的地界面，页面加载时间较长,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414528194/1542414528194_Screenshot_2018-11-17-08-23-58.png,5
+1491,进入“帮你选” 页面卡顿,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542420825807/1542420825807_%E6%8D%95%E8%8E%B719.PNG,5
+1508,点击搜索 点击帮你选 景点大部分图片不显示，影响用户使用体验,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542425525429/1542425525429_QQ%E5%9B%BE%E7%89%8720181117113108.png,5
+1425,进入联想子页面 点击1800以上 筛选结果不成功,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414415992/1542414415992_%E7%AD%9B%E9%80%89.png,12
+1460,搜索联想进入子页面 点击￥700-1000 会出现不在此范围的酒店,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542415378515/1542415378515_700-1000.png,12
+1452,点击帮你选 点击30天出游人数最多 热度推荐含有大量白框，比较丑陋，为按照条目个数自适应调整下拉框长度,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542415222830/1542415222830_Screenshot_2018-11-17-08-38-52.png,6
+1456,点击帮你选 区域下拉框含有大量白框，比较丑陋，为按照条目个数自适应调整下拉框长度,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542415311907/1542415311907_Screenshot_2018-11-17-08-41-46.png,6
+1512,点击热度推荐 点击帮你选 含有大量白框，比较丑陋，应按照条目个数自适应调整下拉框长度,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542426736878/1542426736878_Screenshot_2018-11-17-11-48-41-430_com.tuniu.app..png,6
+1424,点击帮你选目的地 系统无响应且不正常退出,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414360886/1542414360886_Screenshot_2018-11-17-08-22-51.png,10
+1443,点击推荐有礼 页面刷新缓慢,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414982931/1542414982931_%E6%8E%A8%E8%8D%90%E6%9C%89%E7%A4%BC%5B1%5D.png,1
+1422,用浏览器打开这个分享注册 点击注册并领取 会有邀请码不得为空出现，并且无法关闭，影响用户体验,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414188041/1542414188041_%E5%9B%BE%E7%89%873.png,1
+1447,点击推荐有礼 点击注册并领取 页面弹出不可关闭且无意义的提示框，且UI混乱,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542415156374/1542415156374_TIM%E6%88%AA%E5%9B%BE20181117083625.png,1
+1455,点击推荐有礼 点击“点击分享，邀请注册” 提示非星级用户无法推荐，但关闭后仍可进入推荐页面进行操作,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542415314326/1542415314326_TIM%E6%88%AA%E5%9B%BE20181117083953.png,1
+1412,进入发现页面 搜索30030554 在网络连接正常的情况下，显示加载不出来。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542413744388/1542413744388_3.png,7
+1433,搜索框内输入3003055 在网络错误页面点击重新加载 点击无效，严重影响用户体验。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414664577/1542414664577_4.PNG,7
+1437,点击重新加载 按钮点击无响应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414855914/1542414855914_Screenshot_2018-11-17-08-33-47.png,7
+1461,点击重新加载 提示网络错误且按钮无法点击，用户体验极其不好。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542415438433/1542415438433_snipaste_20181117_084346.png,7
+1472,进入领取优惠券页面 点击领取 详情页面的部分优惠券领取成功，部分领取失败，但领取失败时未给出合理的原因提示，且多次重试仍然失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542416256132/1542416256132_Screenshot_2018-11-17-08-55-28-123_com.tuniu.app.ui.png,8
+1486,点击领取优惠券 进入领取优惠券界面 点击领取 第一张优惠券不能领取，其他优惠券可以领取,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542419436223/1542419436223_Screenshot_2018-11-17-09-45-05-65%5B1%5D.png,8
+1494,进入优惠旅游项目 点击立即领取 部分情况下显示“领取成功”，部分情况下显示“领取失败”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542422993190/1542422993190_TIM%E5%9B%BE%E7%89%8720181117104944.jpg,8
+1409,在我的界面点击推荐有礼 输入正确的手机号和验证码以及推荐人手机号 点击注册并领取 显示“请输入正确的邀请人手机号”。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542413351837/1542413351837_1.png,1
+1421,在推荐有礼界面的“输入邀请人手机号”输入有效手机号码 点击注册并领取 出现bug：提示请填写正确的邀请人手机号,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414086452/1542414086452_Screenshot_2018-11-17-08-17-39.png,1
+1441,点击我的 点击推荐有礼 输入手机号、验证码、邀请人手机号 点击注册并领取 bug：无论邀请人手机号填什么，都提示“请输入正确的邀请人手机号码”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414937758/1542414937758_666.png,1
+1499,点击推荐有礼界面 进入注册有礼界面 输入正确的手机号 输入正确的邀请人手机号码 在验证码区域输入字母，任意数字，汉字和特殊符号 点击注册并领取 未提示验证码有错误。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542424500628/1542424500628_Screenshot_2018-11-17-11-12-16-90%5B1%5D.png,1
+1504,进入我的界面 点击右上方的推荐有礼图标跳转至注册有礼界面 填写注册手机号 填写正确验证码 填写邀请人手机 点击注册并领取 显示“请填写正确的邀请人手机号”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542425186070/1542425186070_QQ%E5%9B%BE%E7%89%8720181117112547.jpg,1
+1511,1.点击我的 2.点击推荐有礼 3.输入正确而且未注册过的手机号码 4.邀请人输入正确而且已注册过的手机号码 5.验证码不输入 6.点击注册并领取 7.出现请填写正确的邀请人手机号码，而并未出现验证码错误信息,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542426538917/1542426538917_Screenshot_2018-11-17-11-48-57.png,1
+1432,新注册账号 创建分享链接 填写分享内容 点击发送 新用户没有消费旅游产品，不符合参加推荐有礼活动要求，但是仍能创建分享链接，通过各种渠道进行邀请分享，会给用户造成困扰。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414684369/1542414684369_Screenshot_2018-11-17-08-31-19.png,11
+1474,进入推荐有礼 点击提示右上角的关闭按键 点击分享到新浪微博 点击发送 提示是新人无法推荐好友，但是没有退出推荐有礼界面，而且可以正常分享。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542416936234/1542416936234_Screenshot_2018-11-17-09-08-14.png,11
+216,分享到微信朋友圈 分享不了，但会出现已分享,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1492674444000_S70420-154155.jpg,9
+217,选择分享到QQ 无反应，不跳转至分享,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1492742186000_%E5%88%86%E4%BA%AB.jpg,9
+1426,点击推荐有礼 点击推荐方式二 输入好友姓名 只能输入英文和数字，不能输入中文。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414388879/1542414388879_snipaste_20181117_082622.png,1
+1429,"点击推荐有礼 选择推荐方式二 输入""好友手机"" 能输入非数字的其他字符，如字母和特殊符号",http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414480893/1542414480893_3.jpg,1
+1434,点击热门搜索 搜索品类 选择全部筛选 滑到下面进行“自定义预计花费” 点击确定 自定义的价格的上限如果比较低（大概不超过一万，以1000举例），确定按钮点不了。应该在自定义的后面提示用户最低花销。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414786831/1542414786831_6.png,13
+1439,点击1800以上 有可能加载速度非常缓慢，影响用户体验,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414880350/1542414880350_%E5%8A%A0%E8%BD%BD%E7%BC%93%E6%85%A2.png,12
+1445,进入联想的子页面 点击￥1300-1 筛选结果不成功,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542415084104/1542415084104_1300-1800.png,12
+1450,搜索联想进入子页面 选择￥1000-1 筛选不成功，会出现不在这个价格范围内的,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542415227216/1542415227216_1000-1300.png,12
+1457,未登录的情况下进入我的界面 点击推荐有礼 进入注册有礼界面 输入手机号进行注册 点击发送验证码 无法发送验证码至手机，页面上方进度条一直处于加载状态,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542415324872/1542415324872_Screenshot_2018-11-17-08-37-05.png,1
+1466,点击我的按钮 点击推荐有礼按钮  在输入的好友姓名前方输入空格 点击立刻推荐按钮 提示输入好友姓名不符合规范,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542415801996/1542415801996_Screenshot_2018-11-17-08-45-43-33%5B1%5D.png,1
+1470,登录APP 进入我的 点击推荐有礼界面 选择推荐方式二 输入好友手机 输入超过11位数的手机号，无提示手机号错误信息出现，并且系统出现加载图案,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542416162334/1542416162334_Screenshot_2018-11-17-08-55-48.png,1
+1473,推荐目的地中选择三亚 单击第一个跟团旅游 联系在线客服 发送消息总会出现发送不成功的感叹号,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542416376281/1542416376281_3.png,14
+1476,点击朋友圈扩散 未安装微信时，点击邀请砍价页面中的“朋友圈求扩散”按钮无任何提示信息,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542417307236/1542417307236_Screenshot_2018-11-17-09-11-34-772_com.tuniu.app.ui.png,15
+1477,点击邀请好友助力 未连接网络时，点击按钮仅提示“内容加载失败”，缺少详细的断网提示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542417413534/1542417413534_Screenshot_2018-11-17-09-12-02-822_com.tuniu.app.ui.png,15
+1483,进入热门搜索页面 选择国内酒店 一直显示加载中,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542418777227/1542418777227_%E6%8D%95%E8%8E%B715.PNG,10
+1506,进入在线客服 1.发送表情时，无规律复现断网，发送不成功的情况，需要重发 2.在发送表情成功，客服回复后，自己发送的表情显示还未发送成功,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542425473305/1542425473305_Screenshot_2018-11-17-11-24-02.png,14
+1513,选择推荐方式二 不输入好友姓名 点击立即推荐 不输入完整信息也会被推荐,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542426805239/1542426805239_5.jpg,1
+1514,点击进入“咨询人工客服”界面 进入“在线客服” 出现bug：输入框无法输入，右下角的表情和添加按钮都无法使用,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542426824089/1542426824089_Screenshot_2018-11-17-11-48-13.png,14
+1515,在筛选条件中自定义预计花费 输入2~1 点击确定 输入左边界值大于右边界值这样无效的数据，页面不会提示相关报错信息,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542426856340/1542426856340_5.png,13

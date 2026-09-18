@@ -1,0 +1,294 @@
+560,点击截屏相册 页面一直加载。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590391552/Screenshot_20171102-102216.png,1
+563,点击视频监控 1.这么大一个加载图标很不美观！ 2.就算不美观，至少放在中间吧！,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590755538/1258552277.jpg,1
+820,点击视频监控 会出现左上方大型的缓存的等待圆圈，影响视觉体现。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590208571/webwxgetmsgimg%20%282%29.jpg,1
+823,点击视频监控 无法短时间进入页面，处于刷新状态，严重妨碍用户体验,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590611636/%E5%BB%B6%E8%BF%9F.png,1
+830,进入视频监控 载入界面载入图标过大，不美观,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590912257/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20171102104558.png,1
+833,点击视频监控 加载图标显示位置看起来不是很舒心。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590939866/738343755396707358.jpg,1
+848,点击视频监控 进入视频监控有时间延迟,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509592365026/%E8%A7%86%E9%A2%911.jpg,1
+853,点击视频监控 页面不完整,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509592822786/2130931051.jpg,1
+878,点击视频监控 点击截屏相册 页面加载时，加载的动画图片位于左上角，不美观，影响用户体验。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509611657207/webwxgetmsgimg%20%283%29.jpg,1
+888,点击视频监控  加载视频列表很慢,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509613225258/15858235.jpg,1
+896,进入视频监控 刷新界面不美观,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509622583295/%5B9FN%5B8M9YAKEK%7DA%60%7B2L61HM.jpg,1
+959,点击视频监控 loading不在屏幕中央显示，而是在左上角。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509685857587/59097836.jpg,1
+829,点击我发起的 页面加载时间长,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590904659/%E6%88%AA%E5%B1%8F_20171102_103714.jpg,8
+843,点击待办事项 点击待我处理 页面加载时间长,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509592130683/%E6%88%AA%E5%B1%8F_20171102_110830.jpg,8
+968,点击待办事项 页面加载较慢,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509689894409/Screenshot_2017-11-03-14-17-23-907_com.research.png,8
+969,点击待办事项 一直加载，始终加载不出。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509690084784/8E8B373933B154063AF0D1EE6A5501FC.jpg,8
+970,进入处理事项 页面卡顿，加载过慢,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509690804735/222.png,8
+815,点击上传记录 图片不能完整显示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590094984/%E9%9A%8F%E5%90%8E%E6%8B%8D2.jpg,2
+831,点击上传记录 图片无法显示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590823744/405682832743992106.jpg,2
+854,点击上传记录 点击“点击拍照可重新拍摄”  图片上传失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509592838639/1N%7BX6SFZVRYB%29S%7D%60%29%40EBGL9.jpg,2
+856,点击违章记录-待处理 可能无法加载图片,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509593190746/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20171102112411.jpg,2
+859,点击违章记录查看 查看违章记录照片 无法显示违章记录的照片，只显示“pic”字样,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509594066303/40185528.jpg,2
+860,查看违章记录照片 不能显示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509594141296/Screenshot_2017-11-02-11-40-19-25.png,2
+870,进入违章记录查看界面 无法正常显示违章记录照片,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509610153601/%E5%BE%85%E5%8A%9E%E4%BA%8B%E9%A1%B91.jpg,2
+875,点击上传记录 通过相册选择的图片在此进行相册选择的时候必然会出现图片的无法显示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509611259493/13863760.jpg,2
+880,点击违章记录-待处理 查看违章记录照片 照片在这个记录里未显示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509611716652/452668286510446981.png,2
+883,点击上传记录 在选择照片后，上传失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509612323199/1339568243.jpg,2
+895,点击上传记录 出现选择某张图片在软件上无法显示的问题,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509621777392/Screenshot_2017-11-02-19-16-26.png,2
+926,点击上传记录 图片加载错误,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509674645367/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-11-03%20%E4%B8%8A%E5%8D%8810.03.16.png,2
+940,点击上传记录 图片加载不完整。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509677681416/TIM%E5%9B%BE%E7%89%8720171103105356.jpg,2
+941,点击违章记录查看 查看违章记录照片 照片经常不显示。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509677712841/845685315651483489.jpg,2
+539,进入随手拍页面 页面卡顿，,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509588701534/Screenshot_2017-11-02-09-57-49-132_com.research.png,3
+549,单击“点击拍照” 出现卡顿,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509589566790/%E5%8D%A1loading.png,3
+558, 点击“点击拍照” 网络良好，但加载时间过长,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590276628/1.jpg,3
+580,选择点击拍照 界面加载缓慢,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509593187417/%E6%88%AA%E5%B1%8F_20171102_112006.png,3
+799,打开随手拍 有较长的等待时间,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509588603957/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20171102100947.jpg,3
+802,点击随手拍 在进入这个页面的时候可能由于网络或者其他的原因这个页面可能一直处于加载的状态,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509589103051/475939847.jpg,3
+808,点击随手拍 进入二级目录时出现时长几秒的空白页面，且进入后页面加载慢,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509589423767/%E6%88%AA%E5%B1%8F_20171102_100853.jpg,3
+810,点击随手拍 进入该页面后，加载特别慢,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509589691276/82181378396494663.png,3
+812,点击随手拍 界面不能迅速进入拍照界面，严重延时,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509588561138/%E9%9A%8F%E6%89%8B%E6%8B%8D1.jpg,3
+846,点击随手拍 页面加载过慢,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509592231531/788735686970798729.png,3
+914,点击随手拍 无法正常加载,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509635641398/1.jpg,3
+987,点击随手拍 1. 加载时间过久 2. 表示加载的菊花图标位置不恰当,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509701328771/Screenshot_2017-11-02-09-44-37-614_com.research.png,3
+536,查看工作区 上下滑时文件夹不动，不能正常浏览,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509588663962/Screenshot_2017-11-02-10-09-22-02%5B1%5D.png,4
+861,进入工作区 文件夹不能上下滑动,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509594601696/4.jpg,4
+587,进入工作区 文件夹右侧的菜单按钮无法点击使用,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509606164275/Screenshot_2017-11-02-15-01-23.png,4
+805,进入工作区 文件夹右侧的三个按钮并没有功能，会对用户进行误导。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509589230933/1760719971.jpg,4
+866,点击工作区 文件右侧三点会误导用户,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509608898441/6.jpg,4
+928,点击工作区 文件右侧的功能按钮多余,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509675167281/Screenshot_2017-11-03-09-33-15-773_com.research.png,4
+961,点击工作区 主目录下文件夹右侧出现无效的分级按钮，会给用户带来误导，应该去掉。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509687401445/2.png,4
+962,点击工作区 文件夹右侧出现无效的分级按钮，会给用户带来误导，应该去掉。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509687520584/3.png,4
+990,点击工作区 文件夹右侧有无效图标,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509790683535/Screenshot_2017-11-04-18-16-33-487_com.research.png,4
+868,点击工作台 页面加载时，加载的动画图片位于界面正上方，不美观，影响用户体验。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509609268002/webwxgetmsgimg.jpg,10
+554,点击实时监控 不能查看实时监控,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509589895756/Screenshot_2017-11-02-10-30-32-19%5B1%5D.png,5
+565,点击录像回放 录像不能播放,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590868701/Screenshot_2017-11-02-10-45-26-39%5B1%5D.png,5
+568,点击实时监控 某一监控的监控画面，显示正在工作但是持续黑屏,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509591080654/Screenshot_2017-11-02-10-48-11.png,5
+576,点击实时监控 画面错误，无监控画面，并且会自动跳转返回至实时监控页面。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509592042758/Screenshot_2017-11-02-10-57-23-503_com.research.png,5
+602,点击仓库区 选择堆料仓库 点击左侧区域 选择仓库001 点击实时监控 视频页面静止，不能正常播放。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509613472196/Screenshot_20171102-165609.png,5
+871,点击实时监控 查看监控前黑屏时间过长。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509610443743/7.png,5
+872,进入实时监控 页面显示黑屏,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509610434227/1742070877.jpg,5
+908,点击实时监控 进入监控后是长时间黑屏，并没有持续显示监控的图像,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509627131530/Screenshot_2017-11-02-20-50-14.png,5
+927,点击实时监控 加载慢,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509674667515/%E6%88%AA%E5%B1%8F_20171103_100317.jpg,5
+949,点击实时监控 经常出现视频黑屏不能显示的情况,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509679965441/BL.jpg,5
+953,点击实时监控 卡顿，等很久加载时间，一直呈黑屏状态,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509684363552/Screenshot_20171103-124218.png,5
+954,点击实时监控 加载时没有给出加载信息，容易被用户理解为加载失败，同时视频界面不美观，影响用户体验,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509684466880/Screenshot_2017-11-03-12-47-27-870_com.research.png,5
+974,点击实时监控 延迟比较长,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509691631935/668.jpg,5
+572,点击文件预览 当文件内容较多时，排版混乱，无法适应屏幕大小，影响阅读,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509591152990/Screenshot_2017-11-02-10-51-26.png,6
+877,点击文件预览  页面混乱，加载时间过长，用户体验差,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509611404016/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20171102162928.png,6
+909,进入“我发起的”页面 点击“文件上传申请” 点击“文件预览” 无法正常展示预览文档的内容。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509627260138/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20171102205405.png,6
+946,点击文件预览 出现文档预览格式变更的现象，文档格式错误,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509678147095/Screenshot_2017-11-03-11-00-05-415_com.research.png,6
+965,点击文件预览 界面文档格式布局不正确,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509688789634/Screenshot_2017-11-03-13-52-39-694_com.research.png,6
+533,点击暂停 视频暂停后暂停按钮应该改为开始。否则用户不清楚自己是卡顿还是暂停成功。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509588252243/4.jpg,5
+952,打开视频监控 点击暂停键 虽然可以正常暂停，但是暂停键状态并未改变,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509684276057/Screenshot_2017-11-03-12-40-22-574_com.research.png,5
+957,点击实时监控 点击暂停 和其他状态显示按钮丝毫没变化,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509684778429/Screenshot_20171103-125125.png,5
+973,点击实时监控 点击暂停 视频监控当中暂停功能无法正常使用,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509691561548/666.jpg,5
+975,点击实时监控 点击暂停 监控的时间与实际时间不相符 且暂停按钮无法正常使用,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509691691207/667.jpg,5
+597,扫码框不是正方形，而是一个扁长方形，页面布局缺陷。而且扫码框为红色细框，不醒目，用户体验不好,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509611454863/Screenshot_20171102-162719.png,7
+613,扫码时将扫描物视觉上拉长,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509631831224/61560487.jpg,7
+622,点击扫一扫 系统无法正常使用设备的照相机功能，会出现扭曲失真的情况，但扫码功能能够完成。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509681914752/Screenshot_2017-11-03-12-04-34-620_com.research.png,7
+804,点击扫一扫 二维码扫描的图片不是正常的视觉效果，是竖向拉长的。 扫描之后没有成功进入对应网页。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509589093959/webwxgetmsgimg.jpg,7
+858,点击扫一扫 扫码时手机竖放图像会拉长，横放会变粗，不方便进行二维码扫描,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509593780155/Screenshot_2017-11-02-12-21-31-348_com.research.png,7
+809,点击视频监控 布局不完善，与手机不匹配,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509589610924/1443693010.jpg,1
+547,进入随手拍界面 显示的当前位置信息与当前实际位置并不符合。当前是在佛城西路而显示是在秦淮路。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509589421042/549985499236079532.jpg,3
+814,进入随手拍 设定当前位置 二级目录顶部当前位置定位错误，总显示“江苏省南京市江宁区秦淮路”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590070304/%E6%88%AA%E5%B1%8F_20171102_103015.jpg,3
+920,进入“施工随手拍” 查看当前位置 页面上方显示当前手机定位的位置与用户实际所处位置并不一致，并且位置相距的距离较大，说明定位位置有较大偏差,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509672424596/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20171103092652.jpg,3
+937,点击随手拍 查看当前位置 定位错误。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509677314247/TIM%E5%9B%BE%E7%89%8720171103104735.jpg,3
+827,点击违章记录-待处理 点击我来处理 提示已被处理，要重新刷新页面后才能恢复正常,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590799163/%E6%88%AA%E5%B1%8F_20171102_103643.jpg,2
+550,进入工作台 点击施工随手拍  点击拍照 点击上传记录 按钮文字会变成可编辑状态。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509589605850/%E8%B6%85%E7%BA%A7%E6%88%AA%E5%B1%8F_20171102_102554.png,2
+849,点击上传记录 不选择为章类型 点击上传记录 提示不能为空,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509592418367/Screenshot_2017-11-02-11-11-21.jpg,2
+913,点击上传记录 不填写信息 点击上传记录 弹出的提示框上面圆角弧度大于下面圆角弧度，不美观，影响用户体验,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509631212040/Screenshot_2017-11-02-21-58-07-426_com.research.png,2
+571,点击我发起的 提示“请到pc端处理”，既然是app不支持的功能，为啥要把这个功能放上去呢？,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509591120832/S71102-105059%281%29.jpg,8
+857,点击待办事项中 点击发起新待办 点击随手拍 显示清代PC端处理，功能缺陷。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509593384774/webwxgetmsgimg%20%288%29.jpg,8
+865,点击待办事项 点击处理事项 功能冗余，提示进入pc处理,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509606691815/TIM%E5%9B%BE%E7%89%8720171102151127.jpg,8
+933,点击待办事项 点击处理事项 显示提示信息，不能上传文件,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509676501451/640465913.jpg,8
+907,点击视频监控 点击查看录像回放 选择输入了错误的日期时间或者输入的日期格式错误 点击查询录像 没有提示输入错误信息也没有播放录像,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509626693867/%E7%94%A8%E4%BE%8B8-1.png,1
+986,点击视频监控 点击查看录像回放 查看摄像头录像回放 选择开始时间 可以选择当前日期之后的天数，而且字体颜色也不一样。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509695574523/Screenshot_2017-11-03-15-51-53-90.png,1
+982,点击视频监控 点击查看录像回放 设置开始时间 开始时间应该是点选的，但是却可以输入,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509692341393/Screenshot_2017-11-03-14-57-16-844_com.research.png,1
+540,点击文件预览 扫非文件二维码时不提示错误,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509589027436/Screenshot_2017-11-02-10-16-47-82%5B1%5D.png,6
+574,进入文件预览 界面显示乱码错误。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509591963152/Screenshot_20171102-110432.png,6
+610,点击工作台 点击文档管理 选择我的文件 点击我上传的 进入到工作区页面 点击上传成功的文件 进行文档预览 最终显示“系统找不到指定的文件”,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509621682394/Screenshot_20171102-192103.png,6
+818,点击文件预览 应用程序跳转入空白页面，且未给出任何信息反馈。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590238492/Screenshot_2017-11-02-10-35-04-434_com.research.png,6
+821,点击文件预览 当扫描的二维码不是文档时会显示出异常内容,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590438870/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20171102103622.png,6
+840,点击文件预览 无法预览文件,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509591922904/5718943.jpg,6
+844,点击文件预览 文档打不开,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509592175434/S71102-110832.jpg,6
+886,点击文件预览 如果不是工作区的文件将无法得到正确显示，而是返回服务器的报错,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509612933689/S71102-165109.jpg,6
+912,点击文件预览 1.扫码识别无法使用。2.不能识别的也无法给出提示信息。3.出现Java提示错误,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509629000332/1882803072.jpg,6
+916,点击文件预览 不能正常识别二维码内容,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509636402054/3.png,6
+929,点击文件预览 扫描的二维码页面无法显示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509675207342/Screenshot_2017-11-03-09-36-46-755_com.research.png,6
+936,点击文件预览 二维码打不开,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509677260178/S71103-104553.jpg,6
+951,点击文件预览 用户拥有最高权限在网络连接正常时在扫码查看页面里，扫描二维码后不能显示正常结果。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509682469191/5.png,6
+988,点击文件预览 无法扫码成功,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509701425260/Screenshot_2017-11-02-10-20-30-813_com.research.png,6
+882,点击上传记录 填写相关信息 点击“修改完成 重新提交” 按钮偏左，不居中，不美观，影响用户体验。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509612266801/webwxgetmsgimg%20%284%29.jpg,2
+918,进入上传记录页面 点击上传记录 按钮没有居中，同屏幕左右间距不一，并且同上面的输入栏形成鲜明的反差，影响用户体验。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509672031071/webwxgetmsgimg%20%282%29.jpg,2
+989,点击上传记录 按钮没有居中显示，提示不够友好,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509790559528/Screenshot_2017-11-04-18-15-00-742_com.research.png,2
+801,点击我的文件 会跳转到工作区的按钮上,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509588716082/1130978239.jpg,4
+538,点击收到的分享 页面无响应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509588897218/688849298326753040.png,9
+542,点击我的收藏 页面无响应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509589160238/699585047599941897.png,9
+806,点击我的文件 点击收到的分享 点击我的收藏 是虚按钮，点击没有反应，冗余，没有用处。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509589348460/210695940.jpg,9
+819,点击进入文档管理界面 点击收到的分享  没有两个功能的单独界面显示，即使没有收到分享的文件或者没有收藏文件，也应该有界面并且显示无分享的文件或者没有收藏的文件,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590268346/960E39DF5A5C3A4618A80CE8AFCF4C89.jpg,9
+822,点击“收到的分享” 功能不能执行,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590588239/2b.png,9
+832,点击收到的分享 无法打开收到的分享,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590960995/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20171102104912.png,9
+838,点击收到的分享 没有反应，既没有进行页面跳转也没有提示。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509591838959/Screenshot_2017-11-02-11-03-12-57.png,9
+842,点击我的文件 点击我上传的 无法使用，打不开,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509592066100/S71102-110535.jpg,9
+851,点击收到的分享 点击按钮好几次不会进行页面跳转,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509592525551/1136373295.jpg,9
+874,点击“收到的分享” 无反应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509611181118/501278797.jpg,9
+885,点击我收到的分享 模块不能打开,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509612812845/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20171102165310.png,9
+887,点击我收到的分享 模块不能打开,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509613188419/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20171102165310.png,9
+899,点击“我的收藏” 不显示内容也不跳转页面,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509623021934/%E7%94%A8%E4%BE%8B4.png,9
+915,点击收到的分享 打不开,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509635763132/2.jpg,9
+921,点击我的收藏 按钮没有反应，出现无效功能,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509672798878/1191309270.jpg,9
+924,查看收到的分享 无响应，为无效按键,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509673401709/1191309270.jpg,9
+931,点击收到的分享 无法点击，无响应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509676041292/%E6%88%AA%E5%B1%8F_20171103_102336.jpg,9
+943,点击我的收藏 栏目无法打开,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509677888615/2.jpg,9
+944,点击收到的分享 栏目无法点开,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509677942922/2.jpg,9
+950,点击“收到的分享” 显示“分享内容为空”，有时候会导致用户认为手机屏幕的触屏功能出现了问题，或者是进入了司机状态。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509680363788/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%282%29.png,9
+960,点击文档管理 进入我的文件 点击我的收藏 按钮始终点击无效。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509686502875/EF034EB8AEE604210C631E151D2D2133.jpg,9
+979,点击我的文件 点击“收到的分享” 不能打开,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509692126546/999.jpg,9
+983,点击我的文件 点击收到的分享 点击后相应速度太慢,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509694203337/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20171103152856.png,9
+984,点击我的文件 点击收到的分享 响应速度太慢。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509694252143/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20171103152856.png,9
+985,点击我的文件 点击我的收藏 响应速度太慢。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509694292962/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20171103152856.png,9
+817,点击随手拍 从相册选择  选择一张照片 点击“点击照片可重新拍摄按钮” 但是当点击该按钮时，该按钮无效，没有出现重新拍摄功能,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590209702/pic3.png,3
+625,点击请假 功能缺失,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509690711325/WechatIMG12.jpg,10
+626,点击工作汇报 功能缺失,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509690741189/WechatIMG12.jpg,10
+627,点击通知公告 功能缺失,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509690773469/WechatIMG12.jpg,10
+628,点击会议通知 功能缺失,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509690801066/WechatIMG12.jpg,10
+834,点击审批 功能不完整，正在开发中,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590985356/%E5%BC%80%E5%8F%91%E4%B8%AD.jpg,10
+864,点击截屏查看 点击上一张 无法使用上一张功能，偶尔下一张功能也无法使用,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509605628041/TIM%E5%9B%BE%E7%89%8720171102145344.jpg,1
+867,点击工作台 后台运行一段时间后，会出现工作台页面消失。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509608999567/Screenshot_2017-11-02-15-47-31.jpg,10
+902,点击工作台 在不同页面进行切换时，经常会出现白屏，等待一段时间也没有改变，除非退出app,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509624808541/Screenshot_2017-11-02-20-10-42-18.png,10
+922,在APP页面时按HOME键返回 再次进入到APP页面 点击工作台 页面会无信息显示，显示空白,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509673033476/83842541.jpg,10
+935,点击工作台 页面响应慢,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509677010318/S71103-104058.jpg,10
+942,进入工作台 出现白屏情况,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509677767942/baiping.png,10
+520,打开工作台 直接显示了奇怪的图片，布局奇怪，并且没有正确的显示功能列表,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509586479363/Screenshot_2017-11-02-09-23-44.png,10
+522,点击工作台 页面置顶消息不显示图片,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509586708880/Screenshot_2017-11-02-09-25-25-36%5B1%5D.png,10
+523,进入工作台 长时间加载，卡顿,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509586740565/1.jpg,10
+524,点开工作台 停留在加载页面不动，重启后正常,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509586900367/Screenshot_2017-11-02-09-33-09-47%5B1%5D.png,10
+528,进入工作台 功能模块图标显示不全,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509587973877/2040495678.jpg,10
+531,点击工作台 功能模块布局错乱,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509588170262/1708673681.jpg,10
+546,退出后重新打开app 点击工作台 网页加载时间较长,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509589278397/WechatIMG5.png,10
+551,打开工作台 加载不停导致app无反应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509589713273/WechatIMG6.jpg,10
+582,返回工作台 页面无显示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509597793212/Screenshot_2017-11-02-12-33-30-617_com.research.png,10
+617,从其他程序返回该程序时，经常发生空白界面,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509676555101/webwxgetmsgimg%20%284%29.jpg,10
+797,打开工作台 会出现严重的卡顿现象，有较长时间的等待。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509587765842/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20171102095538.jpg,10
+798,打开工作台 在保证网络通畅的情况下有可能出现页面打不开的现象。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509587901823/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20171102095545.jpg,10
+811,点击工作台 长时间处于刷新状态，无法进入页面,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509589787582/611556249814254682.jpg,10
+862,登录APP 点击工作台 不会出现工作台的界面。并提示您访问的页面好像出错了。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509596948095/Screenshot_2017-11-02-12-16-37.png,10
+966,点击工作台 页面无法加载,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509689609003/Screenshot_2017-11-03-14-11-51-243_com.research.png,10
+562,点击工作区 页面显示空白,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590809281/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20171102104630.png,4
+800,进入上述目录 点击我上传的 跳转到的是工作区页面，而不是可以查看自己上传的施工随手拍,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509588558505/210695940.jpg,4
+947,点击我上传的 错误跳至工作台，功能重复,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509678530560/4.jpg,4
+807,点击工作台 有图片无法加载的图标,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509589367893/1259356440.jpg,10
+544,点击实时监控 按钮没有反应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509589261378/5.jpg,1
+578,进入视屏监控 查看监控的时候如果有多个监控的话，滑动可以切换当前查看的监控，但是两边的左右箭头点击后没反应！,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509592095872/S71102-110600.jpg,1
+824,进入视频监控  发现并不能左右选择。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590668134/1567723588.jpg,1
+963,点击视频监控 监控列表有多个监控时，在监控详情的页面的头部“<”和“>”按钮是不起作用的，只能左右滑动能切换监控，这会误导用户，建议改成点击这两个图标也可以切换。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509687532777/Screenshot_2017-11-03-13-38-27-130_com.research.png,1
+835,点击工作台 打开待办事项 出现页面布局错误,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509591171835/pic4.png,10
+816,点击工作台 1.无法打开页面。 2. 界面一直加载，时间15s以上。 3. 最终加载失败。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590110383/843285113.jpg,10
+826,点击工作台 提示页面加载失败，点击刷新,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590723436/%E5%A4%B1%E8%B4%A5.png,10
+836,点击工作台 突然显示页面加载失败，要重新刷新,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509589839055/918888259947575325.png,10
+591,点击我发起的 点击安全质量拍照 界面上方的标签（待处理、全部等）未起到世界功能，点击任一项，没有变化,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509610272043/Screenshot_2017-11-02-16-09-31.png,11
+825,点击我发起的 点击安全质量拍照 没有按选择条件显示记录,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590617173/1097521505.jpg,11
+850,点击我发起的 点击安全质量拍照 没有将文件具体分类，我待审核的文件同时出现在了“待处理”，“待审核”，“待确认”，“待重传”列表中。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509592415202/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20171102111311.jpg,11
+876,点击我发起的 点击安全质量拍照 点击待处理 发现没有按此分类显示事项，所有图标下事项一样，审核处理状态与图标不一致。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509611397133/%E4%BB%A3%E5%8A%9E1.jpg,11
+892,点击我发起的 点击带重传 事项中的分类不正确。待审核的项目可以属于其他项目，甚至属于同时属于待处理，待审核，待确认和待重传分类中。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509619289708/WechatIMG111.png,11
+904,点击“待审批” 分类列表的事项并没有经过分类,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509625557515/572410925136443768.jpg,11
+955,点击我发起的 点击安全质量拍照 下面不同状态的菜单里都会显示所有的事项,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509684468761/1877461291.jpg,11
+956,点击安全质量拍照 下面的不同状态选定后都是显示所有的事项,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509684700804/1877461291.jpg,11
+967,点击我发起的 点击上传新文档 点击待审核 与全部标签下显示的事项一样。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509689830934/66571097.jpg,11
+976,点击我发起的 选择安全质量拍照 点击待审核 列表上方的分类tag条功能未实现（全部、待处理、待审核、待确认、待重传），下图显示实为待审核，却在待确认分类下。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509691742327/Screenshot_2017-11-03-14-48-41-019_com.research.png,11
+855,点击视频监控 选择一个摄像头 点击设为默认 当将其中一个设备设为默认时，同一个设备在最近查看的选项中并未被设为默认，这就出现了同一个设备有的设为默认，有的未被设为默认状态,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509592883510/Screenshot_2017-11-02-11-20-32-520_com.research.png,1
+884,进入违章记录查看页面 填写审核意见 文本框被部分遮挡。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509612558874/webwxgetmsgimg%20%285%29.jpg,2
+599,进入截屏相册界面 看到截屏照片缩略图，是一个黑块，并不能正常看到照片,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509612607166/Screenshot_20171102-164759.png,12
+616,点击截屏相册 相册列表显示不全,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509676313948/5.png,12
+869,同一个时间段截屏 点击视频监控 点击截屏相册 在截屏相册中没有形成多级目录（比方说，在同一个月截得屏应该自动保存在一个目录下）。 且在同一时间截屏次数过多无法产生有效照片。 ,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509609776178/webwxgetmsgimg.jpg,12
+873,点击视频监控 点击截屏相册 显示不完全,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509610587926/1792484580.jpg,12
+890,点击视频监控 点击截屏相册 页面中有的缩略图显示全为黑色。但是点击查看具体截图时，截图可以正常显示。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509618103816/WechatIMG109.png,12
+901,进入截屏相册 显示图片的排列方式不美观,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509624765572/%40Q6N%5DFXP%5BVCTL%29%40VY%29FRNFK.jpg,12
+903,进入截屏相册 有些图片无法显示出来,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509624854796/%40Q6N%5DFXP%5BVCTL%29%40VY%29FRNFK.jpg,12
+948,点击视频监控 点击截屏相册 图片显示不合理，图片不一样大,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509679069120/%E8%A7%86%E9%A2%91%E7%9B%91%E6%8E%A7%E4%B9%8B%E6%88%AA%E5%9B%BE%E5%90%8E%E6%9F%A5%E7%9C%8B%E4%B8%8A%E4%BC%A0%E7%9A%84%E6%88%AA%E5%9B%BE.png,12
+930,点击视频监控 点击截屏相册 当一个相册的截屏过多时，列表显示不正常,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509675377198/%E6%88%AA%E5%B1%8F_20171103_101311.jpg,12
+537,点击上传记录 “上传记录”四个字可修改,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509588804800/5.jpg,2
+557,点击”上传记录“ 按钮字样可随意更改。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590194385/Screenshot_20171102-103511.png,2
+852,点击“上传记录” 按钮文字可以自己删除修改。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509592715287/webwxgetmsgimg.jpg,2
+910,点击待重传事项 点击上传记录 点击“修改完成 重新提交” 按钮中的文字可以进行编辑修改，影响用户体验。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509627529067/Screenshot_2017-11-02-20-52-15-189_com.research.png,2
+938,点击上传记录 不管是拍照还是相册选择，上传记录这个按钮上的文字都可以删除。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509677589636/TIM%E5%9B%BE%E7%89%8720171103105257.jpg,2
+828,点击视频监控 无法正常从视频监控模块的监控列表页面切换到截图相册页面，等待10s后页面奔溃，退出APP。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590891973/1723430374.jpg,1
+891,点击截屏查看 有时候会加载不出来。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509618213136/WechatIMG108.png,12
+553,点击视频监控 选择摄像头页面错乱,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509589863005/Screenshot_19700402-122836.png,1
+559,点击视频监控 监控器信息超过分界线,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590355045/Screenshot_2017-11-02-10-38-12-06%5B1%5D.png,1
+594,进入视频监控 会发现视频监控页面的banner区域文字超出背景翻译，影响用户体验,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509610827111/webwxgetmsgimg.jpg,1
+841,点击视频监控 点击设为默认 在摄像头界面中的设为默认这一行字超出了界面中的白框,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509592017811/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20171102110532.jpg,1
+898,点击视频监控 位置/型号/接入时间/设为默认这些文字排版不合理，影响界面美观,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509623007299/C_8E4GZK%401W1~W%60%29Y%7DY3%5BAA.jpg,1
+980,点击视频监控 点击“设为默认” 按钮的位置不美观,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509692135324/Screenshot_2017-11-03-14-53-34-053_com.research.png,1
+564,点击我发起的 点击全部 反应迟钝，并没有任何提示。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590848048/9.jpg,11
+837,点击我发起的 无法正常显示“我发起的” 事项，页面内容有缺失,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509591551155/%E6%88%91%E5%8F%91%E8%B5%B7%E7%9A%84.jpg,11
+839,点击变更时间 灰色的非按钮设计使用户很难发现“变更时间”元素是可以点击的，且点击进去后的内容没有任何作用,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509591854355/%E6%88%AA%E5%B1%8F_20171102_110344.jpg,2
+879,点击我处理的 进入违章记录-待处理 显示”请查看审核意见，点击底部按钮填写违章处理情况”，但是底部没有按钮,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509611674245/%E5%A4%84%E7%90%861.jpg,2
+911,点击违章记录-待处理 提示点击底部按钮填写违章处理情况，但是底部没有相关按钮。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509628908315/Screenshot_2017-11-02-21-21-22-910_com.research.png,2
+598,点击上传新文档 子菜单中点击子菜单页面时无法切换，加粗菜单和下划线不一致,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509612036681/webwxgetmsgimg%20%281%29.jpg,11
+612,点击待确认 用于表示当前选择了哪个分类的蓝色横线一直停留在全部分类，即选择其他分类时蓝色横线并不随着选择的分类移动。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509622105830/bug2.jpg,11
+894,点击抄送我的 点击安全质量拍照 点击待审核 对应分类的字体会变粗但是蓝色下划线并没有出项在其下方或者下划线出现位置不对。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509619717613/WechatIMG112.png,11
+934,点击工作台 点击待办事项 点击抄送我的 点击安全质量拍照 点击待审核  当点击不同分类的事项时，名字下面蓝色的下划线不会同步移动。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509676635891/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20171103103500.png,11
+900,点击查看录像回放 点击“点击选择视频开始时间”按钮 没有完全显示，布局不合理,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509623132167/VZSYU~LN%282GG%24~LCB%7DPEZ4Y.jpg,1
+981,点击视频监控 点击查看录像回放 点击“点击选择视频开始时间” “点击选择视频开始时间”的“间”消失了,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509692219119/Screenshot_2017-11-03-14-55-52-156_com.research.png,1
+803,进入我的文件 返回按钮无效,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509589195879/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20171102101248.png,9
+889,点击视频监控  点击显示设备的信息 选择接入时间 显示undefined乱码,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509617466239/WechatIMG107.png,1
+897,"点击视频监控 选择某一摄像头监控 选择接入时间 显示""undefined""报错",http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509622879469/C_8E4GZK%401W1~W%60%29Y%7DY3%5BAA.jpg,1
+525,点击上传记录 上传时不需要选择违章类型也可以上传,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509587447179/Screenshot_2017-11-02-09-50-15-41%5B1%5D.png,2
+541, 进入‘上传记录界面’ 不选择违章类型 点击‘上传记录’ 未选择违章类型仍可上传成功,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509589076578/Screenshot_2017-11-02-10-12-32.png,2
+577,点击设置默认 APP没有任何提示，用户并不知道是否设置成功。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509592064918/177766398134475555.jpg,1
+925,进入视频监控 点击监控列表 选择仓库区 点击“设为默认” 按钮点击没有功能跳转和提示。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509674216299/webwxgetmsgimg%20%289%29.jpg,1
+978,点击视频监控 点击设为默认 按钮没有反应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509691963899/S71103-145133.jpg,1
+526,进入上传记录页面 时间不可以调整，但是背景色为蓝色，与可调整项目相同,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509587541438/Screenshot_2017-11-02-09-50-15-41%5B1%5D.png,2
+527,进入工作台 超高延迟,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509587856793/1931701382.jpg,10
+529,点击实时监控 视频监控正常显示，但反应速度缓慢，等待时间在3-5秒以上。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509587996575/3.png,5
+530,选择点击拍照可重新拍摄 拍照上传后卡在上传界面，可能是我的网络不好，但是无法返回，无法取消，只能强制退出app,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509588036878/Screenshot_2017-11-02-09-59-44.png,2
+532,PC端选择测试用文件夹I 点击测试10部  选择软件测试第一章.ppt 上传 移动端点击工作台 选择文档管理 点击我的文件 PC端显示上传成功但移动端路径未找到相应文件。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509588426483/%E8%B6%85%E7%BA%A7%E6%88%AA%E5%B1%8F_20171102_100038.png,4
+534,点击工作区 在没有上传文件的前提下，在点击我上传的按钮后总显示测试用文件夹1,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509588596803/802521168604493643.png,4
+535,点击工作区 在pc端上传文件后，无法再手机端同步我的上传文件,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509588558945/4.png,4
+543,点击通过审核 出现卡顿，一直加载的情况,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509589200662/webwxgetmsgimg%20%281%29.jpg,2
+545,点击工作区 应用反应速度巨慢，查看文档所需时间不定，忽快忽慢，快至2秒，满至10-30秒,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509589271311/6.png,4
+548,点击视频监控 在选择完路径和摄像头之后，只能一次性返回到视频监控的起始页面，并不能返回到上一个选择视频位置的地方。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509589426405/6.jpg,1
+552,完成拍照 返回进入“点击拍照”页面 再次点击随手拍 页面出现明显不正常图标，而且“点击拍照”功能迟缓。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509589478701/Screenshot_2017-11-02-10-21-44-000_com.research.png,3
+555,点击进入施工随手拍页面 点击“点击拍照” 能正常使用相机拍照，但是拍照之后直接跳转至随手拍的原始界面，无法对所拍的照片进行上传处理,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509589948806/%E6%88%AA%E5%B1%8F_20171102_102426.png,3
+556,选择待办事项 点击待我处理 顶部菜单栏仍然显示的是待办事项，改为处理事项会不会好点。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590174867/1257995170.jpg,8
+561,打开工作台 点击施工随手拍 点击“点击拍照” 拍照时app无反应。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590713068/WechatIMG7.jpg,3
+566,点击上传文件 点击“待办事项” 点击待我处理 不能及时刷新,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590909237/678484783620204060.jpg,11
+567,点击截屏查看 截屏如果不满意，应该有删除功能。app暂时没有删除功能,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590847324/9.jpg,12
+569,查看图片详情 点击上传记录 图片详情页下方按键为“上传记录”，但是功能不确定，大部分情况为上传图片，偶尔会先显示上传记录。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590977728/Screenshot_2017-11-02-10-43-38-433_com.research.png,2
+570,在待我处理界面 处理事项多的时候没有查找功能，同时界面排列在长时间查找的情况下易于产生眼部不适,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509591113564/10.jpg,11
+573,点击工作区 无法正常查看文件，且会闪退,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509591438750/webwxgetmsgimg.jpg,4
+575,点击视频监控 监控列表中查看两个监控后，再次打开视频监控页面只会显示一个监控。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509592021342/S71102-110524.jpg,1
+581,点击录像回放 画面错乱，无正确回放画面。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509592670782/Screenshot_2017-11-02-11-08-52-908_com.research.png,5
+583,填写审核意见 点击通过审核 无响应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509598482405/C5026E8EB53AC2D2A108AE91E05E48AB.jpg,2
+584,查看监控列表 没有自动统计每个区域的监控数目,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509598667677/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20171102125741.png,1
+585,点击工作台 会偶尔出现“施工随手拍”图标消失的情况,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509599999392/Screenshot_2017-11-02-13-19-39.png,10
+588,处理过一件事项之后，退回一级界面 点击待办事项 待办事项的图标没有变化，测试之前有两个待办事项，处理一个之后，，待办事项界面的处理是向上的图标有变化，待办事项界面没有变化不,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509609094911/Screenshot_2017-11-02-11-02-15.png,8
+589,进入工作台页面 功能图标和字体重叠 ,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509609290115/297712647061937533.jpg,10
+590,点击待我处理 部分字体存在乱码现象,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509609528333/webwxgetmsgimg%20%282%29.jpg,11
+592,打开待办事项 选择状态为“待审核”的随手拍待办事项 进入违章记录查看页面 违章类型和违章详情可以进行编辑，但不能保存该编辑后的信息。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509610278174/6.png,2
+593,1、进入测试用文件夹后按手机的返回功能键会直接返回到工作台首页 1、进入测试用文件夹后按APP内部左上角返回键会直接返回到我的文件首页 3、文件夹目录不能逐级返回,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509610652071/%E6%96%87%E6%A1%A3%E7%AE%A1%E7%90%86%E5%B7%A5%E4%BD%9C%E5%8C%BA.jpg,4
+596,打开智慧工地+ 打开工作台 打开文档管理 打开工作区 打开测试用文件夹I 单一页面可以显示所有子文件夹内容，但是测试用文件夹I页面右侧出现滚动条,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509611306357/Screenshot_2017-11-02-16-27-51-43.png,4
+601,点击处理事项 Loading界面Loading图标位置太靠上，用户体验不咋地,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509613051107/Screenshot_20171102-165606.png,8
+603,进入随手拍界面 点击”查看随手拍注意事项“进入注意事项页面 按下”返回“键 直接返回到工作台界面 用户体验真不咋样,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509615733679/Screenshot_20171102-173809.png,10
+605,点击上传记录 填写违章详情 把光标移动到文字框时，文字框里“请填写违章详情”字样还存在，应该使颜色变浅或者消失,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509616183852/Screenshot_20171102-174705.png,2
+607,点击我的文件目录 查看最近浏览文件 没有显示出来，为空,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509617298083/865506161541267063.jpg,9
+608,点击监控列表 大部分区域没有显示监控摄像头,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509618947738/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20171102183533.jpg,1
+609,点击查看录像回放 开始时间不能通过直接输入的时间调整,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509619827095/%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20171102184952.jpg,1
+614,点击待审核 审核环节直接跳过，无法审核,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509633957046/Screenshot_2017-11-02-22-43-19.png,11
+615,点击“我发起的” 操作列表展示不完全，功能不完整且影响用户体验,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509675034242/webwxgetmsgimg.jpg,11
+618,进入“我发起的”模块查看事项 编辑违章类型 发现发现“待审核”事项的“违章类型”和“违章详情”可进行编辑,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509677541517/bug9.jpg,2
+619,点击“待办事项” 点击“我发起的” 点击安全质量拍照 顶部文字有概率出现短暂的排版错误，文字颜色变成蓝色,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509678052960/bug10.jpg,11
+620,进入工作台 主页面不能自动转化广告内容,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509678342606/a.png,10
+621,点击点击拍照 页面没有清楚提示登录用户的所有可用的权限,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509678529961/b.png,3
+624,点击上传记录 选择违章位置 a.当前位置不随着地理位置的变化而变化，总显示同一个位置  b.当拍照或者上传一张图片时，违章位置不能自动设置,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509684082549/222.png,2
+630,点击一张照片后进入查看照片界面 点击上一张 这个按钮做的太小，且很不美观。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509692191573/Screenshot_2017-11-03-14-56-06-588_com.research.png,12
+631,进入工作台 页面图片新闻处点不开，不能打开到相应文章。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509692415965/webwxgetmsgimg%20%285%29.jpg,10
+813,1.点击“上传记录” 按钮文字可以编辑。2.提示信息“不能为空”不能正确指出哪个选项不能为空。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509590006074/867022577.jpg,2
+845,点击视频监控 点击监控列表  选择摄像头 点击“设为默认” 没有给出相关显示操作成功的信息,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509592178211/945226098.jpg,1
+847,点击工作台 界面出现布局缺陷,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509592258184/jl003.jpg,10
+863,进入工作台 放大和缩小后，整个页面出现缩放问题。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509598611378/Screenshot_2017-11-02-12-54-16.png,10
+881,点击文件预览 等待时间过长,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509610759706/724658229319970490.jpg,6
+893,点击我发起的 点击安全质量拍照 点击带重传 只是文字加粗，而在其他页面中，在相应分类下面会出现蓝色下划线。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509619439351/WechatIMG111.png,11
+905,点击实时监控 摄像头画面置顶，与APP分辨率不符,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509625591517/%E7%94%A8%E4%BE%8B7.png,5
+906,点击工作区 上传的文件不能预览,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509625829598/1.png,4
+917,进入工作台 点击项目看板 子功能的功能模块名称被对应的该功能的图标遮挡，遮挡位置为名称的上面的部分。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509671250588/webwxgetmsgimg.jpg,10
+919,点击最近浏览文件 只会显示提示信息清理成功，不会显示最近浏览过的文件项,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509672394551/401070907.jpg,9
+923,进入上传记录 点击“点击照片可重新拍摄” 上传照片的尺寸较大，如一些长图，未对上传照片做明确要求，上传的照片会失真。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509673245462/webwxgetmsgimg%20%286%29.jpg,2
+932,点击工作区 加载慢,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509676171557/%E6%88%AA%E5%B1%8F_20171103_102754.jpg,4
+939,点击工作台 布局严重有问题,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509677639545/S71103-10524949.jpg,10
+958,点击我的文件 查看最近浏览文件 扫码查看文件后，在我的文件工作区浏览记录中并未显示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509684994067/Screenshot_2017-11-03-12-55-20-869_com.research.png,9
+964,点击文件预览 扫码不成功，无法扫描出文件，或等待时间过长,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509688570825/3333.png,6
+972,点击待办事项 点击我处理的 底部文字为待处理条数，应改为我处理的条数,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509691303315/Screenshot_2017-11-03-14-37-41-404_com.research.png,11
+977,点击实时监控 暂停按钮没有使用时，监控时间一直不变,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1509691784449/667.jpg,5

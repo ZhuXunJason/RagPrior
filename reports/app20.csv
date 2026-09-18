@@ -1,0 +1,24 @@
+379,点击热门排名 排行榜中用户名显示null,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531276138586/1531276138586_%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20180711102848.jpg,1
+394,点击热门排名 排行榜中用户名显示null 在至尊排名与热门排名之间切换时，至尊排名数据也会出现异常,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531280261514/1531280261514_BUG04-01.jpg,1
+380,点击获取规则 点击获取详情 展示信息不准确，如果是从未获取过积分应该给予相应的提示而不是显示空白页面，这样看起来像是网络原因导致的，会给用户造成困扰,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531276352035/1531276352035_%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20180711103224.jpg,2
+382,点击“积分” 点击“获取详情” 显示空白，会给用户造成困扰。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531276901882/1531276901882_%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20180711103638.jpg,2
+378,点击出行服务 点击余票查询 出发日期可以选择过去两天的日期，但在点击查询后的结果列表页，当前日期没有办法点击前一天跳转到昨天或者前天的时间。如果选择前天的时间点击查询后，可以通过后一天跳转到昨天的列表页。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1530191211989/1530191211989_WechatIMG120.jpeg,3
+381,点击车次 添加行程 页面会显示“请选择起止车站”，使得用户无法直接使用车次进行添加行程，那么设置这一选项就没意义了，会给用户造成困扰。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531276645836/1531276645836_%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20180711103218.jpg,3
+383,进行余票查询 设置除了“时间早到晚”以外其它的排序筛选条件后，下拉查询结果刷新界面，搜索结果会闪动：即先显示时间早到晚的排序结果，再变成用户自己指定的排序筛选结果。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531276748948/1531276748948_BUG01.png,3
+384,出发地与目的地分别设置为哈尔滨和福州时 点击查询 筛选目录中没有任何可供筛选的项，出发地与目的地分别为昆明和沈阳时，筛选目录中可以选择出发时间，两者都没有查到符合条件的列车信息。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531277418179/1531277418179_BUG02-02.jpg,3
+385,进行余票搜索 加载的提示为“没有查到符合条件的列车信息”，但是短时间后又会出现正确的搜索结果,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531277589383/1531277589383_%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20180711105300.png,3
+387,在无网的情况下点击刷新 持续在加载的界面，不提示已经断网,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531277735926/1531277735926_Screenshot_20180711-104635.jpg,3
+388,点击候车信息 切换反应慢,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531277933496/1531277933496_Screenshot_20180711-101745.jpg,3
+389,"查看本日已经开出的车次 查看正晚点信息 正晚点信息一栏显示的均为""--""，属于功能不完整。",http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531278037401/1531278037401_%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20180711105900.jpg,4
+390,点击推荐 界面中部分商品信息字迹不完整,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531278267353/1531278267353_Screenshot_20180711-101900.jpg,5
+391,进入中铁商城 查看商品详情 小概率出现加载失败，弹出 远程网关出错窗口。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531278871208/1531278871208_%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20180711111241.jpg,5
+392,查询正晚点信息 列表中部分列车的正晚点信息无法查询,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531279554970/1531279554970_%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20180711112534.png,4
+396,点击添加行程 条件合理情况下获取时刻信息错误,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531281577006/1531281577006_%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20180711115819.png,3
+400,点击票务详情 票务详情页面不能加载，票务对应的时刻表信息,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531296703199/1531296703199_Screenshot_2018-07-11-16-11-20-503_com.tencent.mm.png,4
+401,进入列车详情页面 点击“添加行程” 按钮没有反应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531296911954/1531296911954_Screenshot_2018-07-11-16-14-11-789_com.tencent.mm.png,4
+402,点击余票查询 页面价格显示不完整,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531299335195/1531299335195_IMG_4328.PNG,2
+403,点击时刻表查询 选择站到站查询车次时页面跳转不正常，之后一直处于加载中的状态。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531299879270/1531299879270_IMG_4331.PNG,2
+404,点击任一班次详情 加载失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531300173451/1531300173451_IMG_4332.PNG,4
+405,输入合法的查询信息进行查询 很大概率出现加载失败，比如在下午一点左右信息载入失败，现在是下午六点四十，信息载入成功,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531305813742/1531305813742_Screenshot_2018-07-11-18-41-15-306_com.tencent.mm.png,4
+406,进入商品详情 必定出现所在区域缺货，然后才显示立刻购买,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531309764073/1531309764073_Screenshot_2018-07-11-19-48-00-520_com.tencent.mm.png,5
+407,查询正晚点班次 反应时间较长,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531310036326/1531310036326_Screenshot_2018-07-11-19-51-09-545_com.tencent.mm.png,4

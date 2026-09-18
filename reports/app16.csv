@@ -1,0 +1,51 @@
+1530,点击活动 页面一直在加载中,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542413693192/1542413693192_%E6%8D%95%E8%8E%B71.PNG,1
+1568,点击发现 点击活动 页面一直显示加载中,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542417739258/1542417739258_%E6%8D%95%E8%8E%B711.PNG,1
+1532,点击场所 页面显示加失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542413913773/1542413913773_%E6%8D%95%E8%8E%B72.PNG,1
+1533,点击单曲 页面一直显示加载失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414121858/1542414121858_%E6%8D%95%E8%8E%B73.PNG,1
+1537,点击视频列表 界面显示加载失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414495244/1542414495244_%E6%8D%95%E8%8E%B75.PNG,1
+1539,点击举报 点击广告骚扰 点击提交 按钮是灰色，影响用户体验，应为黑色,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414567092/1542414567092_Screenshot_2018-11-17-08-28-26.png,2
+1543,1.对第一个评论点击下拉按钮 2.点击举报 3.选择违法信息 4.选择其他 （其他中什么都不填） 5.点击提交  6.是否成功提交的按钮颜色应不同,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542415155300/1542415155300_Screenshot_2018-11-17-08-31-14.png,2
+1569,进入个性签名页面 再输入框输入“相濡以沫不如相忘于江湖”  点击保存  在输入框输入文字后保存按钮应该为黑色，不应该为灰色,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542417898921/1542417898921_8.jpg,2
+1578,进入举报页面 选择广告骚扰 点击提交 按钮显示为灰色。选择后应该显示为黑色。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542419515314/1542419515314_11.jpg,2
+1577,进入关于 点击落网简介  长时间无法链接 也无法显示 没有提醒,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542418978250/1542418978250_1A9979846040EA1714EEE0FC73AAB93E.jpg,1
+1555,完成对某首歌曲的缓存 再点击全部缓存 已缓存歌曲还会显示加入缓存列表,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542416448258/1542416448258_Screenshot_2018-11-17-08-59-02.png,8
+1565,点击热门 页面显示加载失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542417376727/1542417376727_%E6%8D%95%E8%8E%B710.PNG,1
+1538,1.点击发现页 2.点击分类 3.点击蒙古 4.没有提示相关信息,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414587571/1542414587571_Screenshot_2018-11-17-08-29-06.png,1
+1556,1.点击发现页 2.点击期刊分类右边的全部 3.点击蒙古 4.显示还没存在相关内容,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542416489277/1542416489277_Screenshot_2018-11-17-08-29-06.png,1
+1551,1.听完一首歌 2.再次进入我的 3.查看累计播放  4.累计播放没有加一,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542415818512/1542415818512_Screenshot_2018-11-17-08-46-26.png,3
+1557,1.听完一首歌 2.再次进入我的 3.点击最近播放 4.最近播放显示空白,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542416575344/1542416575344_Screenshot_2018-11-17-09-00-55.png,3
+1567,进入“我的”  点击累计播放 “累计播放”数量比实际播放数量少1或更多,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542417701784/1542417701784_TIM%E5%9B%BE%E7%89%8720181117092131.jpg,3
+1580,在音乐播放中播放多首音乐 点击最近播放 页面中没有最近播放的音乐,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542420063595/1542420063595_13.jpg,3
+1544,进入发布页面 点击搜索栏 输入许嵩 无论输入什么都不显示对应内容,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542415186630/1542415186630_Screenshot_2018-11-17-08-38-44.png,4
+1548,进入添加动态页面的添加音乐页面 输入“In The Cloud”  点击搜索 没有显示搜索结果,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542415659870/1542415659870_5.png,4
+1549,"在搜索栏输入相关期刊号 点击搜索 提示""没有相关期刊""",http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542415615764/1542415615764_12.jpg,4
+1550,进入社区发布动态 点击添加音乐 输入牵丝戏 点击搜索 音乐搜索不出来。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542415793574/1542415793574_QQ%E6%88%AA%E5%9B%BE20181117083148.jpg,4
+1553,1、进入发布页面 2、点击添加音乐 3、在输入框中输入“季节”进行搜索 4、点击搜索 实际结果： 没有显示相应搜索条件的音乐,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542416289197/1542416289197_%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87_20181117085749.png,4
+1570,1.点击社区 2.点击最新 3.点击添加动态 4.点击添加音乐 5.输入关键词”M“ 6.点击搜索 7.显示为空,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542417952580/1542417952580_Screenshot_2018-11-17-09-25-23.png,4
+1582,1、点击“社区” 2、点击“发布”按钮 3、点击“添加音乐” 4、搜索“好” 5、点击搜索  6、搜索的音乐显示不出,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542420701010/1542420701010_%E6%90%9C%E7%B4%A0.png,4
+1541,点击修改职业 输入符号 点击保存 保存成功,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542415075175/1542415075175_Screenshot_2018-11-17-08-36-43.png,5
+1563,1.点击我的 2.点击账户 3.点击编辑资料 4.点击修改职业 5.输入特殊字符”___“6.点击保存 应该保存提示您输入的格式有误却保存成功,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542417296918/1542417296918_Screenshot_2018-11-17-09-13-26.png,5
+1576,点击修改职业  在职业中输入“测。试。测。试。”  点击保存 提示修改成功,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542418802562/1542418802562_12.jpg,5
+1575,1.点击发现 2.点击活动 3.点击第一个信息 4.点击场所详情 5.点击评论输入”123“  6.自己回复自己的评论输入”123“  7.删除评论  8.点击返回 9.点击场所详情 评论数量显示为2，应显示为1,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542418540089/1542418540089_Screenshot_2018-11-17-09-33-17.png,8
+1536,点击订阅：￥98/年 支付页面不能跳转,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414532097/1542414532097_QQ%E6%88%AA%E5%9B%BE20181117082117.jpg,6
+1561,点击“订阅：￥98/年”  无法执行使用“微信”或“支付宝”进行支付。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542416950581/1542416950581_TIM%E5%9B%BE%E7%89%8720181117090859.jpg,6
+1581,进入专属阅订中的黑胶酒馆 点击“订阅：￥98/年”  页面加载中，无法加载成功，一直加载,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542420597597/1542420597597_14.jpg,6
+1534,点击分享落网给好友 在微信好友和微信朋友圈处点击取消却提示操作成功,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414233587/1542414233587_2.jpg,7
+1535,点击文章列表 界面提示获取类型失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414312774/1542414312774_%E6%8D%95%E8%8E%B74.PNG,1
+1571,点击文章列表 页面显示获取失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542418037317/1542418037317_%E6%8D%95%E8%8E%B712.PNG,1
+1531,进入我的 点击设置 再点击给我们评分 点击Google Play服务更新程序 选择华为应用市场点击有反应，但是选择Google Play服务更新程序无反应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542413901423/1542413901423_1.jpg,7
+1540,点击我的 点击意见反馈 随意输入联系人方式都会提交成功,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414946691/1542414946691_Screenshot_2018-11-17-08-33-49.png,7
+1542,进入“我的” 预期结果：页面排版正常，无任何错误；实际结果：修改的头像未显示，显示的是默认的头像（图二是头像是修改的头像）,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542414843537/1542414843537_Screenshot_2018-11-17-08-32-11.png,7
+1545,点击最新 对第一个评论点赞，黑框中点赞数没有加一,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542415377765/1542415377765_Screenshot_2018-11-17-08-42-51.png,8
+1554,进入“我的”页面 点击“落网天数”  无法查看详情,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542416311998/1542416311998_TIM%E5%9B%BE%E7%89%8720181117085824.jpg,7
+1558,进入单曲详情 开始播放但图标无变化。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542416625517/1542416625517_TIM%E5%9B%BE%E7%89%8720181117090230.jpg,8
+1560,1、点击“专属订阅” 2、点击“已订”  3、已订页面不显示已经订阅的结果,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542416801790/1542416801790_%E5%B7%B2%E8%AE%A2.png,1
+1562,进入试听页面 点击“订阅：￥98/年”  会出现闪退情况。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542417114362/1542417114362_TIM%E5%9B%BE%E7%89%8720181117091144.jpg,6
+1566,点击修改昵称 查看“请使用14位以内的中英文、数字、‘_’ 、‘-’”  登录注册时昵称命名规则为：昵称为2-14个字符，支持中英文，数字， _或-而编辑资料时，昵称命名规则为：请使用14位以内的中英文、数字、“_” 、“-” 两次规则不一样,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542417444100/1542417444100_7.1.jpg,2
+1572,点击动态详情 发现发布的动态没有图片。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542418298448/1542418298448_QQ%E6%88%AA%E5%9B%BE20181117083148.jpg,8
+1573,编辑我的资料 选择生日 选择2020-01-02 可以将生日设定为未来的日期。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542418305037/1542418305037_10.jpg,7
+1574,进入“发现”页面 选择“期刊分类” 进入详情 此时点击￥10.00 可以进行支付，但在收取费用后，无任何收费提醒，并持续显示支付中。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542418579882/1542418579882_TIM%E5%9B%BE%E7%89%8720181117093612.jpg,6
+1579,1.点击推荐  2.点击精选评论 3.点击查看来源 4.点击评论输入”12313“  5.自己回复自己的评论输入”1231“  6.点击发送  7.自己评论的回复数为0应该是1,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542419700116/1542419700116_Screenshot_2018-11-17-09-53-17.png,8
+1583,1、搜索框输入“1”  2、点击搜索按钮  3、清空后搜索框 4、搜索框输入“2”  5、点击搜索 实际结果只有当前栏的搜索结果变成相关字段“2”的结果，其他栏不变，预期结果：搜索结果所有栏都为相关“2”字段的结果,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542420918093/1542420918093_3.png,8
+1584,进入意见反馈界面  输入意见：111  输入联系方式：111111111111111111111111 点击发送 提示发送成功,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542421051735/1542421051735_15.jpg,2
+1585,点击“单曲”  出现签名已超时失效,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1542422522534/1542422522534_%E6%8D%95%E8%8E%B721.PNG,1

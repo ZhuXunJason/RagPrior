@@ -9,7 +9,9 @@ from openai import OpenAI
 # Load .env once at import time. Environment variables already set in shell keep priority.
 load_dotenv(override=False)
 
-DEFAULT_EMBEDDING_MODEL = "gemini-embedding-2-preview"
+DEFAULT_EMBEDDING_MODEL = "gemini-embedding-2"
+DEFAULT_DUPLICATE_THRESHOLD = 0.85
+
 
 def _clean(value: Optional[str]) -> Optional[str]:
     if value is None:
@@ -29,6 +31,21 @@ def get_base_url() -> Optional[str]:
 
 def get_google_api_key() -> Optional[str]:
     return _clean(os.getenv("GOOGLE_API_KEY"))
+
+
+def get_claude_api_key() -> Optional[str]:
+    return get_openai_api_key()
+
+
+def get_claude_base_url() -> Optional[str]:
+    return get_base_url()
+
+
+def get_claude_api_format() -> str:
+    value = (_clean(os.getenv("CLAUDE_API_FORMAT")) or "chat_completions").lower()
+    if value in {"messages", "anthropic"}:
+        return "messages"
+    return "chat_completions"
 
 
 def get_embedding_model() -> str:

@@ -1,0 +1,131 @@
+1195,进入评论界面  点击“12条短评” 不能直接显示，需要点击展开才会出现他人的短评，影响用户体验。 且点击右上角评论图标没有反应。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527047242487/1527047242487_photo2.jpg,4
+1144,点击”中老年人都被互联网抛弃了？没准他们才是下一波增长红利“ 应用将会崩溃,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527039418541/1527039418541_3.png,8
+416,点击消息按钮 点击没有反应。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1535525397497/1535525397497_Screenshot_20180829-144910.jpg,3
+1176,在主界面点击消息 app无任何反应，没有显示消息列表,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527041738626/1527041738626_%E5%9B%BE%E7%89%873.png,3
+1214,进入文章评论页面 点击12条短评 区域展开后无法收起,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527048659987/1527048659987_Screenshot_2018-05-23-12-10-32.png,4
+1151,点击开始游戏 点击电影日报 点击大公司日报等子日报 点击设计日报 发现缺陷：轮播图不显示。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527039870135/1527039870135_Screenshot_20180523-094348.jpg,3
+1157,点击大公司日报 界面最上方的图片无法加载。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527040125979/1527040125979_0174634B-0B23-4CF4-955B-04B59A9810B0.png,3
+1162,进入互联网安全页面 最顶上位置只有文字没有图片，其他栏目都正常。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527040366902/1527040366902_53D70204C15CBDC2605EBF89297FCDC7.jpg,3
+1165,点击音乐日报 菜单内部顶部图片为空。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527040553095/1527040553095_WX20180523-095501%402x.png,3
+1167,进入无图模式 点击互联网安全 图片仍会加载，不显示全黑,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527040756783/1527040756783_Screenshot_20180523-095453.jpg,3
+1207,点击动漫日报 界面上的图片为空，一片漆黑,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527047866446/1527047866446_0B6%EF%BF%BDZJ%282A~%60JMECIHXFCI.png,3
+1212,点击财经日报 栏目头图无法显示。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527048148411/1527048148411_6.jpg,3
+1245,点击开始游戏 文章图片未能显示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527049763271/1527049763271_%E4%BD%93%E9%AA%8C1.jpg,3
+1141,用户点击右上角闹铃旁的拓展符 点击“设置选项”  点击“大字号” 进行勾选或取消勾选，app的字体大小不会改变,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527039151250/1527039151250_Screenshot_1527039146.png,5
+1145,点选大字号 字体并没有任何改变,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527039531120/1527039531120_BS_PIC_2018-05-23-09-38-41.png,5
+1173,选中大字号 没有任何字号变大 ,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527041438160/1527041438160_%E5%9B%BE%E7%89%87%201.png,5
+412,进入登录页面 不能进行数据输入，不能登录,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1535524938311/1535524938311_Screenshot_20180829-143700.jpg,1
+418,进入首页 页面布局不适配本测试手机分辨率,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1535525506053/1535525506053_%E6%88%AA%E5%9B%BE01.png,1
+420,进入登录页面 点击“新浪微博” 无法正常跳转。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1535525719213/1535525719213_Screenshot_2018-08-29-14-51-12.jpg,1
+423,点击腾讯微博 按钮点击没有任何提示。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1535526568492/1535526568492_Screenshot_2018-08-29-15-09-01.png,1
+1126,点击左上角的tab选择头像 点击登录 选择新浪微博 并无任何反应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527038114889/1527038114889_bug1.png,1
+1127,使用微博登录 点击按钮无反应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527038212426/1527038212426_Screenshot_20180523-091602.png,1
+1128,点击新浪微博 无法登录,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527039330470/1527039330470_S80523-09184350.jpg,1
+1130,打开侧栏 进入登录页面 点击“新浪微博”  没有任何反应，也无法登录,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527038588203/1527038588203_Screenshot_20180523-091802.png,1
+1131,点击使用微博登录 点击新浪微博 功能无法使用，且系统无提示。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527038606954/1527038606954_57AF29C1-5495-4578-895A-B9CECF324879.png,1
+1133,点击新浪微博 点击无反馈,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527049726643/1527049726643_Screenshot_2018-05-23-09-24-27.png,1
+1135,选择新浪微博登录 若本机没有内置这些应用，该APP不会有任何提示，没有反应，并且没有提供账号密码登录,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527038820650/1527038820650_BS_PIC_2018-05-23-09-25-48.png,1
+1137,点击新浪微博 按钮无反应，无法登录,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527039077937/1527039077937_1.png,1
+1139,使用新浪微博登录 按钮点击没反应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527039804771/1527039804771_Screenshot_2018-05-23-09-30-17.png,1
+1146,点击新浪微博登录 功能不可用,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527039627636/1527039627636_57AF29C1-5495-4578-895A-B9CECF324879.png,1
+1148,"在点击用户头像进行登录 点击第三方登录 点击新浪微博 按键没有任何反馈,没有进行页面切换或者跳转,且腾讯微博按钮的显示有问题,部分文字被覆盖.",http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527039617445/1527039617445_Screenshot_2018-05-23-09-39-57.png,1
+1153,点击新浪微博  没有响应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527039864519/1527039864519_2.png,1
+1155,点击新浪微博 登录账号没有反应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527040003222/1527040003222_test1.png,1
+1156,点击新浪微博 无法进入账户密码输入界面,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527040003202/1527040003202_Screenshot_2018-05-23-09-46-33.png,1
+1168,进入登录页面 选择新浪微博 没有反馈，无法登录,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527049052221/1527049052221_Screenshot_2018-05-23-12-10-20.png,1
+1169,点击新浪微博  手机未安装新浪微博apk时登录没有反应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527040952606/1527040952606_WX20180523-100112%402x.png,1
+1170,"点击新浪微博登录 未安装新浪微博时,登录没有反应",http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527041281398/1527041281398_WX20180523-100112%402x.png,1
+1171,点击新浪微博按钮 没有反应，即无法登陆,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527041277334/1527041277334_%E5%9B%BE%E7%89%87%201.png,1
+1175,点击新浪微博 按钮无反应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527041623403/1527041623403_Screenshot_2018-05-23-10-13-37.png,1
+1179,选择微博登录 无反应。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527041862684/1527041862684_Screenshot_20180523-101659.png,1
+1180,进入登录页面 选择新浪微博 页面没有响应。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527043968009/1527043968009_Screenshot_2018-05-23-10-51-52.png,1
+1181,进入登录界面 点击新浪微博 均无反应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527045323089/1527045323089_QQ%E5%9B%BE%E7%89%8720180523121359.jpg,1
+1183,点击新浪微博登录 没有响应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527046766105/1527046766105_%E7%99%BB%E5%BD%95.png,1
+1186,进入登录界面 选择新浪微博登录 无法登录。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527047002941/1527047002941_1.jpg,1
+1188,进入微博登录界面 点击新浪微博 无反馈,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527047219616/1527047219616_%E7%99%BB%E5%BD%95.png,1
+1196,进入登录界面 分别点击登录界面中的“新浪微博”和“腾讯微博”按键，但是界面没有任何反应，因此无法整个app无法正常登录 ,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527047519531/1527047519531_1.png,1
+1197,点击头像进入登录界面 点击新浪微博 无注册功能，且登录链接无效,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527047390525/1527047390525_BS_PIC_2018-05-23-10-03-47.png,1
+1219,进入程序点击左上角图标 再点击弹出的列表最上方头像图标会进入登录界面 点击新浪微博 程序始终没有出现响应，登录功能没有做全,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527048831594/1527048831594_%E7%99%BB%E5%BD%95.jpg,1
+1220,进入登录界面 点击新浪微博 微博登录方式的text显示换行,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527048900992/1527048900992_bug14.png,1
+1224,进入Bihudaily APP 点击首页左上角选项 点击头像 进入登录界面 点击新浪微博 按钮没有任何响应。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527049147655/1527049147655_Screenshot_2018-05-23-10-54-28.png,1
+1225,进入登录界面 选择新浪微博 登录方式无响应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527049099997/1527049099997_444.jpg,1
+1226,进入登录页面 小分辨率下，登陆页面无法完全现实，且不能下拉，新浪微博登录点击不响应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527049141542/1527049141542_Screen%20Shot%202018-05-23%20at%2012.18.17.png,1
+1230,进入登录页面 点击新浪微博 微博登录无效,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527049284599/1527049284599_Screenshot_20180523-101254.png,1
+1232,进入登录页面 点击新浪微博 没有响应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527049367043/1527049367043_bug5.png,1
+419,查看评论 没有登录，不给点赞和写评论没有任何提示。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1535525701865/1535525701865_Screenshot_2018-08-29-14-54-18.png,4
+422,点击查看知乎讨论 按钮是灰色的，不明显。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1535526002821/1535526002821_Screenshot_2018-08-29-14-57-40.png,6
+1200,点击查看原网页 某些功能按钮可以点击实现却采用默认无法点击实现的灰色着色,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527047546086/1527047546086_BS_PIC_2018-05-23-10-46-16.png,6
+1202,点击“查看讨论” 按钮为灰色，会让用户误以为不能点击，实际是有用的按键,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527047701525/1527047701525_Screenshot_20180523-115433.png,6
+417,点入1条新闻 进行点赞 点赞数目没有增加，再点击反而减少，且返回后崩溃。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1535525506076/1535525506076_Screenshot_2018-08-29-14-50-55.png,6
+408,进入应用首页 点击右上角更多选项按钮  点击夜间（日间）模式 应用崩溃,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1535442111064/1535442111064_Screenshot_1535441934.png,2
+409,点击夜间模式或日间模式 软件停止运行，必须重启后才能设置成功；,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1535524575609/1535524575609_Screenshot_2018-08-29-14-33-54.png,2
+1129,当点击右上角设置省略号 选择夜间模式 应用发生不正常退出现象，且大概率复现。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527040478186/1527040478187_1.png,2
+1132,点击夜间模式 app退出，重启后模式切换,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527038752435/1527038752435_dump_2745082011017447147.png,2
+1134,点击app右上角闹铃旁的拓展符 点击日间模式 选中该选项后app会实现切换但停止运行,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527038799288/1527038799288_Screenshot_1527038750.png,2
+1138,点击日间模式 软件会闪退,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527039021976/1527039021976_Screenshot_2018-05-23-09-30-02.png,2
+1140,点击右上角的expand（三个点） 点击夜间模式 该软件就会强制退出，再次启动后，模式被切换。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527039972436/1527039972436_Z~CJ%402DADJ%609A10M%5B31R4PP.png,2
+1143,点击夜间模式 整个app停止运行,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527039263010/1527039263010_%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%285%29.png,2
+1147,点击夜间模式 系统自动退出，再次打开时系统切换到测试所选模式,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527039764279/1527039764279_Screenshot_20180523-093956.png,2
+1149,点击日间模式 应用退出,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527039710053/1527039710053_test1.png,2
+1152,点击“夜间“模式 应用会闪退，再次打开才会成功,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527039748672/1527039748672_5.png,2
+1158,点击日间模式 需要用户退出程序重新打开,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527040097437/1527040097437_Screenshot_20180523-094709.jpg,2
+1172,点击夜间模式 APP闪退,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527041405451/1527041405451_%E5%9B%BE%E7%89%87%201.png,2
+1184,点击夜间模式 肯定会强行退出程序，且有时候能正常变换成夜间模式，但大多数时候强退后无法变换模式,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527046073612/1527046073612_QQ%E5%9B%BE%E7%89%8720180523112726.png,2
+1194,切换主题模式 点击夜间模式 应用闪退。 重启后，主题色调才改变。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527047114899/1527047114899_dump_2058762631586289545.png,2
+1204,点击夜间模式 程序会闪退 重新启动后程序会转换到夜间/日间模式,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527047802670/1527047802670_BS_PIC_2018-05-23-11-34-40.png,2
+1206,在主界面中点击右上角的“更多”按键 点击夜间模式 app会直接闪退,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527047791585/1527047791585_Screenshot_20180523-115523.png,2
+1210,点击夜间模式 应用直接闪退，虽然重新打开后发现修改已经生效,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527048210136/1527048210136_Screenshot_20180523-120041.png,2
+1213,打开夜间模式 应用闪退，直到下次打开时应用会变为所选模式,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527048477321/1527048477321_1.png,2
+1217,切换夜间模式 系统停止运行,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527048708965/1527048708965_LGOQT9Y%5B%29_LNV%40%7D15HS86%24W.png,2
+1221,点击日间模式 调整模式时应用闪退，但可以重新进入应用时候发现模式已调整,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527048930345/1527048930345_1.png,2
+1227,点击夜间模式 应用闪退（不确定是不是因为我的机子太卡）,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527049205213/1527049205213_13.png,2
+1231,点击日间模式 程序会崩溃退出，影响用户体验。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527049287084/1527049287084_photo5.1.jpg,2
+1236,点击夜间模式 应用会强行退出,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527049482977/1527049482977_Screenshot_20180523-122415.png,2
+1237,点击设置 选择夜间模式  程序闪退,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527049550548/1527049550548_%E6%88%AA%E5%B1%8F_20180523_122406.jpg,2
+1242,点击右上角更多选项 点击日间模式 app闪退,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527049617326/1527049617326_Screenshot_2018-05-23-12-25-17-68.png,2
+1159,点击“当下流行的健身方式里，哪些是错误的” 莫名其妙闪退,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527040179954/1527040179954_8.png,8
+1205,点击电影日报 应用闪退 重复查看同一文章极容易闪退,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527047808308/1527047808308_333.1.jpg,3
+1177,对应用进行了长时间操作 点击登录 两个登录方式的文字没有显示，只显示了图标。这个bug只遇到了一次。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527041780353/1527041780353_Screenshot_2018-05-23-09-57-05.png,1
+1178,切换夜间模式 点击登录 帖子内图片无法正常显示，且登陆界面按钮内的文字不显示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527041765637/1527041765637_Screenshot_2018-05-23-10-15-01.png,1
+1185,切换夜间模式 进入登录页面 用户登录界面布局错乱，夜间模式下。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527046743257/1527046743258_bug10.png,1
+1198,点击我的收藏 打开“为什么咖啡和牛奶搅在一起就无法分开”  有概率会发生应用闪退。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527047463216/1527047463216_Screenshot_2018-05-23-11-50-04.png,8
+1235,点击收藏文章 点击返回 查看已收藏的文章 点击“为什么牛奶和咖啡搅在一起就无法分开”  app则会直接闪退,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527049605073/1527049605073_Screenshot_20180523-122150.png,8
+1161,进入首页 在进行菜单切换时，有时候应用会发生界面重叠显现。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527040243758/1527040243758_WX20180523-095001%402x.png,3
+1187,点击首页 页面出现重叠情况,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527046795874/1527046795874_Screenshot_2018-05-23-11-39-07-597_com.white.bihu.png,3
+1191,点击电影日报 发现有某一个页面一直置于页面底部与当前页面重叠的情况，导致整个页面十分混乱，但重启app后未发现此情况。严重等级严重，整个页面都处于错误的状态，但属于偶然事件，尚未知复现条件。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527046871142/1527046871142_%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202018-05-23%2011.38.29.png,3
+1209,点击动漫日报 栏目页面间会产生混乱。但这个问题只遇到过两次，出现概率较小。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527047981798/1527047981798_Screenshot_2018-05-23-11-58-35.png,3
+1238,进入主页的 点击“中老年人都被互联网抛弃了？没准他们才是下一波增长红利”  有一部分情况下会进入文章内容详情，另有大概率情况下应用闪退。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527049573993/1527049573993_dump_2168339676278234717.png,3
+1193,进入首页 顶部文章轮播停止,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527047156077/1527047156077_3.png,3
+1211,打开一条文章  翻到最下面 点击查看知乎讨论 出现大片空白。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527049740926/1527049740926_Screenshot_2018-05-23-12-02-00.png,6
+1190,勾选大字号 应用会自动退出；,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527047246399/1527047246399_%E5%AD%97%E5%8F%B7.png,5
+1150,从首页进入的文章页面 点击“查看知乎讨论” 链接下可以无限滑动，形成了白屏。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527039917341/1527039917341_Screenshot_20180523-094455.jpg,6
+1163,浏览某些帖子 点击查看知乎讨论 一直往下浏览会脱出内容范围，滑向一片空白，并且很难再拉上来,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527040379738/1527040379738_BS_PIC_2018-05-23-09-51-04.png,6
+1136,查看主编资料 主编头像图片加载失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527038954645/1527038954645_dump_1082537289120129161.png,7
+1154,点击子日报 点击主编头像 显示主编列表 点击主编头像 查看主编资料 发现缺陷：样式缺失。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527039973614/1527039973614_Screenshot_20180523-094555.jpg,7
+1164,点击主编资料 主编图片无法显示。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527040453567/1527040453567_WX20180523-095400%402x.png,7
+1182,点击主编资料 显示信息排版太过原始，左上角图片显示失败,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527045469100/1527045469100_Screenshot_20180523-111707.png,7
+1201,使用其他操作系统（蓝叠模拟器） 打开主编资料 界面与当前操作系统（雷电模拟器）下打开的不同，经比较，当前应用在当前测试操作系统上的主编页面布局存在缺陷，未加载样式表。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527047692918/1527047692918_Screenshot_2018-05-23-11-53-08.png,7
+1208,点击主编资料 主编页面显示排版错误,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527047920476/1527047920476_5.png,7
+1218,查看主编资料 样式、图片无法加载,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527048772111/1527048772111_9.png,7
+1222,点击主编资料 浏览主编资料时无法显示图片 ，无法正常显示图片，图片无法被加载出来  ,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527049040879/1527049040879_Screenshot_2018-05-23-12-10-04.png,7
+1229,查看主编资料 发现图片无法显示，并且布局很差 ,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527049267116/1527049267116_Screenshot_20180523-122048.jpg,7
+1241,点击主编资料 有时候会不显示资料或者显示很慢,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527049640666/1527049640666_bug6.png,7
+1243,点击主编资料 页面显示不全，没有图,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527049739489/1527049739489_Screenshot_20180523-122815.png,7
+411,点击标题栏的消息的图标 没有任何反应,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1535524788527/1535524788527_Screenshot_2018-08-29-14-39-36.png,3
+413,不断切换大字号和小字号 系统崩溃。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1535524969185/1535524969185_Screenshot_2018-08-29-14-42-04.png,5
+414,切换大小字号 其实是内容字号变化，而栏目没有任何变化。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1535525046621/1535525046621_Screenshot_2018-08-29-14-43-51.png,5
+415,点击更多 选择开发者 没有确定按钮且邮箱与GitHub可以点击，但是不明显。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1535525160614/1535525160614_Screenshot_2018-08-29-14-45-20.png,5
+421,点击收藏 没有登录居然可以收藏成功。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1535525771605/1535525771605_Screenshot_2018-08-29-14-55-48.png,8
+1166,点击夜间模式 点击收藏 会发生无规律的闪退。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527040612769/1527040612769_9C87FAB1-FAE8-4A50-8DA4-4CE692CEE53B.png,2
+1174,点击登录 上下软件名文字不一致，使软件不具有可信度,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527041451889/1527041451889_TIM%E6%88%AA%E5%9B%BE20180523101035.png,1
+1189,点击设置 选择夜间模式 软件自动退出且模式未更改。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527046907997/1527046907997_2.jpg,2
+1203,查看文章的评论 点击13条热评 显示有13条评论，但是列表中并没有展示评论。只有点击后才会显示评论列表，用户体验很差，新用户会误以为评论没有加载或评论数显示错误。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527047769812/1527047769812_dump_1833402632443747748.png,4
+1215,进入我的收藏界面 点击“陆奇之后，百度未来会怎样？或许李彦宏也没有答案”  有一定概率无法跳转至该文章详情页面，而返回至菜单栏。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527048684625/1527048684625_photo4.1.jpg,3
+1216,点击大公司日报 页面上半部分（跑马灯）中的文章无法点击查看,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527048746352/1527048746352_8.png,3
+1223,进入首页 在非4g网络下，会出现一些文章卡片中，只有文字没有图片的情况，即未加载成功。在多次点击此类卡片时，应用在报告加载失败之外会闪退的异常情况,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527049061738/1527049061738_IMG_20180523_092817.png,3
+1228,点击某一文章的收藏按钮 立即返回首页 点击我的收藏 文章不会正常显示，而是停留在点击导航之后的页面,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527049252471/1527049252471_Screenshot_20180523-101022.png,8
+1233,切换夜间模式 点击设置 字体颜色和背景很接近，对用户很不友好。如下图中，常规和其他两个标题几乎看不见,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527049381986/1527049381986_dump_6422349629465636998.png,5
+1234,切换夜间模式 点击“大快人心，终于有人把英雄们的主角光环拿掉了” 有一些文章是白色底，有一些是黑色底，完全没有规律（别说是feature）,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527049447340/1527049447340_Screenshot_20180523-122243.jpg,3
+1239,在我的收藏中点击收藏文章 回到主菜单导航栏 点击我的收藏 出现异常，没有显示该文章的详情,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527049605923/1527049605923_7-2.png,8
+1240,点击收藏  退回收藏界面 点击“为什么牛奶和咖啡搅在一起就无法分开”  会瞬间白屏然后回到收藏界面,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527049619230/1527049619230_Screenshot_20180523-122150.png,8
+1244,点击“为什么牛奶和咖啡搅在一起就无法分开”  应用出现闪退。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1527049748412/1527049748412_dump_2010505101266416327.png,3

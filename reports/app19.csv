@@ -1,0 +1,12 @@
+1526,进入“美团” 点击“外卖” 点击美食  界面中间的广告展示栏，其中第六幅广告和第七幅广告均为“吃了又吃”，广告重复，第六幅广告尺寸略小，第七幅广告尺寸稍大，此处需调整。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531204495998/1531204495998_Screenshot_20180710-143153.jpg,1
+1528,1.打开美团APP 2.点击美食 3.置顶时，中间的广告栏中第5张图片和第6张重复，第5张较小，第6张大一点,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531205134866/1531205134866_%E6%88%AA%E5%B1%8F1.jpg,1
+1522,打开美团APP 点击发现 点击生活控 加载时间过长。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531204031655/1531204031655_Screenshot_2018-07-10-14-25-08.png,2
+1523,打开美团APP 点击发现 点击生活控 加载时间过长。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531204031655/1531204031655_Screenshot_2018-07-10-14-25-08.png,2
+1517,打开APP后点击“我的”选项 点击登录 点击微信登录 发现微信登录无法运行。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531201912446/1531201912446_1.1.png,3
+1518,点击首页下方的”我的“ 点击登录进入另一页面 再点击”微信登录“ 屏幕旋转一次，自动返回，无法登录。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531201992412/1531201992412_Screenshot_2018-07-10-13-52-53.png,3
+1519,点击我的 点击微信登录 出现闪退到登录界面的窗口。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531202022833/1531202022833_Screenshot_2018-07-10-13-52-54.png,3
+1521,1.点击美团首页右下方“我的” 2.在出现的页面中上方点击“登录” 3.出现手机号登陆和微信登陆2种方式 4.点击“微信登陆” 5.闪退然后回到原“微信登陆”页面,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531203775286/1531203775286_Screenshot_2018-07-10-14-20-13.png,3
+1520,打开美团app 点击发现 点击精选 出现了未响应的状况。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531203179219/1531203179219_Screenshot_2018-07-10-14-10-47.png,2
+1524,1.点击美团首页右下方“我的” 2.在出现的页面中上方点击“登录” 3.出现手机号登录和微信登录2种方式 4.点击“使用手机号登录注册”按钮 输入手机号 点击“下一步” 5.出现“请不要频繁提交”对话框，始终不能登陆。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531204204520/1531204204520_Screenshot_2018-07-10-14-24-58.png,3
+1525,打开美团APP 搜索火锅 会出现图片加载时间过长,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531204416572/1531204416572_Screenshot_2018-07-10-14-30-52.png,1
+1529,打开美团APP 点击发现 发现内容重复,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1531206126496/1531206126496_Screenshot_2018-07-10-14-56-11.png,1

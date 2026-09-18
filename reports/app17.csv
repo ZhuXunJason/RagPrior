@@ -1,0 +1,4 @@
+160,点击微信 英语课程中有分享功能的不能分享到微信好友和朋友圈中，提示分享失败,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1491906384000_Screenshot_20170411-182526.png,1
+162,点击推荐给好友 选择分享 点击微信好友 系统界面显示分享失败,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1494756186000_Screenshot_20170514-151003.png,1
+163,点击设置--推荐给好友--分享到微信好友之后，会退回原来的界面并显示分享失败。,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1496929284000_3.png,1
+161,进入英语课程页面 点击“人气” 并未按人气排序，发现列表排序混乱，并没有按照课程人数排序,http://kikbug-public.oss-cn-shanghai.aliyuncs.com/1491964714000_17489610.jpg,2

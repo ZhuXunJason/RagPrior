@@ -1,0 +1,17 @@
+632,点击立即更新 软件会出现闪退。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1512459222773/1512459222773_1.png,1
+633,进入首页 在上滑首页页面的时候，会不断弹到明星产品模块，无法查看上面的信息。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1512457130834/1512457130834_QQ%E5%9B%BE%E7%89%8720171205145819.jpg,2
+634,进入首页 部分图片没有正常显示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1512456872482/1512456872482_Screenshot_2017-12-05-14-51-10%5B1%5D.png,3
+635,点击秀 点赞无法取消，只会提示已经点过赞。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1512457822125/1512457822125_039C7A8F03AA02A85E54BCD2B0027587.jpg,4
+636,点击我的 点击客服帮助 点击“+” 点击拍照按钮 App直接闪退。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1512457598977/1512457598977_Screenshot_2017-12-05-15-06-32.png,1
+637,点击北美 北美二字会变红 且关于北美图片会出现在页面上面 再点击中欧 中欧二字不会变红 点击西欧 关于西欧的图片不会出现在页面最上面。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1512459310512/1512459310512_3.png,3
+638,点击我的 头部的图片和电话号码合在一起,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1512458435225/1512458435225_Screenshot_20171205-145944.png,5
+639,打开APP 第一次打开会出现欢迎页面，而欢迎页面的最后一页没有指引用户进入APP的按钮或提示,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1512458614741/1512458614741_QQ%E5%9B%BE%E7%89%8720171205151654.jpg,6
+640,打开软件 点击菜单 随意进入一个子页面之后 再点击“首页” 无法返回到刚开始的打开软件的首页页面。只能部分显示主页。只能显示第二幅图的页面，当往上滑动时，会显示图一的页面，但是立马闪一下跳动到第二副图的页面。无法显示完全。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1512459063794/1512459063794_1.jpg,2
+641,填写年龄 年龄没有做限制，可以随便输入数字、字母、符号等,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1512459457838/1512459457838_Screenshot_20171205-153243.png,5
+642,点击目的地 图片加载不出来。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1512459463657/1512459463657_%E6%88%AA%E5%B1%8F_20171205_153644.jpg,3
+643,点击我的 设置了新的姓名，但是在默认头像下显示有缺陷，看不清楚名字。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1512460274249/1512460274249_QQ%E5%9B%BE%E7%89%8720171205155025.jpg,5
+644,点击首页 查看当地红人 直接加载出很多当地红人的照片，影响用户对APP整体视觉感觉的体验。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1512460312612/1512460312612_%E6%88%AA%E5%B1%8F_20171205_155052.jpg,3
+645,查看评论 系统统计的评论数量与实际评论数量不符,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1512460404125/1512460404125_QQ%E5%9B%BE%E7%89%8720171205155323.jpg,7
+646,1.主界面点击下方按钮首页 2.首页页面点击需求 3.需求页面点击需求 4.选择目的地：东亚-柬埔寨 5. 点击仅看未回答 还是出现回答信息,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1512460548366/1512460548366_Screenshot_2017-12-05-15-55-43.png,8
+647,点击”我的“ 页面中功能不完整，没有清除数据信息，清楚缓存的选项功能。,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1512460691749/1512460691749_%E6%88%AA%E5%B1%8F_20171205_155705.jpg,8
+648,1.进入我的界面 2.进入设置界面 3进入手机号界面 4.成功输入新手机号 5.点击获取验证码 虽然流程没有问题，但是没有验证原手机号和密码，存在安全问题,http://mooctest-site.oss-cn-shanghai.aliyuncs.com/app/1512460654916/1512460654916_Screenshot_2017-12-05-15-41-42.png,9

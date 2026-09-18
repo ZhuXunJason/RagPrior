@@ -48,7 +48,9 @@ Prioritization rules (apply in strict order):
    bug type as approximate. When in doubt about placement, err toward diversity.
    If visual evidence suggests a higher-confidence bug type than text, prefer that signal.
 
-Output ONLY a numbered list, one report per line. No explanations.
+Output ONLY a numbered list containing every report exactly once, one report per
+line. Before answering, verify that no report is missing, duplicated, or outside
+the provided report-number range. No explanations.
 Example:
 1. Report 5
 2. Report 12
@@ -85,5 +87,63 @@ def get_kg_prompt(
         system=_SYSTEM,
         reports_text=ctx["reports_text"],
         global_summary=ctx["global_summary"],
-        task=_TASK,
+        task=(
+            f"{_TASK}\n\nMANDATORY COMPLETENESS CHECK: the output must contain "
+            f"exactly {len(reports)} lines and include every ID from Report 1 "
+            f"through Report {len(reports)} exactly once."
+        ),
+    )
+
+
+_BASIC_SYSTEM = """
+You are a software testing analyst prioritizing crowdsourced mobile-app test reports.
+The reports have already been deduplicated by text-embedding similarity. Each item
+contains one representative report and the size of its original report cluster.
+No knowledge-graph classification, extracted entities, screenshot evidence, or
+severity score is available.
+""".strip()
+
+_BASIC_TASK = """
+Prioritize ALL representative reports using only the information shown above.
+
+Apply these rules in strict order:
+1. DEFECT DIVERSITY: place reports that appear to describe different defects as
+   early as possible.
+2. CLUSTER FREQUENCY: when diversity is equal, prefer the report representing the
+   larger cluster.
+3. REPORT QUALITY: when the first two criteria are equal, prefer the report with
+   clearer reproduction steps and a more informative symptom description.
+
+Output ONLY a numbered list containing every report exactly once. Do not add
+explanations.
+Example:
+1. Report 5
+2. Report 12
+3. Report 3
+""".strip()
+
+
+def get_basic_ranking_prompt(
+    reports: List[Dict[str, Any]],
+    cluster_sizes: List[int],
+) -> str:
+    """Build the Stage-II ablation prompt without KG or multimodal evidence."""
+    if len(reports) != len(cluster_sizes):
+        raise ValueError("reports and cluster_sizes must have the same length")
+
+    report_lines = []
+    for index, (report, cluster_size) in enumerate(zip(reports, cluster_sizes), start=1):
+        description = str(report.get("description", "") or "")
+        report_lines.append(
+            f"Report {index} - {description}\n"
+            f"  [Cluster Size] {cluster_size}"
+        )
+
+    return (
+        f"{_BASIC_SYSTEM}\n\n"
+        "Representative reports:\n"
+        "---\n"
+        f"{'\n\n'.join(report_lines)}\n"
+        "---\n\n"
+        f"{_BASIC_TASK}"
     )

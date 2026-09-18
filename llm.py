@@ -3,9 +3,18 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from google import genai
 from google.genai import types
+import httpx
 from openai import OpenAI
 
-from config import create_openai_client, get_base_url, get_google_api_key, get_openai_api_key
+from config import (
+    create_openai_client,
+    get_base_url,
+    get_claude_api_format,
+    get_claude_api_key,
+    get_claude_base_url,
+    get_google_api_key,
+    get_openai_api_key,
+)
 
 
 def _guess_mime_type(url: str) -> str:
@@ -78,25 +87,100 @@ def ask_completion(
     image_urls: Optional[List[str]] = None,
 ) -> Dict[str, Any]:
     if is_gemini_model(model):
-        return ask_gemini(
-            prompt,
-            model,
-            max_token,
-            api_key=api_key,
-            request_options=request_options,
-            temperature=temperature,
-            image_urls=image_urls,
-        )
-    return ask_openai(
-        prompt,
-        model,
-        max_token,
-        base_url=base_url,
-        api_key=api_key,
-        request_options=request_options,
-        temperature=temperature,
-        image_urls=image_urls,
-    )
+        kwargs: Dict[str, Any] = {
+            "api_key": api_key,
+            "request_options": request_options,
+            "temperature": temperature,
+        }
+        if image_urls is not None:
+            kwargs["image_urls"] = image_urls
+        return ask_gemini(prompt, model, max_token, **kwargs)
+
+    if model.startswith("claude-") and get_claude_api_format() == "messages":
+        kwargs = {
+            "base_url": base_url,
+            "api_key": api_key,
+            "request_options": request_options,
+            "temperature": temperature,
+        }
+        if image_urls is not None:
+            kwargs["image_urls"] = image_urls
+        return ask_claude_messages(prompt, model, max_token, **kwargs)
+
+    kwargs = {
+        "base_url": base_url,
+        "api_key": api_key,
+        "request_options": request_options,
+        "temperature": temperature,
+    }
+    if image_urls is not None:
+        kwargs["image_urls"] = image_urls
+    return ask_openai(prompt, model, max_token, **kwargs)
+
+
+def ask_claude_messages(
+    prompt: str,
+    model: str,
+    max_token: int,
+    base_url: Optional[str] = None,
+    api_key: Optional[str] = None,
+    request_options: Optional[Dict[str, Any]] = None,
+    temperature: float = 0.0,
+    image_urls: Optional[List[str]] = None,
+) -> Dict[str, Any]:
+    effective_base_url = base_url or get_claude_base_url()
+    effective_api_key = api_key or get_claude_api_key()
+    if not effective_base_url:
+        raise RuntimeError("BASE_URL or OPENAI_BASE_URL not set.")
+    if not effective_api_key:
+        raise RuntimeError("OPENAI_API_KEY not set.")
+
+    base = effective_base_url.rstrip("/")
+    url = f"{base}/messages" if base.endswith("/v1") else f"{base}/v1/messages"
+    if image_urls:
+        content: list = [{"type": "text", "text": prompt}]
+        for image_url in image_urls:
+            content.append({
+                "type": "image",
+                "source": {"type": "url", "url": image_url},
+            })
+    else:
+        content = prompt
+
+    body: Dict[str, Any] = {
+        "model": model,
+        "max_tokens": max_token,
+        "messages": [{"role": "user", "content": content}],
+    }
+    if request_options and request_options.get("extra_body"):
+        body.update(request_options["extra_body"])
+
+    headers = {
+        "x-api-key": effective_api_key,
+        "Authorization": f"Bearer {effective_api_key}",
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
+    }
+    timeout = httpx.Timeout(900.0, connect=30.0)
+    response = httpx.post(url, headers=headers, json=body, timeout=timeout)
+    response.raise_for_status()
+    payload = response.json()
+
+    content_parts = []
+    for block in payload.get("content", []):
+        if isinstance(block, dict) and block.get("type") == "text":
+            text = block.get("text")
+            if isinstance(text, str):
+                content_parts.append(text)
+
+    usage = payload.get("usage") or {}
+    return {
+        "content": "".join(content_parts),
+        "prompt_tokens": usage.get("input_tokens", 0) or 0,
+        "completion_tokens": usage.get("output_tokens", 0) or 0,
+        "finish_reason": payload.get("stop_reason", "") or "",
+        "provider": "anthropic",
+    }
 
 
 def ask_gpt(
@@ -194,11 +278,22 @@ def ask_openai(
     temperature: float = 0.0,
     image_urls: Optional[List[str]] = None,
 ) -> Dict[str, Any]:
+    if model.startswith("qwen-"):
+        max_token = min(max_token, 32768)
+
+    if model.startswith("claude-"):
+        base_url = base_url or get_claude_base_url()
+        api_key = api_key or get_claude_api_key()
+        if not api_key:
+            raise RuntimeError("OPENAI_API_KEY not set.")
+
     openai_client = _build_openai_client(api_key=api_key, base_url=base_url)
 
     if image_urls:
         content: list = [{"type": "text", "text": prompt}]
         for url in image_urls:
+            if model.startswith("claude-") and url.startswith("http://"):
+                url = "https://" + url[len("http://"):]
             content.append({
                 "type": "image_url",
                 "image_url": {"url": url, "detail": "low"},
@@ -210,8 +305,9 @@ def ask_openai(
     request_kwargs: Dict[str, Any] = {
         "model": model,
         "messages": messages,
-        "temperature": temperature,
     }
+    if not model.startswith("claude-") and model != "gpt-5.6-terra":
+        request_kwargs["temperature"] = temperature
     if model.startswith("gpt-5"):
         request_kwargs["max_completion_tokens"] = max_token
     else:
@@ -221,6 +317,33 @@ def ask_openai(
             request_kwargs["extra_body"] = request_options["extra_body"]
         if request_options.get("stream_options"):
             request_kwargs["stream_options"] = request_options["stream_options"]
+
+    if (
+        model.startswith(("claude-", "deepseek-", "qwen-"))
+        and max_token >= 32768
+    ):
+        request_kwargs["stream"] = True
+        request_kwargs["stream_options"] = {"include_usage": True}
+        stream = openai_client.chat.completions.create(**request_kwargs)
+
+        content_parts: List[str] = []
+        finish_reason = ""
+        usage = None
+        for chunk in stream:
+            if chunk.choices:
+                delta_content = chunk.choices[0].delta.content
+                if delta_content:
+                    content_parts.append(delta_content)
+                finish_reason = chunk.choices[0].finish_reason or finish_reason
+            usage = chunk.usage or usage
+
+        return {
+            "content": "".join(content_parts),
+            "prompt_tokens": getattr(usage, "prompt_tokens", 0) or 0,
+            "completion_tokens": getattr(usage, "completion_tokens", 0) or 0,
+            "finish_reason": finish_reason,
+            "provider": "openai",
+        }
 
     response = openai_client.chat.completions.create(**request_kwargs)
     choice = response.choices[0] if response.choices else None

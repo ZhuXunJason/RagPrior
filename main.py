@@ -32,11 +32,41 @@ REPORTS_MSG = [
     ]
 
 LLMPRIOR_MAX_TOKEN = 32768
+LLMPRIOR_CLAUDE_MAX_TOKEN = 65536
 
 
-def run_query(app: int, repeat: int = 1, mode: str = "default", given_range: Optional[List[int]] = None, model: str = "gpt-5.4") -> None:
+def _complete_result_sequence(result: str, total: int) -> str:
+    sequence = []
+    seen = set()
+
+    for line in result.splitlines():
+        try:
+            report_num = extract_report_num(line)
+        except Exception:
+            continue
+        if report_num < 1 or report_num > total or report_num in seen:
+            continue
+        sequence.append(report_num)
+        seen.add(report_num)
+
+    for report_num in range(1, total + 1):
+        if report_num not in seen:
+            sequence.append(report_num)
+
+    return "\n".join(f"Report {report_num}:" for report_num in sequence)
+
+
+def run_query(
+    app: int,
+    repeat: int = 1,
+    mode: str = "default",
+    output_tag: Optional[str] = None,
+    given_range: Optional[List[int]] = None,
+    model: str = "gpt-5.4",
+) -> None:
     print(f"APP-{app}...")
     prompt = get_prompt(app=app, mode=mode)
+    file_mode = output_tag or mode
     if given_range is None:
         repeats = [i for i in range(1, repeat + 1)]
     else:
@@ -46,12 +76,16 @@ def run_query(app: int, repeat: int = 1, mode: str = "default", given_range: Opt
         llm_result = ask_completion(
             prompt,
             model=model,
-            max_token=LLMPRIOR_MAX_TOKEN,
+            max_token=(
+                LLMPRIOR_CLAUDE_MAX_TOKEN
+                if model.startswith("claude-")
+                else LLMPRIOR_MAX_TOKEN
+            ),
         )
         response = llm_result.get("content", "")
         token_usage_p = llm_result.get("prompt_tokens", 0)
         token_usage_r = llm_result.get("completion_tokens", 0)
-        with open(f"response/{app}-{mode}-{i}.txt", encoding="utf-8", mode="w") as f:
+        with open(f"response/{app}-{file_mode}-{i}.txt", encoding="utf-8", mode="w") as f:
             if response:
                 f.write(f"{response}\n")
             f.write(f"Input Tokens: {token_usage_p}\n")
@@ -60,21 +94,29 @@ def run_query(app: int, repeat: int = 1, mode: str = "default", given_range: Opt
             f.write(f"Finish Reason: {llm_result.get('finish_reason', '')}\n")
 
 
-def run_parse(app: int, mode: str = "default", repeat: int = 1, given_range: Optional[List[int]] = None) -> None:
+def run_parse(
+    app: int,
+    mode: str = "default",
+    output_tag: Optional[str] = None,
+    repeat: int = 1,
+    given_range: Optional[List[int]] = None,
+) -> None:
+    file_mode = output_tag or mode
     if given_range is None:
         repeats = [i for i in range(1, repeat + 1)]
     else:
         repeats = given_range
     for i in repeats:
-        result_path = Path(f"result/{app}-{mode}-{i}.txt")
+        result_path = Path(f"result/{app}-{file_mode}-{i}.txt")
         try:
-            with open(f"response/{app}-{mode}-{i}.txt", encoding="utf-8", mode="r") as f1:
+            with open(f"response/{app}-{file_mode}-{i}.txt", encoding="utf-8", mode="r") as f1:
                 s = f1.read()
         except Exception as e:
             print(f"Error in reading response {app}-{mode}-{i}: {e}. Please manually check.")
             continue
         try:
             result = parse(s, mode=mode)
+            result = _complete_result_sequence(result, REPORTS_MSG[app][0])
         except Exception as e:
             if result_path.exists():
                 result_path.unlink()
@@ -145,6 +187,6 @@ if __name__ == "__main__":
     # File naming: {app}-llm-{model}-{i}.txt  e.g. "1-llm-gpt-5.4-1.txt"
     file_tag = f"llm-{args.model}"
 
-    run_query(app=args.app, repeat=args.repeat, mode=file_tag, given_range=None, model=args.model)
-    run_parse(app=args.app, repeat=args.repeat, mode=file_tag, given_range=None)
+    run_query(app=args.app, repeat=args.repeat, mode=args.mode, output_tag=file_tag, given_range=None, model=args.model)
+    run_parse(app=args.app, repeat=args.repeat, mode=args.mode, output_tag=file_tag, given_range=None)
     run_evaluate(app=args.app, repeat=args.repeat, mode=file_tag)

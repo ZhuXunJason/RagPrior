@@ -17,7 +17,7 @@ Mode 说明：
 """
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 import numpy as np
 
@@ -35,16 +35,17 @@ from kg.dedup import (
 )
 from kg.graph import BugKnowledgeGraph
 from kg.extractor import extract_all
-from kg.enricher import enrich_reports
 from kg.classifier import classify_all, llm_fallback_classify
 from kg.severity import compute_all_severities
-from prompt_kg import get_kg_prompt
+from prompt_kg import get_basic_ranking_prompt, get_kg_prompt
 from prompt import load_reports
 from llm import ask_completion
 from parse import extract_report_num
 from main import REPORTS_MSG
 
-KG_RANKING_MAX_TOKEN = 32768
+KG_RANKING_MAX_TOKEN = 65536
+KG_RANKING_CLAUDE_MAX_TOKEN = 131072
+ABLATION_MODES = ("none", "no-stage1", "no-stage2")
 
 # ──────────────────────────────────────────────────────────────────────────────
 # 工具：解析编号列表（与 parse_v3 逻辑等价，直接内联避免依赖 mode 参数）
@@ -94,6 +95,24 @@ def _validate_subset_sequence(seq: List[int], expected_count: int) -> None:
     if expected_count >= 20 and len(seq) < max(5, expected_count // 4):
         raise ValueError(
             f"Ranking sequence too short for {expected_count} reports: {len(seq)}"
+        )
+
+
+def _validate_complete_sequence(seq: List[int], expected_count: int) -> None:
+    """Require a complete, duplicate-free permutation of the prompt report IDs."""
+    expected = set(range(1, expected_count + 1))
+    actual = set(seq)
+    if len(seq) != expected_count:
+        raise ValueError(
+            f"Expected {expected_count} ranked reports, received {len(seq)}."
+        )
+    if len(actual) != expected_count:
+        raise ValueError("Ranking sequence contains duplicate report IDs.")
+    if actual != expected:
+        missing = sorted(expected - actual)
+        unexpected = sorted(actual - expected)
+        raise ValueError(
+            f"Invalid report IDs. Missing={missing[:10]}, unexpected={unexpected[:10]}"
         )
 
 
@@ -211,7 +230,10 @@ def run_pipeline(
     skip_severity_calculation: bool = False,
     use_severity_sort: bool = False,
     use_vision: bool = False,
-) -> None:
+    fail_fast: bool = False,
+    ablation: str = "none",
+    strict_output: bool = False,
+) -> Dict[str, Any]:
     """
     完整四阶段流水线。
 
@@ -222,6 +244,14 @@ def run_pipeline(
         given_range:   指定重复编号列表，None 则 1..repeat
         force_refresh: 重新执行 Phase 1 实体提取（忽略缓存）
     """
+    if ablation not in ABLATION_MODES:
+        raise ValueError(
+            f"Unknown ablation mode: {ablation}. Expected one of {ABLATION_MODES}."
+        )
+    if ablation != "none" and mode != "kg":
+        raise ValueError("Ablation modes are supported only when mode='kg'.")
+    if ablation == "no-stage2" and not skip_severity_calculation:
+        raise ValueError("no-stage2 requires skip_severity_calculation=True.")
     if skip_severity_calculation and use_severity_sort:
         raise ValueError(
             "skip_severity_calculation 和 use_severity_sort 不能同时为 True。"
@@ -234,9 +264,24 @@ def run_pipeline(
     reports_all = load_reports(app=app)
     reports = reports_all
     dedup_result = None
+    run_metadata: Dict[str, Any] = {
+        "app": app,
+        "mode": mode,
+        "ablation": ablation,
+        "model": model,
+        "embedding_model": embedding_model or get_embedding_model(),
+        "dedup_threshold": (
+            dedup_threshold
+            if dedup_threshold is not None
+            else get_duplicate_threshold()
+        ),
+        "total_reports": len(reports_all),
+        "representatives": len(reports_all),
+        "llm_calls": [],
+    }
 
     # ── Phase 0：Embedding 预聚类（仅 kg 模式）────────────────────────────────
-    if mode == "kg":
+    if mode == "kg" and ablation != "no-stage1":
         eff_threshold = dedup_threshold if dedup_threshold is not None else get_duplicate_threshold()
         eff_model = embedding_model or get_embedding_model()
 
@@ -256,42 +301,55 @@ def run_pipeline(
                 f"threshold={dedup_result.threshold} "
                 f"representatives={len(dedup_result.representatives)}/{dedup_result.total_reports}"
             )
+            run_metadata["representatives"] = len(dedup_result.representatives)
         except Exception as e:
+            if fail_fast:
+                raise
             # If embedding step fails, keep pipeline available with original reports.
             print(f"[dedup] disabled due to error: {type(e).__name__}: {e}")
             dedup_result = None
             reports = reports_all
+    elif ablation == "no-stage1":
+        print("[ablation] Stage I disabled: embedding pre-clustering skipped.")
 
-    # ── Phase 1：实体提取 ──────────────────────────────────────────────────────
-    reports = extract_all(reports, app=app, force_refresh=force_refresh, model=model, use_vision=use_vision)
-    if use_vision:
-        try:
-            reports = enrich_reports(
-                reports,
-                app=app,
-                use_vision=use_vision,
-                force_refresh=force_refresh,
-                model=model,
-            )
-        except Exception as e:
-            print(f"[enricher] disabled due to error: {type(e).__name__}: {e}")
-
-    # ── Phase 2：KG 扩充 + 图匹配分类 ─────────────────────────────────────────
-    kg = BugKnowledgeGraph()
-    kg.enrich_from_extractions(reports)           # 将 specific_pages/elements 加入图
-    classify_all(reports, kg, model=model)                     # 图匹配打分
-    llm_fallback_classify(reports, model=model)                # 兜底：对无匹配报告用 LLM 分类
-    print(f"[graph]  {kg.summary()}")
-
-    # ── Phase 3：分类后严重性推导 ──────────────────────────────────────────────
-    if skip_severity_calculation:
-        _assign_default_severity(reports)
-        print("[severity] skipped. All reports use neutral severity (priority=0.0).")
+    if ablation == "no-stage2":
+        print(
+            "[ablation] Stage II disabled: entity extraction, visual evidence, "
+            "KG construction, and classification skipped."
+        )
+        kg = None
     else:
-        severities = compute_all_severities(reports, kg)
-        for bt, (lbl, score) in sorted(severities.items(), key=lambda x: -x[1][1]):
-            count = sum(1 for r in reports if r.get("kg_class", {}).get("bug_type") == bt)
-            print(f"  {bt:12s} → {lbl}({score:.2f})  [{count} reports]")
+        # ── Phase 1：实体提取（use_vision 时单次多模态调用同时产出 entities + visual_evidence）──
+        extract_kwargs = {
+            "app": app,
+            "force_refresh": force_refresh,
+            "model": model,
+        }
+        if use_vision:
+            extract_kwargs["use_vision"] = True
+        if fail_fast:
+            extract_kwargs["raise_on_error"] = True
+        reports = extract_all(reports, **extract_kwargs)
+
+        # ── Phase 2：KG 扩充 + 图匹配分类 ─────────────────────────────────────
+        kg = BugKnowledgeGraph()
+        kg.enrich_from_extractions(reports)           # 将 specific_pages/elements 加入图
+        classify_all(reports, kg, model=model)                     # 图匹配打分
+        if fail_fast:
+            llm_fallback_classify(reports, model=model, raise_on_error=True)
+        else:
+            llm_fallback_classify(reports, model=model)            # 兜底：对无匹配报告用 LLM 分类
+        print(f"[graph]  {kg.summary()}")
+
+        # ── Phase 3：分类后严重性推导 ──────────────────────────────────────────
+        if skip_severity_calculation:
+            _assign_default_severity(reports)
+            print("[severity] skipped. All reports use neutral severity (priority=0.0).")
+        else:
+            severities = compute_all_severities(reports, kg)
+            for bt, (lbl, score) in sorted(severities.items(), key=lambda x: -x[1][1]):
+                count = sum(1 for r in reports if r.get("kg_class", {}).get("bug_type") == bt)
+                print(f"  {bt:12s} → {lbl}({score:.2f})  [{count} reports]")
 
     # ── Phase 4：LLM 排序 / KG 贪心排序 ───────────────────────────────────────
     repeats = given_range or list(range(1, repeat + 1))
@@ -317,7 +375,7 @@ def run_pipeline(
             with open(f"result/{app}-{file_mode}-{i}.txt", encoding="utf-8", mode="w") as f:
                 f.write(result_str)
         print("[severity-sort] Done.")
-        return
+        return run_metadata
 
     if mode == "kg-only":
         result_str = _kg_greedy_sort(reports, kg)
@@ -325,16 +383,32 @@ def run_pipeline(
             with open(f"result/{app}-{file_mode}-{i}.txt", encoding="utf-8", mode="w") as f:
                 f.write(result_str)
         print(f"[kg-only] Done.")
-        return
+        return run_metadata
 
     # "kg" mode：调用 LLM
-    prompt = get_kg_prompt(reports, kg)
+    if ablation == "no-stage2":
+        if dedup_result is None:
+            raise ValueError("no-stage2 requires a valid Stage-I deduplication result.")
+        cluster_sizes = [
+            1 + len(dedup_result.rep_to_members.get(rep, []))
+            for rep in dedup_result.representatives
+        ]
+        prompt = get_basic_ranking_prompt(reports, cluster_sizes)
+    else:
+        if kg is None:
+            raise ValueError("KG context is unavailable for Graph RAG ranking.")
+        prompt = get_kg_prompt(reports, kg)
+
     for i in repeats:
         print(f"  [LLM] iteration-{i}...")
         llm_result = ask_completion(
             prompt,
             model=model,
-            max_token=KG_RANKING_MAX_TOKEN,
+            max_token=(
+                KG_RANKING_CLAUDE_MAX_TOKEN
+                if model.startswith("claude-")
+                else KG_RANKING_MAX_TOKEN
+            ),
         )
         response = llm_result.get("content", "")
         token_p = llm_result.get("prompt_tokens", 0)
@@ -346,12 +420,24 @@ def run_pipeline(
             f.write(f"Output Tokens: {token_r}\n")
             f.write(f"Provider: {llm_result.get('provider', '')}\n")
             f.write(f"Finish Reason: {llm_result.get('finish_reason', '')}\n")
+        run_metadata["llm_calls"].append(
+            {
+                "iteration": i,
+                "prompt_tokens": token_p,
+                "completion_tokens": token_r,
+                "provider": llm_result.get("provider", ""),
+                "finish_reason": llm_result.get("finish_reason", ""),
+            }
+        )
         # 立即解析，写 result
         try:
             if not response.strip():
                 raise ValueError("Model returned empty content.")
             subset_sequence = _parse_numbered_sequence(response)
-            _validate_subset_sequence(subset_sequence, len(reports))
+            if strict_output:
+                _validate_complete_sequence(subset_sequence, len(reports))
+            else:
+                _validate_subset_sequence(subset_sequence, len(reports))
 
             # If pre-clustering is active, expand compressed ranking back to all reports.
             if dedup_result is not None:
@@ -372,6 +458,10 @@ def run_pipeline(
                 f.write(result)
         except Exception as e:
             print(f"  [parse] Error: {e}. Please manually fix result/{app}-{file_mode}-{i}.txt")
+            if strict_output:
+                raise
+
+    return run_metadata
 
 
 def run_evaluate(
@@ -429,6 +519,19 @@ def run_evaluate(
     return mean_val
 
 
+def _build_output_tag(
+    mode: str,
+    model: str,
+    dedup_threshold: float,
+    ablation: str,
+) -> str:
+    if ablation == "no-stage1":
+        return f"{mode}-{model}-ab-no-stage1"
+    if ablation == "no-stage2":
+        return f"{mode}-{model}-t{dedup_threshold}-ab-no-stage2"
+    return f"{mode}-{model}-t{dedup_threshold}"
+
+
 # ──────────────────────────────────────────────────────────────────────────────
 # 入口
 # ──────────────────────────────────────────────────────────────────────────────
@@ -441,16 +544,23 @@ if __name__ == "__main__":
     parser.add_argument("--repeat", type=int, default=5, help="repeat times")
     parser.add_argument("--mode", type=str, default="kg", choices=["kg", "kg-only"], help="pipeline mode")
     parser.add_argument("--model", type=str, default="deepseek-v4-pro", help="LLM model name")
-    parser.add_argument("--embedding-model", type=str, default="gemini-embedding-2-preview", help="embedding model name")
+    parser.add_argument("--embedding-model", type=str, default="gemini-embedding-2", help="embedding model name")
     parser.add_argument("--dedup-threshold", type=float, default=0.85, help="dedup threshold (default: config value)")
     parser.add_argument("--skip-severity", default=True, action=argparse.BooleanOptionalAction, help="skip severity calculation")
     parser.add_argument("--use-severity-sort", action="store_true", default=False, help="use severity-only sort instead of LLM")
     parser.add_argument("--force-refresh", action="store_true", default=False, help="force re-extract entities")
     parser.add_argument("--use-vision", action="store_true", default=False, help="use multimodal model with screenshots for entity extraction")
+    parser.add_argument("--ablation", choices=ABLATION_MODES, default="none", help="ablation mode")
+    parser.add_argument("--strict-output", action="store_true", default=False, help="require a complete report permutation")
     args = parser.parse_args()
 
     # File naming: {app}-{mode}-{model}-t{threshold}-{i}.txt  e.g. "1-kg-only-gpt-5.4-t1.0-1.txt"
-    file_tag = f"{args.mode}-{args.model}-t{args.dedup_threshold}"
+    file_tag = _build_output_tag(
+        args.mode,
+        args.model,
+        args.dedup_threshold,
+        args.ablation,
+    )
 
     run_pipeline(
         app=args.app,
@@ -464,5 +574,7 @@ if __name__ == "__main__":
         use_severity_sort=args.use_severity_sort,
         force_refresh=args.force_refresh,
         use_vision=args.use_vision,
+        ablation=args.ablation,
+        strict_output=args.strict_output,
     )
     run_evaluate(app=args.app, repeat=args.repeat, mode=file_tag, print_each=True)
